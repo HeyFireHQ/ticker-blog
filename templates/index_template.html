@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <title>CardPress Blog</title>
+</head>
+<body>
+  <h1>Welcome to CardPress!</h1>
+
+  <h2>Categories</h2>
+  <ul>
+    {% for category, posts_in_category in categories.items() %}
+      <li><a href="category/{{ category | lower | replace(' ', '-') }}/">{{ category }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <h2>All Posts</h2>
+  <ul>
+    {% for post in posts %}
+      <li><a href="/{{ post.slug }}/">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+
+</body>
+</html>

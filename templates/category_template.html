@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+  <title>{{ category_name }} - CardPress</title>
+</head>
+<body>
+  <h1>{{ category_name }}</h1>
+  <ul>
+    {% for post in posts %}
+      <li><a href="/blog/{{ post.slug }}/">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+  <a href="/">← Back to Home</a>
+</body>
+</html>

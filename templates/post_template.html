@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+<head>
+  <title>{{ title }}</title>
+</head>
+<body>
+  <h1>{{ title }}</h1>
+  {% if image_url %}
+    <img src="{{ image_url }}" alt="Cover Image">
+  {% endif %}
+  <div>
+    {{ body }}
+  </div>
+</body>
+</html>
