@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} - HeyTicker Blog{% endblock %}
+
+{% block content %}
+<article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Article Header -->
+    <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <span class="">
+                {{ article.title }}
+            </span>
+        </h1>
+
+        <div class="text-gray-500 text-sm mb-6">
+            {{ article.date.strftime('%B %d, %Y') }}
+        </div>
+
+        <div class="flex items-center justify-center gap-2">
+            {% for tag in article.tags %}
+            <a href="category/{{ tag }}.html" class="px-3 py-1 rounded-full text-sm hover:bg-opacity-80 transition-colors"
+               style="background-color: {{ article.colors.split(',')[loop.index0]|trim }}20; color: {{ article.colors.split(',')[loop.index0]|trim }};">
+                {{ tag }}
+            </a>
+            {% endfor %}
+        </div>
+    </header>
+
+    <!-- Featured Image -->
+    {% if article.metadata.image %}
+    <div class="rounded-2xl overflow-hidden shadow-lg mb-12">
+        <img src="{{ article.metadata.image }}" alt="{{ article.title }}" class="w-full h-[400px] object-cover">
+    </div>
+    {% endif %}
+
+    <!-- Article Content -->
+    <div class="prose prose-lg max-w-none bg-white rounded-2xl shadow-sm p-8 md:p-12">
+        <div class="max-w-3xl mx-auto">
+            <style>
+                .prose h2 {
+                    font-size: 2rem;
+                    font-weight: 700;
+                    color: #1F2937;
+                    margin-top: 3rem;
+                    margin-bottom: 1.5rem;
+                    line-height: 1.3;
+                }
+                .prose h3 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: #1F2937;
+                    margin-top: 2.5rem;
+                    margin-bottom: 1rem;
+                    line-height: 1.4;
+                }
+                .prose p {
+                    font-size: 1.125rem;
+                    line-height: 1.8;
+                    color: #4B5563;
+                    margin-bottom: 1.75rem;
+                }
+                .prose a {
+                    color: #F97316;
+                    text-decoration: none;
+                    border-bottom: 2px solid #F97316;
+                    transition: all 0.2s ease;
+                }
+                .prose a:hover {
+                    color: #EA580C;
+                    border-bottom-color: #EA580C;
+                }
+                .prose blockquote {
+                    border-left: 4px solid #F97316;
+                    padding: 1.5rem 2rem;
+                    font-style: italic;
+                    color: #6B7280;
+                    background-color: #F9FAFB;
+                    border-radius: 0.5rem;
+                    margin: 2rem 0;
+                    font-size: 1.25rem;
+                    line-height: 1.7;
+                }
+                .prose ul, .prose ol {
+                    margin-top: 1.5rem;
+                    margin-bottom: 1.5rem;
+                    padding-left: 1.5rem;
+                }
+                .prose li {
+                    font-size: 1.125rem;
+                    line-height: 1.8;
+                    color: #4B5563;
+                    margin-bottom: 0.75rem;
+                }
+                .prose li::marker {
+                    color: #F97316;
+                }
+                .prose img {
+                    border-radius: 1rem;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    margin: 2.5rem 0;
+                }
+                .prose code {
+                    background-color: #F3F4F6;
+                    padding: 0.2rem 0.4rem;
+                    border-radius: 0.25rem;
+                    font-size: 0.875rem;
+                    color: #1F2937;
+                    font-family: 'Inter', monospace;
+                }
+                .prose pre {
+                    background-color: #1F2937;
+                    color: #F3F4F6;
+                    padding: 1.5rem;
+                    border-radius: 0.75rem;
+                    overflow-x: auto;
+                    margin: 2rem 0;
+                    font-size: 0.875rem;
+                    line-height: 1.7;
+                }
+                .prose pre code {
+                    background-color: transparent;
+                    padding: 0;
+                    color: inherit;
+                    font-size: inherit;
+                }
+                .prose hr {
+                    border-color: #E5E7EB;
+                    margin: 3rem 0;
+                }
+                .prose table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 2rem 0;
+                    font-size: 0.875rem;
+                }
+                .prose th {
+                    background-color: #F3F4F6;
+                    font-weight: 600;
+                    text-align: left;
+                    padding: 0.75rem 1rem;
+                    border: 1px solid #E5E7EB;
+                }
+                .prose td {
+                    padding: 0.75rem 1rem;
+                    border: 1px solid #E5E7EB;
+                }
+                .prose tr:nth-child(even) {
+                    background-color: #F9FAFB;
+                }
+            </style>
+            {{ article.content }}
+        </div>
+    </div>
+
+    <!-- Author Name -->
+    {% if article.metadata.author %}
+    <div class="text-center text-gray-500 text-sm mt-8">
+        Written by {{ article.metadata.author.name }}
+    </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center mt-12">
+        {% if article.prev_article %}
+        <a href="/{{ article.prev_article.url }}" class="flex items-center text-gray-500 hover:text-gray-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            <div>
+                <div class="text-sm text-gray-500">Previous</div>
+                <div class="font-medium">{{ article.prev_article.title }}</div>
+            </div>
+        </a>
+        {% endif %}
+        {% if article.next_article %}
+        <a href="/{{ article.next_article.url }}" class="flex items-center text-gray-500 hover:text-gray-700 transition-colors text-right">
+            <div>
+                <div class="text-sm text-gray-500">Next</div>
+                <div class="font-medium">{{ article.next_article.title }}</div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Related Posts -->
+    {% if article.metadata.related_posts %}
+    <div class="bg-white rounded-xl p-8 shadow-md mt-12">
+        <h3 class="text-2xl font-bold text-gray-900 mb-6">Related Posts</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+            {% for post in article.metadata.related_posts %}
+            <a href="/{{ post.slug }}/" class="group">
+                <div class="bg-gray-50 rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-lg">
+                    {% if post.image_url %}
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-full h-40 object-cover">
+                    {% endif %}
+                    <div class="p-4">
+                        <h4 class="font-medium text-gray-900 group-hover:text-orange-600 transition-colors">{{ post.title }}</h4>
+                        <p class="text-sm text-gray-500 mt-1">{{ post.date }}</p>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Newsletter -->
+    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 shadow-lg mt-12">
+        <div class="text-center">
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Enjoyed this post?</h3>
+            <p class="text-gray-600 mb-6">Subscribe to our newsletter for more insights like this.</p>
+            <form class="flex flex-col sm:flex-row justify-center gap-2 max-w-md mx-auto">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-200 focus:border-blue-500">
+                <button type="submit" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-colors">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </div>
+</article>
+{% endblock %}

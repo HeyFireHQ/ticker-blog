@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HeyTicker Blog{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">HeyTicker</a>
+        <div class="hidden md:flex space-x-6">
+            <a href="/" class="text-gray-700 hover:text-orange-500 font-medium">Blog</a>
+            <a href="/categories.html" class="text-gray-700 hover:text-orange-500 font-medium">Categories</a>
+        </div>
+        <div class="hidden md:flex space-x-3">
+            <a href="https://heyticker.com" class="bg-gradient-to-r from-orange-500 to-pink-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                Back to HeyTicker
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="flex-grow">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="text-gray-400 text-sm">&copy; {{ CURRENT_YEAR }} HeyTicker. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
