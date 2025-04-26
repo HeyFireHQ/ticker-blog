@@ -99,11 +99,13 @@
                 </span>
             </h1>
             <div class="flex items-center justify-center gap-4 text-gray-600">
+                {% if author %}
                 <div class="flex items-center">
                     <img src="{{ author.image }}" alt="{{ author.name }}" class="w-10 h-10 rounded-full mr-3">
                     <span>By {{ author.name }}</span>
                 </div>
                 <span>•</span>
+                {% endif %}
                 <span>{{ date }}</span>
                 <span>•</span>
                 <span>{{ reading_time }} min read</span>
