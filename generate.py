@@ -94,10 +94,14 @@ for card in cards:
     # Convert Markdown description to HTML
     body_html = markdown.markdown(description_md)
 
+    # Get the date from the card's last activity
+    date = card.get('dateLastActivity', '').split('T')[0]  # Get just the date part
+
     post_info = {
         'title': clean_title,
         'slug': slug,
-        'categories': labels
+        'categories': labels,
+        'date': date
     }
     posts.append(post_info)
 
@@ -108,7 +112,8 @@ for card in cards:
         title=clean_title,
         body=body_html,
         image_url=image_url,
-        categories=labels
+        categories=labels,
+        date=date
     )
     with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(rendered_post)
