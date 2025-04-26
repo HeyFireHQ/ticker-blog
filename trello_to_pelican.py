@@ -150,7 +150,7 @@ for card in cards:
         metadata.append(f"Colors: {', '.join(label_colors)}")
 
     # Full file content
-    file_content = '\n'.join(metadata) + '\n\n' + image_markdown + description_md
+    file_content = '\n'.join(metadata) + '\n\n' + description_md
 
     # Write to file
     post_filename = f"{slug}.md"
