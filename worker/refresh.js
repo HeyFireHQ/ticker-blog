@@ -3,7 +3,13 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === '/refresh') {
-      const deployHookUrl = "https://api.cloudflare.com/client/v4/pages/hooks/deploy_hooks/YOUR-HOOK-ID";
+      const providedKey = url.searchParams.get('key');
+      const secretKey = env.REFRESH_SECRET_KEY;
+      const deployHookUrl = env.DEPLOY_HOOK_URL;
+
+      if (!providedKey || providedKey !== secretKey) {
+        return new Response('Unauthorized', { status: 401 });
+      }
 
       const deployResponse = await fetch(deployHookUrl, {
         method: "POST"
