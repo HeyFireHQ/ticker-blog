@@ -123,6 +123,7 @@
         </article>
 
         <!-- Author Bio -->
+        {% if author %}
         <div class="bg-white rounded-xl p-6 shadow-md mt-12">
             <div class="flex items-center">
                 <img src="{{ author.image }}" alt="{{ author.name }}" class="w-16 h-16 rounded-full mr-4">
@@ -135,6 +136,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
         <!-- Related Posts -->
         {% if related_posts %}
