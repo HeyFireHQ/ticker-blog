@@ -101,19 +101,25 @@ for card in cards:
         'title': clean_title,
         'slug': slug,
         'categories': labels,
-        'date': date
+        'date': date,
+        'image_url': image_url
     }
     posts.append(post_info)
 
     # --- Create folder and index.html for each post ---
     post_dir = os.path.join(OUTPUT_DIR, slug)
     os.makedirs(post_dir, exist_ok=True)
+
+    # Get latest posts for the sidebar
+    latest_posts = sorted(posts, key=lambda x: x['date'], reverse=True)[:3]
+
     rendered_post = post_template.render(
         title=clean_title,
         body=body_html,
         image_url=image_url,
         categories=labels,
-        date=date
+        date=date,
+        latest_posts=latest_posts
     )
     with open(os.path.join(post_dir, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(rendered_post)

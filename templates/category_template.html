@@ -64,213 +64,37 @@
             <p class="text-xl text-gray-600">Browse articles by topic to find exactly what you're looking for</p>
         </div>
 
-        <!-- Categories Grid -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            <!-- Investing Category -->
-            <div id="investing" class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 shadow-md">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-2xl">📈</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Investing</h2>
-                </div>
-                <p class="text-gray-600 mb-6">Tips, strategies, and fundamentals of smart investing for beginners and advanced traders.</p>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 15, 2023</span>
-                        <span class="bg-orange-100 text-orange-600 px-2 py-1 rounded-full text-xs">Featured</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-orange-600 transition-colors">
-                            How to Make Your First Investment with HeyTicker
+        <!-- Category Posts -->
+        <div class="mb-12">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for post in posts %}
+                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+                    {% if post.image_url %}
+                    <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                    {% endif %}
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-500">{{ post.date }}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            <a href="/{{ post.slug }}/" class="hover:text-orange-600 transition-colors">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% for category in post.categories %}
+                            <a href="/category/{{ category|lower }}/" class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs">{{ category }}</a>
+                            {% endfor %}
+                        </div>
+                        <a href="/{{ post.slug }}/" class="text-orange-500 font-medium hover:text-orange-700 flex items-center text-sm">
+                            Read More
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
                         </a>
-                    </h3>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 1, 2023</span>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-orange-600 transition-colors">
-                            Understanding Market Volatility
-                        </a>
-                    </h3>
                 </div>
-                <a href="#" class="inline-block bg-orange-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-600 transition-colors text-sm">
-                    View All Investing Articles
-                </a>
-            </div>
-
-            <!-- Education Category -->
-            <div id="education" class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-6 shadow-md">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-2xl">🎓</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Education</h2>
-                </div>
-                <p class="text-gray-600 mb-6">Learn the fundamentals of financial markets, investment terms, and trading strategies.</p>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 5, 2023</span>
-                        <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-xs">Popular</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-blue-600 transition-colors">
-                            Teaching Kids About Investing: A Family Guide
-                        </a>
-                    </h3>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">February 20, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-blue-600 transition-colors">
-                            Financial Literacy: What Every Teen Should Know
-                        </a>
-                    </h3>
-                </div>
-                <a href="#" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors text-sm">
-                    View All Education Articles
-                </a>
-            </div>
-
-            <!-- Family Category -->
-            <div id="family" class="bg-gradient-to-r from-green-50 to-green-100 rounded-xl p-6 shadow-md">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-2xl">👨‍👩‍👧‍👦</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Family</h2>
-                </div>
-                <p class="text-gray-600 mb-6">Resources for teaching financial literacy to your family and investing together.</p>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 5, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-green-600 transition-colors">
-                            Teaching Kids About Investing: A Family Guide
-                        </a>
-                    </h3>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">February 10, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-green-600 transition-colors">
-                            Creating a Family Investment Club
-                        </a>
-                    </h3>
-                </div>
-                <a href="#" class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors text-sm">
-                    View All Family Articles
-                </a>
-            </div>
-
-            <!-- Trends Category -->
-            <div id="trends" class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl p-6 shadow-md">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-2xl">📊</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Trends</h2>
-                </div>
-                <p class="text-gray-600 mb-6">Analysis of current market trends, emerging sectors, and investment opportunities.</p>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 10, 2023</span>
-                        <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded-full text-xs">Premium</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-purple-600 transition-colors">
-                            5 Market Trends You Should Watch in 2023
-                        </a>
-                    </h3>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">February 25, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-purple-600 transition-colors">
-                            Emerging Technologies Reshaping Finance
-                        </a>
-                    </h3>
-                </div>
-                <a href="#" class="inline-block bg-purple-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-600 transition-colors text-sm">
-                    View All Trends Articles
-                </a>
-            </div>
-
-            <!-- Analysis Category -->
-            <div id="analysis" class="bg-gradient-to-r from-pink-50 to-pink-100 rounded-xl p-6 shadow-md">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-2xl">🔍</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Analysis</h2>
-                </div>
-                <p class="text-gray-600 mb-6">In-depth analysis of company financials, market performance, and investment strategies.</p>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 10, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-pink-600 transition-colors">
-                            5 Market Trends You Should Watch in 2023
-                        </a>
-                    </h3>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">February 15, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-pink-600 transition-colors">
-                            Understanding Financial Statements
-                        </a>
-                    </h3>
-                </div>
-                <a href="#" class="inline-block bg-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-pink-600 transition-colors text-sm">
-                    View All Analysis Articles
-                </a>
-            </div>
-
-            <!-- News Category -->
-            <div id="news" class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-md">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
-                        <span class="text-2xl">📰</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">News</h2>
-                </div>
-                <p class="text-gray-600 mb-6">Latest updates from the financial world, market news, and HeyTicker announcements.</p>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">March 8, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-yellow-600 transition-colors">
-                            HeyTicker Introduces New Family Features
-                        </a>
-                    </h3>
-                </div>
-                <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm text-gray-500">February 28, 2023</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                        <a href="blog-post.html" class="hover:text-yellow-600 transition-colors">
-                            Q1 2023 Market Recap: What You Need to Know
-                        </a>
-                    </h3>
-                </div>
-                <a href="#" class="inline-block bg-yellow-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-yellow-600 transition-colors text-sm">
-                    View All News Articles
-                </a>
+                {% endfor %}
             </div>
         </div>
 
