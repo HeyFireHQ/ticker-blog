@@ -3,5 +3,6 @@
 .env
 venv/
 .vscode/
+output/*
 
 
