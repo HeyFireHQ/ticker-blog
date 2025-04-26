@@ -3,7 +3,7 @@
 .env
 venv/
 .vscode/
-output/*
+output/
 blog/output/*
 
 
