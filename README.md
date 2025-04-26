@@ -146,28 +146,6 @@ https://blog.heyticker.com/refresh?key=YOUR_SECRET
 
 ---
 
-## 🧐 Future Improvements
-
-- Add deploy buffering (e.g., delay multiple fast Trello changes)
-- Add preview/staging deployments
-- Slack / Discord notifications on successful deploys
-- Analytics integrations (e.g., Plausible, Cloudflare Web Analytics)
-
----
-
-## 📋 Full Checklist
-
-| Step | Done |
-|:---|:---|
-| Trello board for blog content | ✅ |
-| Cloudflare Pages project setup | ✅ |
-| Cloudflare Worker deployed | ✅ |
-| Environment variables configured | ✅ |
-| Blog generator working | ✅ |
-| `/refresh` endpoint protected | ✅ |
-
----
-
 ## 🌟 Final Notes
 
 This project is designed to be:
@@ -180,9 +158,3 @@ This project is designed to be:
 ✅ You can manage your entire blog through Trello + Cloudflare  
 ✅ With minimal code, maximum flexibility!
 
----
-
-# 🚀  
-Built with 🔥 to help you turn **Trello into a blog engine.**
-
----
