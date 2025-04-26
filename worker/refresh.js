@@ -3,6 +3,8 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === '/refresh') {
+      console.log("DEPLOY_HOOK_URL:", env.DEPLOY_HOOK_URL);
+      
       const providedKey = url.searchParams.get('key');
       const secretKey = env.REFRESH_SECRET_KEY;
       const deployHookUrl = env.DEPLOY_HOOK_URL;
