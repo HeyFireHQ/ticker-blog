@@ -82,12 +82,8 @@ def download_image(url, save_path):
 
     return save_path
 
-# --- Clean content directory ---
-if os.path.exists(CONTENT_DIR):
-    shutil.rmtree(CONTENT_DIR)
-
-os.makedirs(CONTENT_DIR)
-os.makedirs(IMAGES_DIR)
+#os.makedirs(CONTENT_DIR)
+#os.makedirs(IMAGES_DIR)
 
 # --- Main build ---
 
