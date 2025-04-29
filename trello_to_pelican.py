@@ -140,7 +140,7 @@ for card in cards:
         f"Title: {original_title}",
         f"Date: {today_date}",
         f"Slug: {slug}",
-        f"Image: {image_url}",
+        f"Image: {image_url}"
     ]
     if author:
         metadata.append(f"Author: {author}")
