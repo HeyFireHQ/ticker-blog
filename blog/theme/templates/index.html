@@ -28,14 +28,18 @@
       <div class="text-lg text-gray-600 mb-6">
         {{ articles[0].content[0:200] + '...' if articles[0].content|length > 200 else articles[0].content }}
       </div>
+    </a>
       <div class="flex flex-wrap gap-2 mb-8">
         <!-- Example: Category, Audience, Type tags -->
-        <span class="px-3 py-1 rounded-full text-sm font-medium bg-black text-white">Investing</span>
-        <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">Beginners</span>
-        <span class="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700">Guide</span>
+        {% set colors = articles[0].colors.split(',') if articles[0].colors else ['#F97316'] %}
+        {% for tag in articles[0].tags %}
+        <span class="px-3 py-1 rounded-full text-sm font-medium bg-black text-white" style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
+            <a href="/category/{{ tag }}.html">{{ tag }}</a>
+        </span>       
+        {% endfor %}
+       
       </div>
       <span class="text-white font-semibold opacity-60 text-lg absolute bottom-8 left-8">Read More</span>
-    </a>
   </div>
   {% if articles[0].metadata.image %}
   <div class="md:w-1/3 w-full mt-6 md:mt-0 flex-shrink-0">
@@ -59,32 +63,39 @@
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for article in articles[1:] %}
-            <div class="bg-gradient-to-br from-orange-50 to-pink-50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all">
-                <a href="/{{ article.slug }}/" class="hover:text-orange-600">
-                    <div class="flex items-center space-x-4 mb-2 text-sm text-gray-500">
-                        <span class="text-gray-500 text-sm">{{ article.date.strftime('%B %d, %Y') }}</span>
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col overflow-hidden">
+                {% if article.metadata.image %}
+                <img src="{{ article.metadata.image }}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                <div class="p-6 flex flex-col flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-gray-400 text-base">{{ article.date.strftime('%B %d, %Y') }}</span>
+                        {% if article.metadata.premium %}
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">Premium</span>
+                        {% endif %}
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">
-                        {{ article.title }}
-                    </h3>
-                    <div class="text-base text-gray-600 mb-6">
-                        {{ article.content[0:150] + '... (read more)'  if article.content|length > 150 else article.content }}
-                    </div>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                        {% set colors = article.colors.split(',') if article.colors else ['#F97316'] %}
+                    <a href="/{{ article.slug }}/" class="hover:text-orange-600">
+                        <h3 class="text-2xl font-extrabold text-gray-900 mb-2 leading-snug">
+                            {{ article.title }}
+                        </h3>
+                        <div class="text-base text-gray-600 mb-4">
+                            {{ article.content[0:150] + '...' if article.content|length > 150 else article.content }}
+                        </div>
+                    </a>
+                    <div class="flex items-center gap-2 mb-4">
+                        {% set colors = article.colors.split(',') if article.colors else ['#6366F1'] %}
                         {% for tag in article.tags %}
-                        <a href="category/{{ tag }}.html" class="px-3 py-1 rounded-full text-sm hover:bg-opacity-80 transition-colors"
-                           style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
+                        <span class="px-3 py-1 rounded-full text-sm font-medium"
+                              style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
                             {{ tag }}
-                        </a>
+                        </span>
                         {% endfor %}
                     </div>
-                </a>
-                {% if article.metadata.image %}
-                <div class="mt-6">
-                    <img src="{{ article.metadata.image }}" alt="{{ article.title }}" class="rounded-xl shadow-md w-full h-48 object-cover">
+                    <a href="/{{ article.slug }}/" class="mt-auto text-base font-semibold text-gray-900 hover:text-orange-600 flex items-center">
+                        Read More
+                        <span class="ml-1">→</span>
+                    </a>
                 </div>
-                {% endif %}
             </div>
             {% endfor %}
         </div>
@@ -118,7 +129,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 mb-1">Family</h3>
                 <p class="text-sm text-gray-600">5 Articles</p>
             </a>
-            <a href="category/news.html" class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all text-center">
+            <a href="category/News.html" class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-6 shadow-sm hover:shadow-md transition-all text-center">
                 <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl">📰</span>
                 </div>
