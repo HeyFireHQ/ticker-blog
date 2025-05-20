@@ -15,36 +15,21 @@
   <nav class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <a href="/" class="text-2xl font-bold">
-        <span class="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+        <span class="bg-gradient-to-r from-red-600 to-pink-400 bg-clip-text text-transparent">
           Ticker
         </span>
       </a>
 
       <div class="flex items-center gap-3">
-        {% if email %}
-        <!-- Logged in state -->
-        <div class="flex items-center gap-2">
-          {% if user_data and user_data.get('is_premium') %}
-          <span
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-violet-400 via-fuchsia-500 to-orange-500 text-white">
-            <svg class="w-4 h-4 mr-1 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 3L14.9 8.8L21.5 9.7L16.7 14.3L17.9 20.8L12 17.7L6.1 20.8L7.3 14.3L2.5 9.7L9.1 8.8L12 3Z" />
-            </svg>
-            Premium
-          </span>
-          {% endif %}
-          <a href="/profile"
-            class="bg-white text-orange-500 px-4 py-2 rounded-lg border border-orange-500 hover:bg-orange-50 transition-colors font-medium">
-            <span>{{ email }}</span>
-          </a>
-        </div>
-        {% else %}
+        <a href="https://heyticker.com/families" class="text-gray-600 hover:text-orange-500 font-medium transition-colors underline">
+          For Families
+        </a>
+        
         <!-- Logged out state -->
-        <a href="/login"
+        <a href="https://heyticker.com/login"
           class="bg-white text-orange-500 px-4 py-2 rounded-lg border border-orange-500 hover:bg-orange-50 transition-colors font-medium">
           Login
         </a>
-        {% endif %}
       </div>
     </div>
   </nav>
@@ -64,7 +49,7 @@
     <span class="text-gray-300">•</span>
     <a href="https://heyfire.co" class="text-purple-600 hover:underline">Powered by HeyFire✌️</a>
     <span class="text-gray-300">•</span>
-    <a href="/" class="text-orange-500 hover:underline"></a>
+    <a href="https://heyticker.com/terms" class="text-orange-500 hover:underline">Terms & Conditions</a>
   </div>
 
 
