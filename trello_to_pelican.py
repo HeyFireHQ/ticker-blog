@@ -115,7 +115,8 @@ for card in cards:
     front_matter, description_md = parse_front_matter(description_full)
 
     slug = front_matter.get('slug') or slugify(original_title)
-    author = front_matter.get('author', None)
+    author = front_matter.get('author-name', None)
+    author_url = front_matter.get('author-url', None)   
     custom_image_name = front_matter.get('image', None)
 
     image_markdown = ""
@@ -144,6 +145,8 @@ for card in cards:
     ]
     if author:
         metadata.append(f"Author: {author}")
+    if author_url:
+        metadata.append(f"Authorurl: {author_url}")
     if labels:
         metadata.append(f"Tags: {', '.join(labels)}")
     if label_colors:

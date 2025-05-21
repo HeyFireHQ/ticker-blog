@@ -11,12 +11,8 @@
                 {{ article.title }}
             </span>
         </h1>
-
-        <div class="text-gray-500 text-sm mb-6">
-            {{ article.date.strftime('%B %d, %Y') }}
-        </div>
-
-        <div class="flex items-center justify-center gap-2">
+        
+        <div class="flex items-center justify-center gap-2 mb-2">
             {% for tag in article.tags %}
             <a href="/category/{{ tag }}.html" class="px-3 py-1 rounded-full text-sm hover:bg-opacity-80 transition-colors"
                style="background-color: {{ article.colors.split(',')[loop.index0]|trim }}20; color: {{ article.colors.split(',')[loop.index0]|trim }};">
@@ -24,6 +20,14 @@
             </a>
             {% endfor %}
         </div>
+            <!-- Author Name -->
+            <span class="text-gray-500 text-sm">
+            {% if article.metadata.authorurl %}
+            by <a href="{{ article.metadata.authorurl }}" target="_blank" class="text-orange-500 underline">{{ article.metadata.author }}</a>
+        {% elif article.metadata.author %}
+            by {{ article.metadata.author.name }}
+            {% endif %}
+        </span>
     </header>
 
     <!-- Featured Image -->
@@ -152,13 +156,6 @@
         </div>
     </div>
 
-    <!-- Author Name -->
-    {% if article.metadata.author %}
-    <div class="text-center text-gray-500 text-sm mt-8">
-        Written by {{ article.metadata.author.name }}
-    </div>
-    {% endif %}
-
     <!-- Navigation -->
     <div class="flex justify-between items-center mt-12">
         {% if article.prev_article %}
@@ -183,7 +180,13 @@
             </svg>
         </a>
         {% endif %}
+
+        <div class="text-gray-500 text-sm mb-6 flex justify-end w-full">
+           - {{ article.date.strftime('%B %d, %Y') }}
+        </div>
+    
     </div>
+
 
     <!-- Related Posts -->
     {% if article.metadata.related_posts %}
