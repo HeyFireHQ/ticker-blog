@@ -131,14 +131,25 @@ for card in cards:
         if color_name and color_name in TRELLO_COLOR_HEX:
             label_colors.append(TRELLO_COLOR_HEX[color_name])
 
-    today_date = datetime.utcnow().strftime('%Y-%m-%d')
-
-    # Parse front matter (if any)
+    # Parse front matter
     front_matter, description_md = parse_front_matter(description_full)
+
+    # Get date - priority: front matter > card creation date
+    custom_date = front_matter.get('date', None)
+    if custom_date:
+        article_date = custom_date
+    else:
+        # Extract date from card ID (creation date)
+        card_id = card['id']
+        timestamp = int(card_id[:8], 16)
+        card_date = datetime.fromtimestamp(timestamp)
+        article_date = card_date.strftime('%Y-%m-%d')
 
     slug = front_matter.get('slug') or slugify(original_title)
     author = front_matter.get('author-name', None)
-    author_url = front_matter.get('author-url', None)   
+    author_url = front_matter.get('author-url', None)
+    description = front_matter.get('description', None)
+    keywords = front_matter.get('keywords', None)
     custom_image_name = front_matter.get('image', None)
 
     image_markdown = ""
@@ -161,7 +172,7 @@ for card in cards:
     # Prepare metadata
     metadata = [
         f"Title: {original_title}",
-        f"Date: {today_date}",
+        f"Date: {article_date}",  # Use the extracted date
         f"Slug: {slug}",
         f"Image: {image_url}"
     ]
@@ -169,10 +180,16 @@ for card in cards:
         metadata.append(f"Author: {author}")
     if author_url:
         metadata.append(f"Authorurl: {author_url}")
+    if description:
+        metadata.append(f"Description: {description}")
+    if keywords:
+        metadata.append(f"Keywords: {keywords}")
     if labels:
         metadata.append(f"Tags: {', '.join(labels)}")
     if label_colors:
         metadata.append(f"Colors: {', '.join(label_colors)}")
+    else:
+        metadata.append(f"Colors: #F97316")
 
     # Full file content
     file_content = '\n'.join(metadata) + '\n\n' + description_md

@@ -2,6 +2,34 @@
 
 {% block title %}{{ article.title }} - HeyTicker Blog{% endblock %}
 
+{% block extra_head %}
+<!-- SEO Meta Tags -->
+{% if article.metadata.description %}
+<meta name="description" content="{{ article.metadata.description }}">
+<meta property="og:description" content="{{ article.metadata.description }}">
+<meta name="twitter:description" content="{{ article.metadata.description }}">
+{% endif %}
+
+{% if article.metadata.keywords %}
+<meta name="keywords" content="{{ article.metadata.keywords }}">
+{% endif %}
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="{{ article.title }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ SITEURL }}/{{ article.url }}">
+{% if article.metadata.image %}
+<meta property="og:image" content="{{ SITEURL }}/{{ article.metadata.image }}">
+{% endif %}
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ article.title }}">
+{% if article.metadata.image %}
+<meta name="twitter:image" content="{{ SITEURL }}/{{ article.metadata.image }}">
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
     <!-- Article Header -->
