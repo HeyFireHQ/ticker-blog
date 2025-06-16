@@ -30,7 +30,11 @@
     </a>
       <div class="flex flex-wrap gap-2 mb-8">
         <!-- Example: Category, Audience, Type tags -->
-        {% set colors = articles[0].colors.split(',') if articles[0].colors else ['#F97316'] %}
+        {% if articles[0].colors is defined and articles[0].colors %}
+            {% set colors = articles[0].colors.split(',') %}
+        {% else %}
+            {% set colors = ['#F97316'] %}
+        {% endif %}
         {% for tag in articles[0].tags %}
         <span class="px-3 py-1 rounded-full text-sm font-medium bg-black text-white" style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
             <a href="/category/{{ tag }}.html">{{ tag }}</a>
@@ -117,7 +121,11 @@
                         </div>
                     </a>
                     <div class="flex items-center gap-2 mb-4">
-                        {% set colors = article.colors.split(',') if article.colors else ['#6366F1'] %}
+                        {% if article.colors is defined and article.colors %}
+                            {% set colors = article.colors.split(',') %}
+                        {% else %}
+                            {% set colors = ['#F97316'] %}
+                        {% endif %}
                         {% for tag in article.tags %}
                         <span class="px-3 py-1 rounded-full text-sm font-medium"
                               style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
