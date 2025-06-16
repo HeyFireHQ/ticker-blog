@@ -5,6 +5,7 @@ import requests
 import yaml
 from dotenv import load_dotenv
 from datetime import datetime
+from discord import SyncWebhook, File
 
 # Load environment variables
 load_dotenv('.env')
@@ -12,6 +13,7 @@ load_dotenv('.env')
 TRELLO_API_KEY = os.getenv('TRELLO_API_KEY')
 TRELLO_TOKEN = os.getenv('TRELLO_TOKEN')
 BOARD_ID = os.getenv('BOARD_ID')
+DISCORD_PUBLIC = os.getenv('DISCORD_PUBLIC')
 
 CONTENT_DIR = 'blog/content'
 IMAGES_DIR = os.path.join(CONTENT_DIR, 'imgs')
@@ -31,6 +33,26 @@ TRELLO_COLOR_HEX = {
     'lime': '#51e898',
     'null': ''
 }
+
+
+def send_message_to_discord(message, file_stream=None):
+    try:
+        discord_url = DISCORD_PUBLIC 
+        webhook = SyncWebhook.from_url(discord_url) # Initializing webhook
+        if file_stream:
+            import io
+            import base64
+            file_stream = file_stream.split(',')[1]
+            
+            # Decode base64 image
+            file_stream = base64.b64decode(file_stream)
+            file_stream = io.BytesIO(file_stream)
+            file = File(file_stream, filename=message+'.png')
+            webhook.send(content=message, file=file)
+        else:
+            webhook.send(content=message)
+    except:
+        pass
 
 # --- Helpers ---
 
@@ -200,5 +222,7 @@ for card in cards:
 
     with open(post_path, 'w', encoding='utf-8') as f:
         f.write(file_content)
+    
+    send_message_to_discord(f"New post: {original_title}")
 
 print("✅ Markdown files with downloaded images and colors generated successfully!")
