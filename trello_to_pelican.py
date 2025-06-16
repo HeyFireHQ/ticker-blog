@@ -51,6 +51,13 @@ def slugify(value):
     value = re.sub(r'[^a-z0-9]+', '-', value)
     return value.strip('-')
 
+def extract_markdown_link(text):
+    """Extract name and URL from markdown link [name](url)"""
+    match = re.match(r'\[([^\]]+)\]\(([^)]+)\)', text.strip())
+    if match:
+        return match.group(1), match.group(2)  # name, url
+    return text.strip(), None
+
 def parse_front_matter(text):
     front_matter = {}
     body = text
@@ -60,7 +67,22 @@ def parse_front_matter(text):
         if len(parts) >= 3:
             yaml_block = parts[1]
             body = parts[2].lstrip('\n')
-            front_matter = yaml.safe_load(yaml_block) or {}
+            
+            try:
+                front_matter = yaml.safe_load(yaml_block) or {}
+                
+                # Post-process author field if it contains markdown
+                if 'author' in front_matter:
+                    author_text = str(front_matter['author'])
+                    if '[' in author_text and '](' in author_text:
+                        name, url = extract_markdown_link(author_text)
+                        front_matter['author-name'] = name
+                        front_matter['author-url'] = url
+                        del front_matter['author']
+                        
+            except yaml.YAMLError as e:
+                print(f"⚠️ YAML parsing error: {e}")
+                front_matter = {}
 
     return front_matter, body
 
