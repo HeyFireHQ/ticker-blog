@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Firebase Development Configuration (gitignored, only for localhost) -->
+    <script src="firebase-config-dev.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -19,6 +21,15 @@
         }
         .kanban-column {
             min-width: 300px;
+        }
+        .delete-btn {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
         }
     </style>
 </head>
@@ -82,9 +93,14 @@
                     <input type="file" id="post-image" class="w-full p-3 border border-gray-300 rounded-lg" accept="image/*">
                     <img id="image-preview" src="" class="mt-4 max-h-48 rounded-lg hidden"/>
                 </div>
-                <div class="mb-6">
+                <div class="mb-4">
                     <label for="post-labels" class="block text-gray-700 font-medium mb-2">Labels (comma-separated)</label>
                     <input type="text" id="post-labels" class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <div class="mb-6">
+                    <label for="post-colors" class="block text-gray-700 font-medium mb-2">Colors (comma-separated hex codes)</label>
+                    <input type="text" id="post-colors" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="#F97316, #0EA5E9, #8B5CF6, #10B981">
+                    <p class="text-sm text-gray-500 mt-1">Optional: Used for tag styling. Leave empty for defaults.</p>
                 </div>
                 <div class="flex justify-end space-x-4">
                     <button type="button" id="cancel-btn" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition">Cancel</button>
@@ -111,18 +127,46 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // --- Firebase Initialization ---
-        const firebaseConfig = {
-                apiKey: "AIzaSyA_walhmpbEBQsvJNoGXX2CZ98Qosnb4Qw",
-                authDomain: "lastmachine-web.firebaseapp.com",
-                projectId: "lastmachine-web",
-                storageBucket: "lastmachine-web.firebasestorage.app",
-                messagingSenderId: "151845537481",
-                appId: "1:151845537481:web:0218d7716b382e73ae2f18",
-                measurementId: "G-P7J2HCD9WT"
+        // Production Firebase config (safe to commit)
+        const firebaseConfigProduction = {
+            apiKey: "AIzaSyA_walhmpbEBQsvJNoGXX2CZ98Qosnb4Qw",
+            authDomain: "lastmachine-web.firebaseapp.com",
+            projectId: "lastmachine-web",
+            storageBucket: "lastmachine-web.firebasestorage.app",
+            messagingSenderId: "151845537481",
+            appId: "1:151845537481:web:0218d7716b382e73ae2f18",
+            measurementId: "G-P7J2HCD9WT"
         };
+        
+        // Auto-detect environment and use appropriate config
+        const isLocalhost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1' || 
+                           window.location.hostname === '';
+        
+        let firebaseConfig;
+        
+        if (isLocalhost) {
+            // For localhost: try to load development config (gitignored)
+            try {
+                if (typeof FIREBASE_CONFIG_DEV !== 'undefined') {
+                    firebaseConfig = FIREBASE_CONFIG_DEV;
+                    console.log('🔧 Using localhost development Firebase config');
+                } else {
+                    throw new Error('Development config not found');
+                }
+            } catch (error) {
+                console.warn('⚠️ Development Firebase config not found, falling back to production config');
+                console.log('💡 Create cardpress/firebase-config-dev.js for localhost development');
+                firebaseConfig = firebaseConfigProduction;
+            }
+        } else {
+            // For production: use committed config
+            firebaseConfig = firebaseConfigProduction;
+            console.log('🌐 Using production Firebase config');
+        }
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -268,7 +312,7 @@
 
         function renderPostCard(post) {
             const card = document.createElement('div');
-            card.className = 'bg-white p-4 rounded-lg shadow cursor-pointer';
+            card.className = 'bg-white p-4 rounded-lg shadow cursor-pointer relative group';
             card.dataset.id = post.id;
             
             const labelsHtml = post.labels ? post.labels.map(label => 
@@ -278,13 +322,32 @@
             const contentPreview = post.content ? marked.parse(post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
 
             card.innerHTML = `
-                <h4 class="font-bold mb-2">${post.title}</h4>
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-bold flex-1">${post.title}</h4>
+                    <button class="delete-btn opacity-0 group-hover:opacity-100 transition-opacity ml-2 text-red-500 hover:text-red-700 p-1 rounded" title="Delete post">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
                 ${post.imageUrl ? `<img src="${post.imageUrl}" class="mb-2 rounded-md max-h-40 w-full object-cover">` : ''}
                 <div class="prose prose-sm">${contentPreview}</div>
                 <div class="mt-2">${labelsHtml}</div>
             `;
             
-            card.addEventListener('click', () => openPostModal(post.id));
+            // Add click handler for the main card (but not the delete button)
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.delete-btn')) {
+                    openPostModal(post.id);
+                }
+            });
+            
+            // Add delete button handler
+            const deleteBtn = card.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deletePost(post.id, post.title, post.imageUrl);
+            });
             
             const columnEl = document.getElementById(`column-${post.column}`);
             if (columnEl) {
@@ -325,6 +388,7 @@
                     document.getElementById('post-title').value = post.title;
                     document.getElementById('post-content').value = post.content;
                     document.getElementById('post-labels').value = post.labels ? post.labels.join(', ') : '';
+                    document.getElementById('post-colors').value = post.colors || '';
                     if (post.imageUrl) {
                         imagePreview.src = post.imageUrl;
                         imagePreview.classList.remove('hidden');
@@ -340,36 +404,106 @@
         addPostBtn.addEventListener('click', () => openPostModal());
         cancelBtn.addEventListener('click', () => postModal.classList.add('hidden'));
 
+        // Delete post function
+        async function deletePost(postId, postTitle, imageUrl) {
+            // Show confirmation dialog
+            const isConfirmed = confirm(`Are you sure you want to delete "${postTitle}"?\n\nThis action cannot be undone.`);
+            if (!isConfirmed) {
+                return;
+            }
+
+            console.log('🗑️ Starting post deletion...', { postId, postTitle, imageUrl });
+
+            try {
+                // Delete the post from Firestore
+                const postRef = doc(db, postsCollection.path, postId);
+                await deleteDoc(postRef);
+                console.log('✅ Post deleted from Firestore');
+
+                // Delete associated image from Storage if it exists
+                if (imageUrl && imageUrl.includes('firebase')) {
+                    try {
+                        console.log('🖼️ Deleting associated image from Storage...');
+                        
+                        // Extract the file path from the Firebase Storage URL
+                        // Format: https://firebasestorage.googleapis.com/v0/b/bucket/o/path%2Ffile.jpg?alt=media&token=...
+                        const urlParts = imageUrl.split('/o/')[1];
+                        if (urlParts) {
+                            const filePath = urlParts.split('?')[0].replace(/%2F/g, '/');
+                            const imageRef = ref(storage, filePath);
+                            
+                            await deleteObject(imageRef);
+                            console.log('✅ Image deleted from Storage:', filePath);
+                        }
+                    } catch (imageError) {
+                        console.warn('⚠️ Could not delete image from Storage:', imageError);
+                        // Don't fail the entire operation if image deletion fails
+                    }
+                }
+
+                console.log('🎉 Post deletion completed successfully!');
+                
+            } catch (error) {
+                console.error('❌ Error deleting post:', error);
+                alert('Error deleting post: ' + error.message);
+            }
+        }
+
         postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('🚀 Starting post save...');
+            
             const postId = document.getElementById('post-id').value;
             const imageFile = document.getElementById('post-image').files[0];
             let imageUrl = imagePreview.src || '';
 
-            if (imageFile) {
-                const storageRef = ref(storage, `images/${currentUserId}/${Date.now()}_${imageFile.name}`);
-                await uploadBytes(storageRef, imageFile);
-                imageUrl = await getDownloadURL(storageRef);
+            console.log('📊 Post details:', {
+                postId: postId,
+                currentUserId: currentUserId,
+                postsCollectionPath: postsCollection ? postsCollection.path : 'undefined',
+                hasImageFile: !!imageFile
+            });
+
+            try {
+                if (imageFile) {
+                    console.log('📸 Uploading image...');
+                    const storageRef = ref(storage, `images/${currentUserId}/${Date.now()}_${imageFile.name}`);
+                    await uploadBytes(storageRef, imageFile);
+                    imageUrl = await getDownloadURL(storageRef);
+                    console.log('✅ Image uploaded:', imageUrl);
+                }
+
+                                 const postData = {
+                     title: document.getElementById('post-title').value,
+                     content: document.getElementById('post-content').value,
+                     labels: document.getElementById('post-labels').value.split(',').map(l => l.trim()).filter(Boolean),
+                     colors: document.getElementById('post-colors').value.trim() || '',
+                     column: document.getElementById('post-column').value || 'ideas',
+                     imageUrl: imageUrl,
+                     updatedAt: new Date()
+                 };
+
+                console.log('📝 Post data:', postData);
+
+                if (postId) {
+                    console.log('🔄 Updating existing post...');
+                    const postRef = doc(db, postsCollection.path, postId);
+                    await updateDoc(postRef, postData);
+                    console.log('✅ Post updated successfully!');
+                } else {
+                    console.log('➕ Creating new post...');
+                    postData.createdAt = new Date();
+                    const result = await addDoc(postsCollection, postData);
+                    console.log('✅ Post created successfully! ID:', result.id);
+                }
+
+                postModal.classList.add('hidden');
+                console.log('🎉 Post save completed!');
+                
+            } catch (error) {
+                console.error('❌ Error saving post:', error);
+                alert('Error saving post: ' + error.message);
             }
-
-            const postData = {
-                title: document.getElementById('post-title').value,
-                content: document.getElementById('post-content').value,
-                labels: document.getElementById('post-labels').value.split(',').map(l => l.trim()).filter(Boolean),
-                column: document.getElementById('post-column').value || 'ideas',
-                imageUrl: imageUrl,
-                updatedAt: new Date()
-            };
-
-            if (postId) {
-                const postRef = doc(db, postsCollection.path, postId);
-                await updateDoc(postRef, postData);
-            } else {
-                postData.createdAt = new Date();
-                await addDoc(postsCollection, postData);
-            }
-
-            postModal.classList.add('hidden');
         });
         
         cancelDeployBtn.addEventListener('click', () => deployModal.classList.add('hidden'));

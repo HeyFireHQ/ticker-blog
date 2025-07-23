@@ -121,17 +121,59 @@ CardPress/
 
 ### 2. Configure Admin Interface
 
-1. **Update Firebase Config in `index.html`**
-   ```javascript
-   const firebaseConfig = {
-       apiKey: "your-api-key",
-       authDomain: "your-project.firebaseapp.com",
-       projectId: "your-project-id",
-       storageBucket: "your-project.firebasestorage.app",
-       messagingSenderId: "123456789",
-       appId: "1:123456789:web:abcdef123456"
-   };
-   ```
+CardPress uses **automatic environment detection** with separate configs for development and production:
+
+1. **Production Config**: Already configured in `index.html` (safe to commit)
+2. **Development Config**: For localhost only (gitignored, not committed)
+
+**Setup for Localhost Development:**
+```bash
+# Copy the development template
+cp cardpress/firebase-config-dev.js.template cardpress/firebase-config-dev.js
+
+# Edit with your LOCALHOST Firebase API key
+nano cardpress/firebase-config-dev.js
+```
+
+**Get your Firebase API keys:**
+1. Firebase Console → Project Settings → General → Your apps → Web app
+2. **Important**: Create **two separate API keys** with proper restrictions
+
+**🔐 API Key Security Setup:**
+
+1. **Production Key** (for `index.html`):
+   - Go to [Google Cloud Console - Credentials](https://console.cloud.google.com/apis/credentials)
+   - Find your Firebase API key
+   - Click "Edit" → **Application restrictions** → Select:
+     ✅ **HTTP referrers (websites)**
+   - Add your domain: `https://yourdomain.com/*`
+   - Example: `https://lastmachine-web.web.app/*`
+
+2. **Development Key** (for `firebase-config-dev.js`):
+   - Create a **new API key** in Google Cloud Console
+   - **Application restrictions** → Select:
+     ✅ **HTTP referrers (websites)**
+   - Add localhost patterns:
+     - `http://localhost:*`
+     - `http://127.0.0.1:*`
+     - `http://localhost:8000/*`
+
+```javascript
+const FIREBASE_CONFIG_DEV = {
+    apiKey: "your-localhost-api-key",  // ← Use localhost-restricted key
+    authDomain: "your-project.firebaseapp.com", 
+    projectId: "your-project-id",
+    storageBucket: "your-project.firebasestorage.app",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef123456"
+};
+```
+
+⚠️ **Security Notes**: 
+- `firebase-config-dev.js` is gitignored (localhost secrets)
+- Production config in `index.html` can be committed (domain-restricted)
+- System auto-detects localhost vs production
+- **Never use unrestricted API keys** - always set domain restrictions
 
 2. **Deploy Firebase Security Rules**
    ```bash
@@ -276,7 +318,11 @@ project/
 
 **"invalid-api-key" Error**
 ```bash
-# Fix: Update firebaseConfig in index.html with correct values
+# For localhost development:
+cp cardpress/firebase-config-dev.js.template cardpress/firebase-config-dev.js
+# Then edit firebase-config-dev.js with your localhost Firebase config
+
+# For production: Update the production config in index.html
 ```
 
 **"Permission denied" Error**
