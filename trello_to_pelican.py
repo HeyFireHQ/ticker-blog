@@ -20,6 +20,17 @@ GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 GITHUB_REPO = os.getenv('GITHUB_REPO', 'your-username/ticker-blog')  # format: owner/repo
 CLOUDFLARE_DEPLOY_HOOK = os.getenv('CLOUDFLARE_DEPLOY_HOOK')
 
+# Check if we're running in a Cloudflare Pages build environment
+def is_cloudflare_build():
+    """Check if we're running in a Cloudflare Pages build environment"""
+    return os.getenv('CF_PAGES') == '1' or os.getenv('CLOUDFLARE_PAGES') == '1'
+
+# Exit early if we're in a Cloudflare build to prevent loops
+if is_cloudflare_build():
+    print("🚫 Detected Cloudflare Pages build environment - skipping to prevent loops")
+    print("This script should only run locally or via manual triggers")
+    exit(0)
+
 CONTENT_DIR = 'blog/content'
 IMAGES_DIR = os.path.join(CONTENT_DIR, 'imgs')
 ALLOWED_LISTS = ["Ready to Publish", "Published"]
@@ -137,7 +148,7 @@ def download_image(url, save_path):
 def get_github_file_sha(path):
     """Get the SHA of a file in GitHub"""
     try:
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}?ref=content"  # Check content branch
         headers = {
             'Authorization': f'token {GITHUB_TOKEN}',
             'Accept': 'application/vnd.github.v3+json'
@@ -156,11 +167,11 @@ def commit_to_github(file_path, content, message):
         # Get current file SHA if it exists
         sha = get_github_file_sha(file_path)
         
-        # Prepare the commit data
+        # Prepare the commit data - commit to 'content' branch instead of 'main'
         commit_data = {
             'message': message,
             'content': base64.b64encode(content.encode('utf-8')).decode('utf-8'),
-            'branch': 'main'
+            'branch': 'content'  # Changed from 'main' to 'content'
         }
         
         if sha:
@@ -241,8 +252,8 @@ def sync_posts_to_github():
             print("Please check your GITHUB_TOKEN and GITHUB_REPO settings")
             return
         
-        # Get list of current files in GitHub
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/blog/content"
+        # Get list of current files in GitHub (from content branch)
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/blog/content?ref=content"
         
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
