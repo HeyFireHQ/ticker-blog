@@ -119,7 +119,7 @@ This generates the static site into the `blog/output/` folder and syncs changes 
 
 - Connect this GitHub repo to **Cloudflare Pages**.
 - Set Build Settings:
-  - **Build command:** `python trello_to_pelican.py; cd blog && pelican content -o ../output -s pelicanconf.py`
+  - **Build command:** `python trello_to_pelican.py && cd blog && pelican content -o ../output -s pelicanconf.py`
   - **Output directory:** `output`
 - Set the following Environment Variables inside Cloudflare Pages:
   - `TRELLO_API_KEY`

@@ -243,6 +243,40 @@ for card in cards:
         else:
             metadata.append(f"Colors: #F97316")
 
+        # Insert image after 5 sentences in the content (for blog post pages)
+        if image_markdown:
+            # Split content into paragraphs to preserve markdown structure
+            paragraphs = description_md.split('\n\n')
+            
+            # Count sentences in paragraphs until we reach 5 sentences
+            sentence_count = 0
+            insert_after_paragraph = -1
+            
+            for i, paragraph in enumerate(paragraphs):
+                # Skip markdown headers, lists, and other non-sentence content
+                if (paragraph.strip().startswith('#') or 
+                    paragraph.strip().startswith('-') or 
+                    paragraph.strip().startswith('*') or
+                    paragraph.strip().startswith('1.') or
+                    paragraph.strip().startswith('---')):
+                    continue
+                
+                # Count sentences in this paragraph
+                sentences_in_paragraph = len(re.findall(r'[.!?]+', paragraph))
+                sentence_count += sentences_in_paragraph
+                
+                if sentence_count >= 5:
+                    insert_after_paragraph = i
+                    break
+            
+            # Insert image after the paragraph that contains the 5th sentence
+            if insert_after_paragraph >= 0 and insert_after_paragraph < len(paragraphs) - 1:
+                paragraphs.insert(insert_after_paragraph + 1, image_markdown.strip())
+                description_md = '\n\n'.join(paragraphs)
+            else:
+                # If we can't find a good spot, add image at the end
+                description_md = description_md + '\n\n' + image_markdown
+
         # Full file content
         file_content = '\n'.join(metadata) + '\n\n' + description_md
 
