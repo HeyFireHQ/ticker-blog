@@ -22,7 +22,7 @@ CLOUDFLARE_API_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
 CLOUDFLARE_ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID")
 D1_DATABASE_ID = os.getenv("D1_DATABASE_ID")
 R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME", "cardpress-storage")
-WORKER_URL = os.getenv("WORKER_URL", "https://cardpress-refresh.your-subdomain.workers.dev")
+WORKER_URL = os.getenv("WORKER_URL", "https://cardpress-refresh.awesomehq.workers.dev")
 
 # Use correct paths relative to blog directory
 CONTENT_DIR = os.path.join(BLOG_DIR, "content")
