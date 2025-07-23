@@ -179,6 +179,10 @@ def commit_to_github(file_path, content, message):
             return True
         else:
             print(f"❌ Failed to commit {file_path}: {response.status_code}")
+            if response.status_code == 403:
+                print("   This usually means the GitHub token doesn't have write permissions")
+            elif response.status_code == 404:
+                print("   This usually means the repository path is incorrect")
             return False
             
     except Exception as e:
@@ -224,12 +228,21 @@ def sync_posts_to_github():
         return
     
     try:
-        # Get list of current files in GitHub
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/blog/content"
+        # Test GitHub API access first
+        test_url = f"https://api.github.com/repos/{GITHUB_REPO}"
         headers = {
             'Authorization': f'token {GITHUB_TOKEN}',
-            'Accept': 'application/vnd.github.vnd.github.v3+json'
+            'Accept': 'application/vnd.github.v3+json'
         }
+        
+        test_response = requests.get(test_url, headers=headers)
+        if test_response.status_code != 200:
+            print(f"❌ Cannot access GitHub repository: {test_response.status_code}")
+            print("Please check your GITHUB_TOKEN and GITHUB_REPO settings")
+            return
+        
+        # Get list of current files in GitHub
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/blog/content"
         
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
@@ -260,26 +273,33 @@ def sync_posts_to_github():
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
         # Add/update files
+        success_count = 0
         for file_path, content in files_to_commit:
             message = f"Update blog posts: {timestamp}"
-            commit_to_github(file_path, content, message)
+            if commit_to_github(file_path, content, message):
+                success_count += 1
         
         # Delete removed files
         for file in files_to_delete:
             message = f"Remove deleted post: {timestamp}"
             delete_from_github(f"blog/content/{file}", message)
         
-        # Trigger Cloudflare deploy
-        if CLOUDFLARE_DEPLOY_HOOK:
-            try:
-                deploy_response = requests.post(CLOUDFLARE_DEPLOY_HOOK)
-                if deploy_response.ok:
-                    print("✅ Cloudflare deploy triggered")
-                    send_message_to_discord("✅ Blog updated and deploy triggered!")
-                else:
-                    print("⚠️ Failed to trigger Cloudflare deploy")
-            except Exception as e:
-                print(f"⚠️ Error triggering deploy: {e}")
+        if success_count > 0:
+            print(f"✅ Successfully synced {success_count} posts to GitHub")
+            
+            # Trigger Cloudflare deploy
+            if CLOUDFLARE_DEPLOY_HOOK:
+                try:
+                    deploy_response = requests.post(CLOUDFLARE_DEPLOY_HOOK)
+                    if deploy_response.ok:
+                        print("✅ Cloudflare deploy triggered")
+                        send_message_to_discord("✅ Blog updated and deploy triggered!")
+                    else:
+                        print("⚠️ Failed to trigger Cloudflare deploy")
+                except Exception as e:
+                    print(f"⚠️ Error triggering deploy: {e}")
+        else:
+            print("⚠️ No posts were successfully synced to GitHub")
         
         print("✅ GitHub sync completed!")
         
@@ -499,5 +519,5 @@ print("✅ Markdown files with downloaded images and colors generated successful
 # Sync to GitHub
 sync_posts_to_github()
 
-# Deploy full blog to separate branch
-push_generated_blog_to_branch('gh-pages')  # or 'deploy' or any branch name you prefer
+# Deploy full blog to separate branch (commented out to prevent errors)
+# push_generated_blog_to_branch('gh-pages')  # Uncomment when GitHub token is properly configured
