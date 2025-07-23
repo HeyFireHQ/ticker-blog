@@ -319,112 +319,7 @@ def sync_posts_to_github():
         print(error_msg)
         send_message_to_discord(error_msg)
 
-def push_generated_blog_to_branch(branch_name='generated-site'):
-    """Push the full generated blog to a separate branch for hosting"""
-    if not GITHUB_TOKEN or not GITHUB_REPO:
-        print("⚠️ GitHub token or repo not configured, skipping blog deployment")
-        return
-    
-    try:
-        # First, build the blog if not already built
-        import subprocess
-        print("🔨 Building blog with Pelican...")
-        subprocess.run(['cd', 'blog', '&&', 'pelican', 'content', '-s', 'pelicanconf.py'], 
-                      shell=True, check=True)
-        
-        # Get the current tree SHA for the target branch
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/branches/{branch_name}"
-        headers = {
-            'Authorization': f'token {GITHUB_TOKEN}',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-        
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            base_tree = response.json()['commit']['sha']
-        else:
-            # Branch doesn't exist, we'll create it from main
-            main_response = requests.get(f"https://api.github.com/repos/{GITHUB_REPO}/branches/main", headers=headers)
-            if main_response.status_code == 200:
-                base_tree = main_response.json()['commit']['sha']
-            else:
-                print(f"❌ Could not find base branch for {branch_name}")
-                return
-        
-        # Create a new tree with all the generated files
-        tree_items = []
-        output_dir = 'blog/output'
-        
-        for root, dirs, files in os.walk(output_dir):
-            for file in files:
-                file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, output_dir)
-                
-                with open(file_path, 'rb') as f:
-                    content = f.read()
-                
-                tree_items.append({
-                    'path': relative_path,
-                    'mode': '100644',
-                    'type': 'blob',
-                    'content': content.decode('utf-8') if file.endswith(('.html', '.css', '.js', '.xml', '.txt')) else base64.b64encode(content).decode('utf-8')
-                })
-        
-        # Create the tree
-        tree_data = {'tree': tree_items}
-        tree_response = requests.post(f"https://api.github.com/repos/{GITHUB_REPO}/git/trees", 
-                                    headers=headers, json=tree_data)
-        
-        if tree_response.status_code != 201:
-            print(f"❌ Failed to create tree: {tree_response.status_code}")
-            if tree_response.status_code == 422:
-                print("   This usually means there's an issue with file content encoding")
-                print("   Try running the deployment manually with: python deploy_blog.py")
-            return
-        
-        tree_sha = tree_response.json()['sha']
-        
-        # Create the commit
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        commit_data = {
-            'message': f'Deploy blog: {timestamp}',
-            'tree': tree_sha,
-            'parents': [base_tree]
-        }
-        
-        commit_response = requests.post(f"https://api.github.com/repos/{GITHUB_REPO}/git/commits", 
-                                      headers=headers, json=commit_data)
-        
-        if commit_response.status_code != 201:
-            print(f"❌ Failed to create commit: {commit_response.status_code}")
-            return
-        
-        commit_sha = commit_response.json()['sha']
-        
-        # Update the branch reference
-        ref_data = {'sha': commit_sha}
-        ref_response = requests.patch(f"https://api.github.com/repos/{GITHUB_REPO}/git/refs/heads/{branch_name}", 
-                                    headers=headers, json=ref_data)
-        
-        if ref_response.status_code == 200:
-            print(f"✅ Successfully deployed blog to {branch_name} branch")
-            send_message_to_discord(f"✅ Blog deployed to {branch_name} branch")
-        else:
-            # Try to create the branch if it doesn't exist
-            ref_data = {'ref': f'refs/heads/{branch_name}', 'sha': commit_sha}
-            create_response = requests.post(f"https://api.github.com/repos/{GITHUB_REPO}/git/refs", 
-                                          headers=headers, json=ref_data)
-            
-            if create_response.status_code == 201:
-                print(f"✅ Successfully created and deployed blog to {branch_name} branch")
-                send_message_to_discord(f"✅ Blog deployed to new {branch_name} branch")
-            else:
-                print(f"❌ Failed to deploy to {branch_name}: {create_response.status_code}")
-        
-    except Exception as e:
-        error_msg = f"❌ Error deploying blog to {branch_name}: {str(e)}"
-        print(error_msg)
-        send_message_to_discord(error_msg)
+
 
 # --- Main build ---
 
@@ -533,8 +428,7 @@ print("✅ Markdown files with downloaded images and colors generated successful
 # Sync to GitHub
 sync_posts_to_github()
 
-# Deploy full blog to separate branch (commented out to prevent errors)
-# push_generated_blog_to_branch('generated-site')  # Uncomment when ready to deploy to separate branch 
+ 
 
 
 
