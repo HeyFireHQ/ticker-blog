@@ -224,8 +224,11 @@ for card in cards:
             f"Title: {original_title}",
             f"Date: {article_date}",  # Use the extracted date
             f"Slug: {slug}",
-            f"Image: {image_url}"
         ]
+        
+        # Add image to metadata (for featured image functionality)
+        if image_url:
+            metadata.append(f"Image: {image_url}")
         if author:
             metadata.append(f"Author: {author}")
         if author_url:
@@ -240,10 +243,6 @@ for card in cards:
             metadata.append(f"Colors: {', '.join(label_colors)}")
         else:
             metadata.append(f"Colors: #F97316")
-
-        # Add image at the beginning if it exists
-        if image_markdown:
-            description_md = image_markdown + description_md
 
         # Full file content
         file_content = '\n'.join(metadata) + '\n\n' + description_md
