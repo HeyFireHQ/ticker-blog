@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Post Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .ghost-card {
+            opacity: 0.5;
+            background: #c8ebfb;
+            border: 1px dashed #333;
+        }
+        .kanban-column {
+            min-width: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Authentication -->
+    <div id="auth-screen" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl text-center max-w-sm w-full">
+            <h2 id="auth-title" class="text-2xl font-bold mb-4">Sign In</h2>
+            <p class="text-gray-600 mb-6">to your Blog Manager account.</p>
+            <form id="auth-form">
+                <div class="mb-4">
+                    <input type="email" id="auth-email" placeholder="Email Address" class="w-full p-3 border border-gray-300 rounded-lg text-center" required>
+                </div>
+                <div class="mb-6">
+                    <input type="password" id="auth-password" placeholder="Password" class="w-full p-3 border border-gray-300 rounded-lg text-center" required>
+                </div>
+                <p id="auth-error" class="text-red-500 text-sm mb-4 h-5"></p>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">Sign In</button>
+            </form>
+            <button id="auth-toggle-btn" class="mt-6 text-sm text-blue-600 hover:underline">Don't have an account? Register</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        <header class="bg-white shadow-md p-4 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-gray-900">Blog Post Workflow</h1>
+            <div class="flex items-center space-x-4">
+                 <div id="user-info" class="text-right">
+                    <p class="text-sm text-gray-600">Signed in as:</p>
+                    <p id="user-email" class="text-md font-medium"></p>
+                </div>
+                <button id="add-post-btn" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition duration-300">Add New Post</button>
+                <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">Sign Out</button>
+            </div>
+        </header>
+
+        <main id="kanban-board" class="flex overflow-x-auto p-4 space-x-4">
+            <!-- Columns will be dynamically generated here -->
+        </main>
+    </div>
+
+    <!-- Post Modal -->
+    <div id="post-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-40 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-2xl max-w-2xl w-full">
+            <h2 id="modal-title" class="text-2xl font-bold mb-6">Add New Post</h2>
+            <form id="post-form">
+                <input type="hidden" id="post-id">
+                <input type="hidden" id="post-column">
+                <div class="mb-4">
+                    <label for="post-title" class="block text-gray-700 font-medium mb-2">Title</label>
+                    <input type="text" id="post-title" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                </div>
+                <div class="mb-4">
+                    <label for="post-content" class="block text-gray-700 font-medium mb-2">Content (Markdown)</label>
+                    <textarea id="post-content" rows="10" class="w-full p-3 border border-gray-300 rounded-lg"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="post-image" class="block text-gray-700 font-medium mb-2">Image</label>
+                    <input type="file" id="post-image" class="w-full p-3 border border-gray-300 rounded-lg" accept="image/*">
+                    <img id="image-preview" src="" class="mt-4 max-h-48 rounded-lg hidden"/>
+                </div>
+                <div class="mb-6">
+                    <label for="post-labels" class="block text-gray-700 font-medium mb-2">Labels (comma-separated)</label>
+                    <input type="text" id="post-labels" class="w-full p-3 border border-gray-300 rounded-lg">
+                </div>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-btn" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Save Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Deploy Modal -->
+    <div id="deploy-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-2xl text-center max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Deploy Posts</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to deploy all posts in the 'Deployed' column? This action cannot be undone.</p>
+            <div class="flex justify-center space-x-4">
+                <button id="cancel-deploy-btn" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition">Cancel</button>
+                <button id="confirm-deploy-btn" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">Confirm & Deploy</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot, query, where, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+
+        // --- Firebase Initialization ---
+        const firebaseConfig = {
+                apiKey: "AIzaSyA_walhmpbEBQsvJNoGXX2CZ98Qosnb4Qw",
+                authDomain: "lastmachine-web.firebaseapp.com",
+                projectId: "lastmachine-web",
+                storageBucket: "lastmachine-web.firebasestorage.app",
+                messagingSenderId: "151845537481",
+                appId: "1:151845537481:web:0218d7716b382e73ae2f18",
+                measurementId: "G-P7J2HCD9WT"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        
+        const appId = 'lastmachine-web';
+
+        // --- DOM Elements ---
+        const authScreen = document.getElementById('auth-screen');
+        const mainContent = document.getElementById('main-content');
+        const authForm = document.getElementById('auth-form');
+        const authEmailInput = document.getElementById('auth-email');
+        const authPasswordInput = document.getElementById('auth-password');
+        const authError = document.getElementById('auth-error');
+        const authTitle = document.getElementById('auth-title');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authToggleBtn = document.getElementById('auth-toggle-btn');
+        
+        const logoutBtn = document.getElementById('logout-btn');
+        const userEmailDisplay = document.getElementById('user-email');
+
+        const kanbanBoard = document.getElementById('kanban-board');
+        const postModal = document.getElementById('post-modal');
+        const postForm = document.getElementById('post-form');
+        const modalTitle = document.getElementById('modal-title');
+        const addPostBtn = document.getElementById('add-post-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const imagePreview = document.getElementById('image-preview');
+        const deployModal = document.getElementById('deploy-modal');
+        const cancelDeployBtn = document.getElementById('cancel-deploy-btn');
+        const confirmDeployBtn = document.getElementById('confirm-deploy-btn');
+
+        // --- App State ---
+        let currentUserId = null;
+        let postsCollection;
+        let isRegisterMode = false;
+
+        const columns = [
+            { id: 'ideas', title: 'Ideas' },
+            { id: 'drafting', title: 'Drafting' },
+            { id: 'editing', title: 'Editing' },
+            { id: 'deployed', title: 'Deployed' }
+        ];
+
+        // --- Authentication Logic ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentUserId = user.uid;
+                userEmailDisplay.textContent = user.email;
+                postsCollection = collection(db, `artifacts/${appId}/users/${currentUserId}/posts`);
+                
+                authScreen.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                
+                loadBoard();
+            } else {
+                currentUserId = null;
+                authScreen.classList.remove('hidden');
+                mainContent.classList.add('hidden');
+                kanbanBoard.innerHTML = ''; // Clear board on logout
+            }
+        });
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            authForm.reset();
+            authError.textContent = '';
+            if (isRegisterMode) {
+                authTitle.textContent = 'Register';
+                authSubmitBtn.textContent = 'Create Account';
+                authToggleBtn.textContent = 'Already have an account? Sign In';
+            } else {
+                authTitle.textContent = 'Sign In';
+                authSubmitBtn.textContent = 'Sign In';
+                authToggleBtn.textContent = 'Don\'t have an account? Register';
+            }
+        }
+        
+        authToggleBtn.addEventListener('click', toggleAuthMode);
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = authEmailInput.value;
+            const password = authPasswordInput.value;
+            authError.textContent = '';
+
+            try {
+                if (isRegisterMode) {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+                // onAuthStateChanged will handle the UI transition
+            } catch (error) {
+                console.error("Authentication error:", error.message);
+                authError.textContent = error.message;
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).catch(error => console.error("Sign-out failed:", error));
+        });
+
+        // --- Kanban Board Logic ---
+        function renderColumns() {
+            kanbanBoard.innerHTML = '';
+            columns.forEach(column => {
+                const columnEl = document.createElement('div');
+                columnEl.className = 'kanban-column bg-gray-200 p-4 rounded-lg flex-shrink-0';
+                columnEl.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-4">${column.title}</h3>
+                    <div id="column-${column.id}" class="card-list min-h-[200px] space-y-4" data-column-id="${column.id}"></div>
+                `;
+                if (column.id === 'deployed') {
+                    const deployButton = document.createElement('button');
+                    deployButton.textContent = 'Deploy All';
+                    deployButton.className = 'mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition duration-300';
+                    deployButton.addEventListener('click', () => deployModal.classList.remove('hidden'));
+                    columnEl.appendChild(deployButton);
+                }
+                kanbanBoard.appendChild(columnEl);
+            });
+            initializeSortable();
+        }
+
+        function initializeSortable() {
+            const lists = document.querySelectorAll('.card-list');
+            lists.forEach(list => {
+                new Sortable(list, {
+                    group: 'kanban',
+                    animation: 150,
+                    ghostClass: 'ghost-card',
+                    onEnd: async (evt) => {
+                        const postId = evt.item.dataset.id;
+                        const newColumnId = evt.to.dataset.columnId;
+                        const postRef = doc(db, postsCollection.path, postId);
+                        await updateDoc(postRef, { column: newColumnId });
+                    }
+                });
+            });
+        }
+
+        function renderPostCard(post) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-4 rounded-lg shadow cursor-pointer';
+            card.dataset.id = post.id;
+            
+            const labelsHtml = post.labels ? post.labels.map(label => 
+                `<span class="bg-blue-200 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">${label}</span>`
+            ).join('') : '';
+
+            const contentPreview = post.content ? marked.parse(post.content.substring(0, 100) + (post.content.length > 100 ? '...' : '')) : '';
+
+            card.innerHTML = `
+                <h4 class="font-bold mb-2">${post.title}</h4>
+                ${post.imageUrl ? `<img src="${post.imageUrl}" class="mb-2 rounded-md max-h-40 w-full object-cover">` : ''}
+                <div class="prose prose-sm">${contentPreview}</div>
+                <div class="mt-2">${labelsHtml}</div>
+            `;
+            
+            card.addEventListener('click', () => openPostModal(post.id));
+            
+            const columnEl = document.getElementById(`column-${post.column}`);
+            if (columnEl) {
+                const existingCard = columnEl.querySelector(`[data-id="${post.id}"]`);
+                if (existingCard) {
+                    existingCard.replaceWith(card);
+                } else {
+                    columnEl.appendChild(card);
+                }
+            }
+        }
+        
+        async function loadBoard() {
+            if (!currentUserId) return;
+            renderColumns();
+            
+            onSnapshot(query(postsCollection), (snapshot) => {
+                document.querySelectorAll('.card-list').forEach(list => list.innerHTML = '');
+                snapshot.forEach(doc => {
+                    renderPostCard({ id: doc.id, ...doc.data() });
+                });
+            });
+        }
+
+        async function openPostModal(postId = null) {
+            postForm.reset();
+            imagePreview.classList.add('hidden');
+            imagePreview.src = '';
+            
+            if (postId) {
+                modalTitle.textContent = 'Edit Post';
+                const postRef = doc(db, postsCollection.path, postId);
+                const postSnap = await getDoc(postRef);
+                if (postSnap.exists()) {
+                    const post = postSnap.data();
+                    document.getElementById('post-id').value = postId;
+                    document.getElementById('post-column').value = post.column;
+                    document.getElementById('post-title').value = post.title;
+                    document.getElementById('post-content').value = post.content;
+                    document.getElementById('post-labels').value = post.labels ? post.labels.join(', ') : '';
+                    if (post.imageUrl) {
+                        imagePreview.src = post.imageUrl;
+                        imagePreview.classList.remove('hidden');
+                    }
+                }
+            } else {
+                modalTitle.textContent = 'Add New Post';
+                document.getElementById('post-column').value = 'ideas';
+            }
+            postModal.classList.remove('hidden');
+        }
+
+        addPostBtn.addEventListener('click', () => openPostModal());
+        cancelBtn.addEventListener('click', () => postModal.classList.add('hidden'));
+
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const postId = document.getElementById('post-id').value;
+            const imageFile = document.getElementById('post-image').files[0];
+            let imageUrl = imagePreview.src || '';
+
+            if (imageFile) {
+                const storageRef = ref(storage, `images/${currentUserId}/${Date.now()}_${imageFile.name}`);
+                await uploadBytes(storageRef, imageFile);
+                imageUrl = await getDownloadURL(storageRef);
+            }
+
+            const postData = {
+                title: document.getElementById('post-title').value,
+                content: document.getElementById('post-content').value,
+                labels: document.getElementById('post-labels').value.split(',').map(l => l.trim()).filter(Boolean),
+                column: document.getElementById('post-column').value || 'ideas',
+                imageUrl: imageUrl,
+                updatedAt: new Date()
+            };
+
+            if (postId) {
+                const postRef = doc(db, postsCollection.path, postId);
+                await updateDoc(postRef, postData);
+            } else {
+                postData.createdAt = new Date();
+                await addDoc(postsCollection, postData);
+            }
+
+            postModal.classList.add('hidden');
+        });
+        
+        cancelDeployBtn.addEventListener('click', () => deployModal.classList.add('hidden'));
+        
+        confirmDeployBtn.addEventListener('click', async () => {
+            console.log("--- Preparing to Deploy ---");
+            const q = query(postsCollection, where("column", "==", "deployed"));
+            const querySnapshot = await getDocs(q);
+            
+            if (querySnapshot.empty) {
+                console.log("No posts in 'Deployed' column.");
+                alert("No posts to deploy."); // Note: A custom modal would be better than alert() in a real app.
+                deployModal.classList.add('hidden');
+                return;
+            }
+
+            const postsToDeploy = [];
+            querySnapshot.forEach((doc) => {
+                postsToDeploy.push({ id: doc.id, ...doc.data() });
+            });
+
+            console.log("Posts to deploy:", JSON.stringify(postsToDeploy, null, 2));
+            
+            // This is where you would trigger your Python script via an API call.
+            alert(`Simulating deployment of ${postsToDeploy.length} posts. Check the browser console for the data payload.`);
+
+            console.log("--- Deployment Triggered ---");
+            deployModal.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
