@@ -15,12 +15,3 @@ bcrypt>=4.0.0
 
 # Optional: For better development experience
 pyyaml>=6.0
-
-# Legacy Firebase dependencies (can be removed after migration)
-# google-cloud-firestore>=2.7.0
-# google-cloud-storage>=2.5.0
-# firebase-admin>=6.0.0
-
-# Trello integration (deprecated, can be removed)
-# requests-oauthlib
-# python-trello
