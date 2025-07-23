@@ -90,22 +90,36 @@ def parse_front_matter(text):
             yaml_block = parts[1]
             body = parts[2].lstrip('\n')
             
-            # Remove all markdown formatting from YAML block
+            # Clean markdown formatting from YAML block while preserving field structure
             cleaned_yaml_lines = []
             lines = yaml_block.strip().split('\n')
             for line in lines:
                 line = line.strip()
-                # Skip lines that contain markdown formatting
+                # Skip standalone markdown lines (images, headers, etc.)
                 if (line.startswith('![') or 
-                    line.startswith('**') or 
-                    line.startswith('*') or
-                    line.startswith('[') or
-                    '**' in line or  # Bold text
-                    '[' in line and '](' in line or  # Links
-                    '#' in line or  # Headers
-                    '`' in line):  # Code blocks
+                    line.startswith('#') or
+                    line.startswith('`') and line.endswith('`')):
                     continue
-                cleaned_yaml_lines.append(line)
+                
+                # Clean markdown formatting from field values while preserving the field
+                if ':' in line:
+                    key, value = line.split(':', 1)
+                    key = key.strip()
+                    value = value.strip()
+                    
+                    # Remove markdown formatting from value
+                    value = re.sub(r'\*\*(.*?)\*\*', r'\1', value)  # Remove bold
+                    value = re.sub(r'\*(.*?)\*', r'\1', value)      # Remove italic
+                    value = re.sub(r'`(.*?)`', r'\1', value)        # Remove code
+                    value = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', value)  # Remove links, keep text
+                    value = re.sub(r'!\[([^\]]*)\]\([^)]+\)', r'\1', value)  # Remove images, keep alt text
+                    
+                    # Reconstruct the line
+                    cleaned_line = f"{key}: {value}"
+                    cleaned_yaml_lines.append(cleaned_line)
+                else:
+                    # Keep lines without colons as-is (they might be valid YAML)
+                    cleaned_yaml_lines.append(line)
             
             cleaned_yaml_block = '\n'.join(cleaned_yaml_lines)
             
