@@ -161,8 +161,8 @@ def download_image(url, save_path):
 
     return save_path
 
-#os.makedirs(CONTENT_DIR)
-#os.makedirs(IMAGES_DIR)
+os.makedirs(CONTENT_DIR)
+os.makedirs(IMAGES_DIR)
 
 # --- Main build ---
 
