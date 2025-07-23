@@ -210,6 +210,8 @@ for card in cards:
         if attachments:
             image_url = attachments[0]['url']
             image_markdown = f"![{original_title}]({image_url})\n\n"
+        else:
+            image_markdown = ""
 
         # Prepare metadata
         metadata = [
@@ -232,6 +234,22 @@ for card in cards:
             metadata.append(f"Colors: {', '.join(label_colors)}")
         else:
             metadata.append(f"Colors: #F97316")
+
+        # Insert image after 5 sentences if image exists
+        if image_markdown:
+            # Split content into sentences
+            sentences = re.split(r'(?<=[.!?])\s+', description_md)
+            if len(sentences) >= 5:
+                # Insert image after 5th sentence
+                content_before_image = ' '.join(sentences[:5])
+                content_after_image = ' '.join(sentences[5:])
+                description_md = content_before_image + '\n\n' + image_markdown + content_after_image
+            else:
+                # If less than 5 sentences, add image at the end
+                description_md = description_md + '\n\n' + image_markdown
+        else:
+            # No image, just use the description as is
+            pass
 
         # Full file content
         file_content = '\n'.join(metadata) + '\n\n' + description_md
