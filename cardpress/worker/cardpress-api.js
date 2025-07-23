@@ -423,7 +423,7 @@ async function updatePost(request, env, corsHeaders, postId, userId) {
     UPDATE posts 
     SET title = ?, content = ?, labels = ?, colors = ?, column_status = ?, 
         image_url = ?, image_path = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
+    WHERE id = ? AND user_id = ?
   `).bind(
     postData.title,
     postData.content,
@@ -432,7 +432,8 @@ async function updatePost(request, env, corsHeaders, postId, userId) {
     postData.column || 'ideas',
     postData.imageUrl || '',
     postData.imagePath || '',
-    postId
+    postId,
+    userId
   ).run();
 
   if (result.success && result.changes > 0) {
@@ -1048,7 +1049,7 @@ async function uploadImage(request, env, corsHeaders, userId) {
       },
     });
 
-    const imageUrl = `/images/${filename}`;
+    const imageUrl = `${request.url.split('/images/upload')[0]}/images/${filename}`;
 
     return new Response(JSON.stringify({
       url: imageUrl,
