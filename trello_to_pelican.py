@@ -23,12 +23,23 @@ CLOUDFLARE_DEPLOY_HOOK = os.getenv('CLOUDFLARE_DEPLOY_HOOK')
 # Check if we're running in a Cloudflare Pages build environment
 def is_cloudflare_build():
     """Check if we're running in a Cloudflare Pages build environment"""
-    return os.getenv('CF_PAGES') == '1' or os.getenv('CLOUDFLARE_PAGES') == '1'
+    # Check multiple possible Cloudflare environment indicators
+    cf_indicators = [
+        os.getenv('CF_PAGES') == '1',
+        os.getenv('CLOUDFLARE_PAGES') == '1',
+        os.getenv('CF_PAGES_BRANCH') is not None,
+        os.getenv('CF_PAGES_COMMIT_SHA') is not None,
+        os.getenv('CF_PAGES_URL') is not None,
+        'CLOUDFLARE' in os.getenv('USER', '').upper(),
+        'CLOUDFLARE' in os.getenv('HOSTNAME', '').upper()
+    ]
+    return any(cf_indicators)
 
 # Exit early if we're in a Cloudflare build to prevent loops
 if is_cloudflare_build():
     print("🚫 Detected Cloudflare Pages build environment - skipping to prevent loops")
     print("This script should only run locally or via manual triggers")
+    print(f"Environment: CF_PAGES={os.getenv('CF_PAGES')}, CF_PAGES_BRANCH={os.getenv('CF_PAGES_BRANCH')}")
     exit(0)
 
 CONTENT_DIR = 'blog/content'
@@ -234,6 +245,11 @@ def delete_from_github(file_path, message):
 
 def sync_posts_to_github():
     """Sync all posts to GitHub and handle deletions"""
+    # Skip GitHub sync if running in Cloudflare
+    if is_cloudflare_build():
+        print("🚫 Skipping GitHub sync in Cloudflare environment")
+        return
+        
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("⚠️ GitHub token or repo not configured, skipping GitHub sync")
         return
@@ -425,8 +441,11 @@ for card in cards:
 
 print("✅ Markdown files with downloaded images and colors generated successfully!")
 
-# Sync to GitHub
-sync_posts_to_github()
+# Only sync to GitHub if NOT running in Cloudflare
+if not is_cloudflare_build():
+    sync_posts_to_github()
+else:
+    print("🚫 Skipping GitHub sync in Cloudflare environment - files generated for build only")
 
  
 
