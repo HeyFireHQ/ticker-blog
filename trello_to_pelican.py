@@ -35,12 +35,11 @@ def is_cloudflare_build():
     ]
     return any(cf_indicators)
 
-# Exit early if we're in a Cloudflare build to prevent loops
-if is_cloudflare_build():
-    print("🚫 Detected Cloudflare Pages build environment - skipping to prevent loops")
-    print("This script should only run locally or via manual triggers")
+# Check if we're in a Cloudflare build environment
+is_cloudflare = is_cloudflare_build()
+if is_cloudflare:
+    print("🚫 Detected Cloudflare Pages build environment - will skip GitHub sync")
     print(f"Environment: CF_PAGES={os.getenv('CF_PAGES')}, CF_PAGES_BRANCH={os.getenv('CF_PAGES_BRANCH')}")
-    exit(0)
 
 CONTENT_DIR = 'blog/content'
 IMAGES_DIR = os.path.join(CONTENT_DIR, 'imgs')
@@ -246,7 +245,7 @@ def delete_from_github(file_path, message):
 def sync_posts_to_github():
     """Sync all posts to GitHub and handle deletions"""
     # Skip GitHub sync if running in Cloudflare
-    if is_cloudflare_build():
+    if is_cloudflare:
         print("🚫 Skipping GitHub sync in Cloudflare environment")
         return
         
@@ -442,7 +441,7 @@ for card in cards:
 print("✅ Markdown files with downloaded images and colors generated successfully!")
 
 # Only sync to GitHub if NOT running in Cloudflare
-if not is_cloudflare_build():
+if not is_cloudflare:
     sync_posts_to_github()
 else:
     print("🚫 Skipping GitHub sync in Cloudflare environment - files generated for build only")
