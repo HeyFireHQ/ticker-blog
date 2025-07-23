@@ -161,11 +161,10 @@ def download_image(url, save_path):
 
     return save_path
 
-os.makedirs(CONTENT_DIR)
-os.makedirs(IMAGES_DIR)
+os.makedirs(CONTENT_DIR, exist_ok=True)
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
 # --- Main build ---
-
 cards = fetch_trello_cards()
 lists = fetch_trello_lists()
 list_mapping = {lst['id']: lst['name'] for lst in lists}
