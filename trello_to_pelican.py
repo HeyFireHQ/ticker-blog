@@ -116,8 +116,25 @@ def parse_front_matter(text):
             yaml_block = parts[1]
             body = parts[2].lstrip('\n')
             
+            # Clean the YAML block to remove problematic markdown content
+            cleaned_yaml_lines = []
+            lines = yaml_block.strip().split('\n')
+            for line in lines:
+                line = line.strip()
+                # Skip lines that are clearly markdown (images, bold text, etc.)
+                if (line.startswith('![') or 
+                    line.startswith('**') or 
+                    line.startswith('*') or
+                    line.startswith('[') or
+                    '**' in line and '**' in line[line.find('**')+2:] or  # Bold text
+                    '[' in line and '](' in line):  # Links
+                    continue
+                cleaned_yaml_lines.append(line)
+            
+            cleaned_yaml_block = '\n'.join(cleaned_yaml_lines)
+            
             try:
-                front_matter = yaml.safe_load(yaml_block) or {}
+                front_matter = yaml.safe_load(cleaned_yaml_block) or {}
                 
                 # Post-process author field if it contains markdown
                 if 'author' in front_matter:
@@ -130,7 +147,19 @@ def parse_front_matter(text):
                         
             except yaml.YAMLError as e:
                 print(f"⚠️ YAML parsing error: {e}")
+                # Try to extract basic fields manually if YAML parsing fails
                 front_matter = {}
+                for line in cleaned_yaml_lines:
+                    if ':' in line:
+                        key, value = line.split(':', 1)
+                        key = key.strip()
+                        value = value.strip()
+                        # Remove quotes if present
+                        if value.startswith('"') and value.endswith('"'):
+                            value = value[1:-1]
+                        elif value.startswith("'") and value.endswith("'"):
+                            value = value[1:-1]
+                        front_matter[key] = value
 
     return front_matter, body
 
@@ -384,20 +413,12 @@ for card in cards:
 
         image_markdown = ""
 
-        # If attachment exists, download properly
+        # If attachment exists, use the URL directly without downloading
         if attachments:
             image_url = attachments[0]['url']
-            if not custom_image_name:
-                custom_image_name = os.path.basename(image_url.split('?')[0])
-
-            image_save_path = os.path.join(IMAGES_DIR, custom_image_name)
-            
-            try:
-                result = download_image(image_url, image_save_path)
-                image_markdown = f"![{original_title}](imgs/{custom_image_name})\n\n"
-            except Exception as e:
-                print(f"⚠️ Failed to download {image_url}: {e}")
-                image_markdown = f"![{original_title}]({image_url})\n\n"
+            image_markdown = f"![{original_title}]({image_url})\n\n"
+        else:
+            image_markdown = ""
 
         # Prepare metadata
         metadata = [
@@ -421,6 +442,22 @@ for card in cards:
         else:
             metadata.append(f"Colors: #F97316")
 
+        # Insert image after 5 sentences if image exists
+        if image_markdown:
+            # Split content into sentences
+            sentences = re.split(r'(?<=[.!?])\s+', description_md)
+            if len(sentences) >= 5:
+                # Insert image after 5th sentence
+                content_before_image = ' '.join(sentences[:5])
+                content_after_image = ' '.join(sentences[5:])
+                description_md = content_before_image + '\n\n' + image_markdown + content_after_image
+            else:
+                # If less than 5 sentences, add image at the end
+                description_md = description_md + '\n\n' + image_markdown
+        else:
+            # No image, just use the description as is
+            pass
+
         # Full file content
         file_content = '\n'.join(metadata) + '\n\n' + description_md
 
@@ -439,16 +476,3 @@ for card in cards:
         send_message_to_discord(error_message)
 
 print("✅ Markdown files with downloaded images and colors generated successfully!")
-
-# Only sync to GitHub if NOT running in Cloudflare
-if not is_cloudflare:
-    sync_posts_to_github()
-else:
-    print("🚫 Skipping GitHub sync in Cloudflare environment - files generated for build only")
-
- 
-
-
-
-
-

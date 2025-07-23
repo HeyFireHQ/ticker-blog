@@ -1,5 +1,5 @@
-# Ticker Blog  
-**Trello-powered Static Blog Generator with GitHub Sync + Auto-Refresh System**
+# HeyTicker Blog  
+**Trello-powered Pelican Static Blog Generator + Auto-Refresh System**
 
 ---
 
@@ -25,15 +25,14 @@
 
 ```
 /
-├── trello_to_pelican.py        # Main blog generator script
+├── trello_to_pelican.py        # Trello to Pelican content generator
 ├── requirements.txt             # Python dependencies
 ├── blog/                        # Pelican blog configuration
-│   ├── content/                 # Generated markdown posts
-│   ├── output/                  # Generated static site
-│   ├── pelicanconf.py          # Pelican configuration
-│   ├── theme/                   # Custom blog theme
-│   │   ├── templates/          # HTML templates
-│   │   └── static/             # CSS, images, etc.
+│   ├── pelicanconf.py          # Pelican settings
+│   ├── publishconf.py          # Production settings
+│   ├── content/                # Generated markdown content
+│   └── theme/                  # Blog theme templates
+├── output/                      # Generated static site (auto-created)
 ├── worker/
 │   └── refresh.js              # Cloudflare Worker to trigger rebuild
 ├── .github/
@@ -53,10 +52,10 @@
    - Supports front matter for metadata (title, date, author, etc.)
    - Downloads images from Trello attachments
 
-2. **Generate static blog with Pelican**  
-   - `trello_to_pelican.py` fetches Trello cards and converts them to markdown.
-   - Uses Pelican static site generator for robust blog features.
-   - Generates posts with proper metadata and image handling.
+2. **Build the static blog**  
+   - `trello_to_pelican.py` fetches Trello cards and generates markdown content.
+   - Pelican renders pages using Jinja2 templates.
+   - Outputs static files into `/output/`.
 
 3. **Automatic GitHub synchronization**  
    - Syncs all changes to GitHub using the GitHub API.
@@ -109,6 +108,7 @@ CLOUDFLARE_DEPLOY_HOOK=your-cloudflare-deploy-hook-url
 
 ```bash
 python trello_to_pelican.py
+cd blog && pelican content -o ../output -s pelicanconf.py
 ```
 
 This generates the static site into the `blog/output/` folder and syncs changes to GitHub.
@@ -119,8 +119,8 @@ This generates the static site into the `blog/output/` folder and syncs changes 
 
 - Connect this GitHub repo to **Cloudflare Pages**.
 - Set Build Settings:
-  - **Build command:** `cd blog && pelican content -s pelicanconf.py`
-  - **Output directory:** `blog/output`
+  - **Build command:** `python trello_to_pelican.py; cd blog && pelican content -o ../output -s pelicanconf.py`
+  - **Output directory:** `output`
 - Set the following Environment Variables inside Cloudflare Pages:
   - `TRELLO_API_KEY`
   - `TRELLO_TOKEN`
