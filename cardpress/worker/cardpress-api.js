@@ -1009,19 +1009,20 @@ DELETE_OUTPUT_DIRECTORY = True
 `;
 }
 
-// Image handling functions (unchanged)
+// Image handling functions - Allow public viewing, require auth for upload
 async function handleImages(request, env, corsHeaders, pathname) {
-  const user = await authenticateRequest(request);
-  if (!user || !user.isAdmin) {
-    return new Response(JSON.stringify({ error: 'Admin access required' }), {
-      status: 403,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-  }
-
   if (request.method === 'POST' && pathname === '/images/upload') {
+    // Upload requires authentication
+    const user = await authenticateRequest(request);
+    if (!user || !user.isAdmin) {
+      return new Response(JSON.stringify({ error: 'Admin access required' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
     return await uploadImage(request, env, corsHeaders, user.userId);
   } else if (request.method === 'GET' && pathname.startsWith('/images/')) {
+    // Viewing images is public (no auth required)
     const imagePath = pathname.substring(8); // Remove '/images/'
     return await getImage(env, corsHeaders, imagePath);
   }
