@@ -40,6 +40,19 @@ DEFAULT_PAGINATION = 10
 PLUGIN_PATHS = ['pelican-plugins']
 PLUGINS = ['sitemap']
 
+# Markdown settings
+MARKDOWN = {
+    'extension_configs': {
+        'markdown.extensions.codehilite': {'css_class': 'highlight'},
+        'markdown.extensions.extra': {},
+        'markdown.extensions.meta': {},
+        'markdown.extensions.toc': {},
+        'markdown.extensions.nl2br': {},
+        'markdown.extensions.sane_lists': {},
+    },
+    'output_format': 'html5',
+}
+
 # Configure the sitemap
 SITEMAP = {
     'format': 'xml',

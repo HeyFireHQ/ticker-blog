@@ -212,14 +212,11 @@ for card in cards:
         custom_image_name = front_matter.get('image', None)
 
         image_markdown = ""
+        image_url = ""
 
-        # If attachment exists, download properly
+        # If attachment exists, use the URL directly without downloading
         if attachments:
             image_url = attachments[0]['url']
-            if not custom_image_name:
-                custom_image_name = os.path.basename(image_url.split('?')[0])
-
-            image_save_path = os.path.join(IMAGES_DIR, custom_image_name)                    
             image_markdown = f"![{original_title}]({image_url})\n\n"
 
         # Prepare metadata
@@ -243,6 +240,10 @@ for card in cards:
             metadata.append(f"Colors: {', '.join(label_colors)}")
         else:
             metadata.append(f"Colors: #F97316")
+
+        # Add image at the beginning if it exists
+        if image_markdown:
+            description_md = image_markdown + description_md
 
         # Full file content
         file_content = '\n'.join(metadata) + '\n\n' + description_md
