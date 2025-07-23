@@ -141,6 +141,29 @@
             color: #667eea;
         }
 
+        .header-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 1px solid #e9ecef;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
         .header-right {
             display: flex;
             align-items: center;
@@ -186,6 +209,16 @@
             box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
         }
 
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
         .btn-secondary {
             background: #f8f9fa;
             color: #666;
@@ -206,12 +239,17 @@
             transform: translateY(-2px);
         }
 
-        /* Kanban Board */
-        .main-content {
+        /* Page Views */
+        .page-view {
             flex: 1;
             padding: 40px;
         }
 
+        .page-view.hidden {
+            display: none;
+        }
+
+        /* Board Header */
         .board-header {
             display: flex;
             justify-content: space-between;
@@ -225,6 +263,12 @@
             color: white;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Kanban Board */
         .kanban-board {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -350,6 +394,61 @@
 
         .card-btn:hover {
             transform: scale(1.05);
+        }
+
+        /* User Management */
+        .users-table {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .users-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
         }
 
         /* Modal Styles */
@@ -488,6 +587,57 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Deploy Status */
+        .deploy-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            min-width: 250px;
+        }
+
+        .deploy-status.success {
+            border-left: 4px solid #27ae60;
+        }
+
+        .deploy-status.error {
+            border-left: 4px solid #e74c3c;
+        }
+
+        /* GitHub Integration Notice */
+        .github-notice {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #333;
+        }
+
+        .github-notice .icon {
+            font-size: 18px;
+        }
+
+        .github-notice .message {
+            flex: 1;
+        }
+
+        .github-notice .badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .header {
@@ -496,7 +646,11 @@
                 gap: 15px;
             }
 
-            .main-content {
+            .header-nav {
+                order: -1;
+            }
+
+            .page-view {
                 padding: 20px;
             }
 
@@ -508,6 +662,11 @@
             .modal-content {
                 padding: 30px 20px;
                 margin: 20px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 10px;
             }
         }
     </style>
@@ -539,6 +698,10 @@
         <header class="header">
             <div class="header-left">
                 <div class="header-logo">CardPress</div>
+                <nav class="header-nav">
+                    <button class="nav-btn active" data-view="posts">Posts</button>
+                    <button class="nav-btn" data-view="users">Users</button>
+                </nav>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -549,16 +712,57 @@
             </div>
         </header>
 
-        <main class="main-content">
+        <!-- Posts View -->
+        <div id="posts-view" class="page-view">
+            <div class="github-notice">
+                <div class="icon">📂</div>
+                <div class="message">
+                    <strong>GitHub Integration Active:</strong> Posts are loaded from your GitHub repository. 
+                    Changes made here will be saved to database until deployed.
+                </div>
+                <div class="badge">LIVE</div>
+            </div>
+            
             <div class="board-header">
                 <h1 class="board-title">Blog Posts</h1>
-                <button id="add-post-btn" class="btn btn-primary">+ Add New Post</button>
+                <div class="header-actions">
+                    <button id="deploy-btn" class="btn btn-success">🚀 Generate & Push to GitHub</button>
+                    <button id="add-post-btn" class="btn btn-primary">+ Add New Post</button>
+                </div>
             </div>
 
             <div id="kanban-board" class="kanban-board">
                 <!-- Columns will be dynamically generated -->
             </div>
-        </main>
+        </div>
+
+        <!-- Users View -->
+        <div id="users-view" class="page-view hidden">
+            <div class="board-header">
+                <h1 class="board-title">User Management</h1>
+                <div class="header-actions">
+                    <button id="add-user-btn" class="btn btn-primary">+ Add Admin User</button>
+                </div>
+            </div>
+
+            <div class="users-table">
+                <div class="users-header">
+                    <h2 class="users-title">Admin Users</h2>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Users will be dynamically loaded -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Post Modal -->
@@ -621,6 +825,37 @@
         </div>
     </div>
 
+    <!-- User Modal -->
+    <div id="user-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">                <h2 id="user-modal-title" class="modal-title">Add Admin User</h2>
+                <button id="close-user-modal-btn" class="close-btn">&times;</button>
+            </div>
+            
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+
+                <div class="form-group">
+                    <label class="form-label" for="user-email">Email</label>
+                    <input type="email" id="user-email" class="form-input" placeholder="admin@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="user-password">Password</label>
+                    <input type="password" id="user-password" class="form-input" placeholder="Enter password..." required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancel-user-btn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" id="save-user-btn" class="btn btn-primary">
+                        <span class="btn-text">Save User</span>
+                        <div class="spinner hidden"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         // Configuration
         const API_BASE_URL = '/'; // Cloudflare Worker URL
@@ -629,6 +864,8 @@
         let currentUser = null;
         let authToken = null;
         let posts = [];
+        let users = [];
+        let currentView = 'posts';
 
         const columns = [
             { id: 'ideas', title: 'Ideas', color: '#3498db' },
@@ -648,15 +885,34 @@
         
         const logoutBtn = document.getElementById('logout-btn');
         const userEmailDisplay = document.getElementById('user-email');
+        
+        // Navigation
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const postsView = document.getElementById('posts-view');
+        const usersView = document.getElementById('users-view');
+        
+        // Posts elements
         const kanbanBoard = document.getElementById('kanban-board');
         const addPostBtn = document.getElementById('add-post-btn');
+        const deployBtn = document.getElementById('deploy-btn');
         
+        // Users elements
+        const addUserBtn = document.getElementById('add-user-btn');
+        const usersTableBody = document.getElementById('users-table-body');
+        
+        // Modals
         const postModal = document.getElementById('post-modal');
         const postForm = document.getElementById('post-form');
         const modalTitle = document.getElementById('modal-title');
         const closeModalBtn = document.getElementById('close-modal-btn');
         const cancelBtn = document.getElementById('cancel-btn');
         const imagePreview = document.getElementById('image-preview');
+
+        const userModal = document.getElementById('user-modal');
+        const userForm = document.getElementById('user-form');
+        const userModalTitle = document.getElementById('user-modal-title');
+        const closeUserModalBtn = document.getElementById('close-user-modal-btn');
+        const cancelUserBtn = document.getElementById('cancel-user-btn');
 
         // API Helper Functions
         async function apiCall(endpoint, options = {}) {
@@ -702,7 +958,7 @@
                 localStorage.setItem('cardpress_user', JSON.stringify(currentUser));
 
                 showAuthScreen(false);
-                await loadPosts();
+                await loadData();
             } catch (error) {
                 showError(error.message);
             } finally {
@@ -715,7 +971,7 @@
                 const response = await apiCall('auth/verify');
                 currentUser = response.user;
                 showAuthScreen(false);
-                await loadPosts();
+                await loadData();
             } catch (error) {
                 logout();
             }
@@ -727,6 +983,39 @@
             localStorage.removeItem('cardpress_token');
             localStorage.removeItem('cardpress_user');
             showAuthScreen(true);
+        }
+
+        // Navigation Functions
+        function switchView(viewName) {
+            currentView = viewName;
+            
+            // Update nav buttons
+            navBtns.forEach(btn => {
+                if (btn.dataset.view === viewName) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Show/hide views
+            if (viewName === 'posts') {
+                postsView.classList.remove('hidden');
+                usersView.classList.add('hidden');
+                loadPosts();
+            } else if (viewName === 'users') {
+                postsView.classList.add('hidden');
+                usersView.classList.remove('hidden');
+                loadUsers();
+            }
+        }
+
+        async function loadData() {
+            if (currentView === 'posts') {
+                await loadPosts();
+            } else if (currentView === 'users') {
+                await loadUsers();
+            }
         }
 
         // UI Functions
@@ -765,6 +1054,30 @@
                 text.style.opacity = '1';
                 button.disabled = false;
             }
+        }
+
+        function showDeployStatus(message, isSuccess = true) {
+            // Remove existing status
+            const existing = document.querySelector('.deploy-status');
+            if (existing) {
+                existing.remove();
+            }
+
+            const status = document.createElement('div');
+            status.className = `deploy-status ${isSuccess ? 'success' : 'error'}`;
+            status.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">
+                    ${isSuccess ? '✅ GitHub Deployment Success' : '❌ Deployment Failed'}
+                </div>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(status);
+
+            // Auto-remove after 7 seconds (longer for GitHub info)
+            setTimeout(() => {
+                status.remove();
+            }, 7000);
         }
 
         // Posts Functions
@@ -869,6 +1182,87 @@
             });
         }
 
+        async function deployPosts() {
+            try {
+                showLoading(deployBtn, true);
+                const response = await apiCall('deploy', {
+                    method: 'POST'
+                });
+
+                showDeployStatus(response.message, true);
+                
+                if (response.instruction) {
+                    console.log('Deployment instruction:', response.instruction);
+                }
+            } catch (error) {
+                showDeployStatus(error.message, false);
+            } finally {
+                showLoading(deployBtn, false);
+            }
+        }
+
+        // Users Functions
+        async function loadUsers() {
+            try {
+                users = await apiCall('users');
+                renderUsersTable();
+            } catch (error) {
+                console.error('Failed to load users:', error);
+            }
+        }
+
+        function renderUsersTable() {
+            usersTableBody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.email}</td>
+                    <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="editUser('${user.id}')">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.id}', '${user.email}')">Delete</button>
+                        </div>
+                    </td>
+                `;
+                usersTableBody.appendChild(row);
+            });
+        }
+
+        async function createUser(userData) {
+            try {
+                const response = await apiCall('users', {
+                    method: 'POST',
+                    body: JSON.stringify(userData)
+                });
+                
+                users.push(response);
+                renderUsersTable();
+                closeUserModal();
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        async function updateUser(userId, userData) {
+            try {
+                const response = await apiCall(`users/${userId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(userData)
+                });
+                
+                const index = users.findIndex(u => u.id === userId);
+                if (index !== -1) {
+                    users[index] = response;
+                }
+                renderUsersTable();
+                closeUserModal();
+            } catch (error) {
+                throw error;
+            }
+        }
+
         // Modal Functions
         function openModal(postId = null) {
             if (postId) {
@@ -903,8 +1297,34 @@
             imagePreview.classList.add('hidden');
         }
 
+        function openUserModal(userId = null) {
+            if (userId) {
+                const user = users.find(u => u.id === userId);
+                if (user) {
+                    userModalTitle.textContent = 'Edit Admin User';
+                    document.getElementById('user-id').value = user.id;
+                    document.getElementById('user-email').value = user.email;
+                    document.getElementById('user-password').required = false;
+                    document.getElementById('user-password').placeholder = 'Leave blank to keep current password';
+                }
+            } else {
+                userModalTitle.textContent = 'Add Admin User';
+                userForm.reset();
+                document.getElementById('user-password').required = true;
+                document.getElementById('user-password').placeholder = 'Enter password...';
+            }
+            
+            userModal.classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            userModal.classList.add('hidden');
+            userForm.reset();
+        }
+
         // Global Functions (accessible from onclick handlers)
         window.editPost = (postId) => openModal(postId);
+        window.editUser = (userId) => openUserModal(userId);
         
         window.deletePost = async (postId, title) => {
             if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) {
@@ -920,6 +1340,20 @@
             }
         };
 
+        window.deleteUser = async (userId, email) => {
+            if (!confirm(`Are you sure you want to delete user "${email}"?\n\nThis action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                await apiCall(`users/${userId}`, { method: 'DELETE' });
+                users = users.filter(u => u.id !== userId);
+                renderUsersTable();
+            } catch (error) {
+                alert('Failed to delete user: ' + error.message);
+            }
+        };
+
         // Event Listeners
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -929,9 +1363,24 @@
         });
 
         logoutBtn.addEventListener('click', logout);
+
+        // Navigation
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchView(btn.dataset.view);
+            });
+        });
+
+        // Posts
         addPostBtn.addEventListener('click', () => openModal());
+        deployBtn.addEventListener('click', deployPosts);
         closeModalBtn.addEventListener('click', closeModal);
         cancelBtn.addEventListener('click', closeModal);
+
+        // Users
+        addUserBtn.addEventListener('click', () => openUserModal());
+        closeUserModalBtn.addEventListener('click', closeUserModal);
+        cancelUserBtn.addEventListener('click', closeUserModal);
 
         postForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -970,6 +1419,35 @@
                 alert('Error saving post: ' + error.message);
             } finally {
                 showLoading(document.getElementById('save-btn'), false);
+            }
+        });
+
+        userForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const userId = document.getElementById('user-id').value;
+            const userData = {
+                email: document.getElementById('user-email').value,
+                password: document.getElementById('user-password').value
+            };
+
+            // Don't send empty password for updates
+            if (!userData.password && userId) {
+                delete userData.password;
+            }
+
+            try {
+                showLoading(document.getElementById('save-user-btn'), true);
+
+                if (userId) {
+                    await updateUser(userId, userData);
+                } else {
+                    await createUser(userData);
+                }
+            } catch (error) {
+                alert('Error saving user: ' + error.message);
+            } finally {
+                showLoading(document.getElementById('save-user-btn'), false);
             }
         });
 

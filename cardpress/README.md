@@ -1,23 +1,26 @@
-# CardPress - Firebase Blog Management System
+# CardPress - Cloudflare Blog Management System
 
-**Firebase-powered Blog Admin Interface + Static Site Generator**
+**Admin-Only Blog Management with GitHub Pages Integration**
 
 ---
 
 ## 🎯 Overview
 
-**CardPress** is a modern blog management system that combines a beautiful web admin interface with automated static site generation. Write and organize your blog posts through a Kanban-style interface, then automatically deploy them to a Pelican-powered static blog.
+**CardPress** is a modern blog management system that combines a beautiful admin interface with automated GitHub Pages deployment. Built on Cloudflare's edge infrastructure for maximum performance and security.
 
-### ✨ Features
+### ✨ Key Features
 
+- 🔐 **Admin-Only Access** - Secure authentication, no public registration
+- 🌐 **Cloudflare-Powered** - D1 database, R2 storage, Workers API
 - 🎨 **Beautiful Admin Interface** - Kanban board for blog post workflow
-- 🔐 **Firebase Authentication** - Secure user management
-- 📱 **Responsive Design** - Works on desktop and mobile
-- 🖼️ **Image Upload** - Firebase Storage integration
-- 🏷️ **Tags & Labels** - Organize your content
+- 📱 **Responsive Design** - Works perfectly on desktop and mobile
+- 🖼️ **Image Management** - R2 storage with automatic optimization
+- 🏷️ **Tags & Labels** - Organize your content efficiently
 - 📝 **Markdown Support** - Rich text editing with Markdown
-- 🚀 **Auto-Deploy** - Converts Firebase posts to Pelican static site
-- 👥 **Multi-User** - Collaborative blog management
+- 🚀 **GitHub Pages Deploy** - Generate pages and push to GitHub → triggers Cloudflare Pages
+- 📂 **GitHub Integration** - Load posts from GitHub repository (live view)
+- 👥 **User Management** - Add/remove admin users securely
+- ⚡ **Edge Performance** - Global CDN with sub-50ms response times
 
 ---
 
@@ -25,24 +28,37 @@
 
 ```
 CardPress/
-├── index.html              # 🎨 Admin web interface
-├── firebase_to_pelican.py  # 🔄 Static site generator
-├── firestore.rules         # 🔐 Database security rules
-├── storage.rules           # 🔐 File storage security rules
-├── deploy.sh               # 🚀 Automated deployment script
-└── README.md              # 📖 This documentation
+├── index.html                  # 🎨 Admin web interface
+├── cloudflare_to_pelican.py   # 🔄 Static site generator
+├── worker/
+│   └── cardpress-api.js        # ⚡ Cloudflare Worker API
+├── schema.sql                  # 🗄️ D1 database schema
+├── wrangler.toml              # ⚙️ Cloudflare configuration
+├── setup-cloudflare.sh       # 🚀 Automated setup script
+├── deploy.sh                  # 🚀 Multi-platform deployment script
+├── deploy-webhook.js          # 📡 Webhook server for UI deploys
+├── .env_example               # 🔧 Environment variables template
+└── README.md                  # 📖 This documentation
 ```
 
-### Data Structure
+### Data Flow
 ```
-/artifacts/{appId}/users/{userId}/posts/{postId}
+Draft Posts: Admin Interface → Cloudflare Worker → D1 Database
+                                     ↓
+Deploy: D1 → Generate Markdown → Push to GitHub → Cloudflare Pages Deploy
+                                     ↓
+Live View: Admin Interface ← Load from GitHub Repository (deployed posts)
+                                     ↓
+                             R2 Storage (Images)
 ```
 
-### Workflow Columns
-- **Ideas** - Initial post concepts
-- **Drafting** - Posts being written
-- **Editing** - Posts being reviewed/edited
-- **Deployed** - Published posts (exported to static site)
+### Security Model
+- ✅ **Admin-only authentication** - No public registration allowed
+- ✅ **JWT-based sessions** - Secure token authentication  
+- ✅ **CORS protection** - Domain-restricted API access
+- ✅ **Input validation** - All data sanitized and validated
+- ✅ **User management** - Only admins can add/remove users
+- ✅ **GitHub integration** - Personal access tokens for repo access
 
 ---
 
@@ -50,425 +66,358 @@ CardPress/
 
 **Get CardPress running in 5 minutes:**
 
-1. **Clone and Setup**
-   ```bash
-   # Make sure you're in the project root
-   cd your-project-directory
-   
-   # Copy environment file
-   cp .env_example .env
-   
-   # Edit .env with your Firebase settings
-   nano .env
-   ```
-
-2. **Firebase Setup**
-   ```bash
-   # Install Firebase CLI if not installed
-   npm install -g firebase-tools
-   
-   # Login to Firebase
-   firebase login
-   
-   # Initialize project (if not done)
-   firebase init
-   ```
-
-3. **Deploy Everything**
-   ```bash
-   # Run the magic deployment script
-   ./cardpress/deploy.sh
-   
-   # Or run step by step:
-   cd cardpress
-   ./deploy.sh 5  # Full setup option
-   ```
-
-4. **Access Admin Interface**
-   ```
-   Open: http://localhost:8000/cardpress/index.html
-   ```
-
-**That's it! 🎉 Start creating blog posts in your Kanban board!**
-
----
-
-## 🛠️ Detailed Setup Instructions
-
-### 1. Firebase Project Setup
-
-1. **Create Firebase Project**
-   - Go to [Firebase Console](https://console.firebase.google.com/)
-   - Create new project: `your-project-name`
-   - Enable Google Analytics (optional)
-
-2. **Enable Firebase Services**
-   ```bash
-   # Authentication
-   Authentication > Sign-in method > Email/Password: Enable
-   
-   # Firestore Database
-   Firestore Database > Create database > Start in test mode
-   
-   # Storage
-   Storage > Get started > Start in test mode
-   ```
-
-3. **Get Web App Configuration**
-   - Project Settings > General > Your apps
-   - Add app > Web app icon
-   - Copy the `firebaseConfig` object
-
-### 2. Configure Admin Interface
-
-CardPress uses **automatic environment detection** with separate configs for development and production:
-
-1. **Production Config**: Already configured in `index.html` (safe to commit)
-2. **Development Config**: For localhost only (gitignored, not committed)
-
-**Setup for Localhost Development:**
+### Prerequisites
 ```bash
-# Copy the development template
-cp cardpress/firebase-config-dev.js.template cardpress/firebase-config-dev.js
+# Install Node.js and Wrangler CLI
+npm install -g wrangler
 
-# Edit with your LOCALHOST Firebase API key
-nano cardpress/firebase-config-dev.js
+# Login to Cloudflare
+wrangler login
+
+# Install Python dependencies (in project root)
+pip install -r requirements.txt
 ```
 
-**Get your Firebase API keys:**
-1. Firebase Console → Project Settings → General → Your apps → Web app
-2. **Important**: Create **two separate API keys** with proper restrictions
+### 1. Automated Setup
+```bash
+# Run the setup script
+chmod +x setup-cloudflare.sh
+./setup-cloudflare.sh
 
-**🔐 API Key Security Setup:**
-
-1. **Production Key** (for `index.html`):
-   - Go to [Google Cloud Console - Credentials](https://console.cloud.google.com/apis/credentials)
-   - Find your Firebase API key
-   - Click "Edit" → **Application restrictions** → Select:
-     ✅ **HTTP referrers (websites)**
-   - Add your domain: `https://yourdomain.com/*`
-   - Example: `https://lastmachine-web.web.app/*`
-
-2. **Development Key** (for `firebase-config-dev.js`):
-   - Create a **new API key** in Google Cloud Console
-   - **Application restrictions** → Select:
-     ✅ **HTTP referrers (websites)**
-   - Add localhost patterns:
-     - `http://localhost:*`
-     - `http://127.0.0.1:*`
-     - `http://localhost:8000/*`
-
-```javascript
-const FIREBASE_CONFIG_DEV = {
-    apiKey: "your-localhost-api-key",  // ← Use localhost-restricted key
-    authDomain: "your-project.firebaseapp.com", 
-    projectId: "your-project-id",
-    storageBucket: "your-project.firebasestorage.app",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
-};
+# Choose option 1 for full setup
 ```
 
-⚠️ **Security Notes**: 
-- `firebase-config-dev.js` is gitignored (localhost secrets)
-- Production config in `index.html` can be committed (domain-restricted)
-- System auto-detects localhost vs production
-- **Never use unrestricted API keys** - always set domain restrictions
+### 2. GitHub Configuration
+```bash
+# 1. Create GitHub repository for your blog
+# 2. Generate Personal Access Token with 'repo' permissions
+# 3. Set up environment variables
+cp .env_example .env
+# Edit .env with your GitHub settings
+```
 
-2. **Deploy Firebase Security Rules**
-   ```bash
-   # Deploy Firestore rules
-   firebase deploy --only firestore:rules
-   
-   # Deploy Storage rules  
-   firebase deploy --only storage
-   ```
+### 3. Deploy Infrastructure
+```bash
+# Deploy Cloudflare Worker and create resources
+wrangler deploy
+```
 
-### 3. Configure Static Site Generator
+### 4. Access Admin Interface
+```bash
+# Start local server (or deploy to hosting)
+python -m http.server 8000
 
-1. **Install Dependencies**
-   ```bash
-   pip install -r ../requirements.txt
-   ```
+# Open admin interface
+open http://localhost:8000/index.html
+```
 
-2. **Setup Service Account**
-   - Firebase Console > Project Settings > Service accounts
-   - Generate private key → Save as `serviceAccountKey.json` in project root
-
-3. **Configure Environment Variables**
-   ```bash
-   cp ../.env_example ../.env
-   ```
-   
-   Edit `.env`:
-   ```env
-   FIREBASE_SERVICE_ACCOUNT=serviceAccountKey.json
-   FIREBASE_BUCKET_NAME=your-project.firebasestorage.app
-   ```
+**Default Login:**
+- Email: `admin@example.com`
+- Password: `admin123`
 
 ---
 
 ## 🚀 Usage
 
-### Admin Interface
+### Admin Interface Features
 
-1. **Open Admin Interface**
-   ```bash
-   # Serve locally
-   python -m http.server 8000
-   # Open http://localhost:8000/cardpress/index.html
-   ```
+#### 📝 **Posts Management**
+- **Kanban Board**: Drag-and-drop workflow (Ideas → Drafting → Editing → Deployed)
+- **Rich Editor**: Create/edit posts with Markdown support
+- **Image Upload**: Drag-and-drop images with R2 storage
+- **Tags & Categories**: Organize content with labels
+- **GitHub Deploy**: Generate pages and push to GitHub
 
-2. **Create Account**
-   - First time: Click "Register" 
-   - Enter email/password
-   - Start creating posts!
+#### 👥 **User Management** 
+- **Admin Users Only**: No public registration allowed
+- **Add/Remove Users**: Manage admin access securely
+- **Password Management**: Secure bcrypt password hashing
+- **Last Admin Protection**: Cannot delete the final admin user
 
-3. **Blog Post Workflow**
+### Content Creation Workflow
+
+1. **Login to Admin Interface**
+   - Navigate to `/index.html`
+   - Use admin credentials to login
+
+2. **Create & Manage Posts**
    ```
    Ideas → Drafting → Editing → Deployed
    ```
-   - Drag cards between columns
-   - Click cards to edit
-   - Move to "Deployed" when ready to publish
+   - **Ideas**: Initial post concepts (saved to database)
+   - **Drafting**: Active writing (saved to database)
+   - **Editing**: Review and polish (saved to database)
+   - **Deployed**: Ready for publication (shows from GitHub)
 
-### Static Site Generation
+3. **Deploy Posts**
+   - **Click "🚀 Generate & Push to GitHub"**
+   - Posts generated as Pelican markdown
+   - Pushed to GitHub branch
+   - Triggers Cloudflare Pages build
+   - Admin interface shows live posts from GitHub
 
-1. **Export Posts to Static Site**
-   ```bash
-   python cardpress/firebase_to_pelican.py
-   ```
+### GitHub Integration Benefits
 
-2. **What It Does**
-   - ✅ Fetches all "Deployed" posts from Firebase
-   - ✅ Downloads images to `blog/content/imgs/`
-   - ✅ Converts to Pelican markdown format
-   - ✅ Builds static site with Pelican
-   - ✅ Deploys to Firebase Hosting
-
-3. **Automated Deployment**
-   ```bash
-   # Add to crontab for automatic daily builds
-   0 6 * * * cd /path/to/project && python cardpress/firebase_to_pelican.py
-   ```
+- ✅ **Live View** - Admin interface shows exactly what's deployed
+- ✅ **Version Control** - All published content tracked in Git
+- ✅ **Automatic Deploy** - GitHub push triggers Cloudflare Pages
+- ✅ **Backup** - Posts safely stored in GitHub repository
+- ✅ **Collaboration** - Team can work with Git workflow if needed
 
 ---
 
-## 🔐 Security Configuration
+## 🛠️ Configuration
 
-### Firestore Rules (`firestore.rules`)
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Allow any authenticated user to read and write all data
-    match /{document=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
-
-### Storage Rules (`storage.rules`)
-
-```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    // Allow any authenticated user to read and write all files
-    match /{allPaths=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
-
----
-
-## 📁 File Structure
-
-```
-project/
-├── cardpress/
-│   ├── index.html              # 🎨 Admin interface
-│   ├── firebase_to_pelican.py  # 🔄 Static site generator
-│   ├── firestore.rules         # 🔐 Database rules
-│   ├── storage.rules           # 🔐 Storage rules
-│   ├── deploy.sh               # 🚀 Deployment script
-│   └── README.md              # 📖 This documentation
-├── blog/
-│   ├── content/               # 📝 Generated markdown files
-│   ├── output/               # 🌐 Generated static site
-│   ├── pelicanconf.py        # ⚙️ Pelican configuration
-│   └── theme/                # 🎨 Blog theme
-├── worker/
-│   └── refresh.js            # 🔄 Cloudflare Worker
-├── firebase.json             # ⚙️ Firebase project configuration
-├── serviceAccountKey.json     # 🔑 Firebase credentials
-├── .env                      # 🔧 Environment variables
-└── requirements.txt          # 📦 Python dependencies
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**"invalid-api-key" Error**
+### Environment Variables (.env)
 ```bash
-# For localhost development:
-cp cardpress/firebase-config-dev.js.template cardpress/firebase-config-dev.js
-# Then edit firebase-config-dev.js with your localhost Firebase config
+# Cloudflare Configuration
+CLOUDFLARE_API_TOKEN=your_api_token
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+D1_DATABASE_ID=your_database_id
+R2_BUCKET_NAME=cardpress-storage
 
-# For production: Update the production config in index.html
+# Worker Configuration  
+WORKER_URL=https://your-worker.workers.dev
+
+# GitHub Configuration (Required for Pages deployment)
+GITHUB_TOKEN=ghp_your_personal_access_token
+GITHUB_REPO=your-username/your-repo-name
+GITHUB_DEPLOY_BRANCH=gh-pages
+
+# Admin Authentication
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your_secure_password
+
+# Optional: Webhook Configuration
+DEPLOY_WEBHOOK_URL=http://your-server.com:3000/webhook/deploy
+WEBHOOK_SECRET=your-webhook-secret
 ```
 
-**"Permission denied" Error**
+### GitHub Setup
+
+#### 1. Create GitHub Repository
 ```bash
-# Fix: Deploy firestore.rules and storage.rules
-firebase deploy --only firestore:rules,storage
+# Create new repository on GitHub
+# Enable GitHub Pages in repository settings
+# Set Pages source to deploy from branch (e.g., gh-pages)
 ```
 
-**"Content directory not found"**
+#### 2. Generate Personal Access Token
 ```bash
-# Fix: Script now auto-creates directories and uses correct paths
-python cardpress/firebase_to_pelican.py
+# Go to GitHub Settings → Developer settings → Personal access tokens
+# Generate token with 'repo' permissions
+# Copy token to GITHUB_TOKEN in environment
 ```
 
-**No posts exported**
+#### 3. Configure Cloudflare Pages
 ```bash
-# Fix: Make sure posts are in "Deployed" column in admin interface
+# Connect Cloudflare Pages to your GitHub repository
+# Set build command: pelican content -s publishconf.py
+# Set build output directory: output
+# Set root directory: / (or leave empty)
 ```
 
-### Debug Mode
+### Cloudflare Worker Secrets
+
+Add sensitive configuration via Wrangler CLI:
 
 ```bash
-# Run with verbose output
-python -v cardpress/firebase_to_pelican.py
+# GitHub personal access token (Required)
+wrangler secret put GITHUB_TOKEN
+
+# Optional webhook configurations
+wrangler secret put DEPLOY_WEBHOOK_URL
+wrangler secret put REFRESH_SECRET_KEY
+wrangler secret put DEPLOY_HOOK_URL
 ```
 
 ---
 
-## 🤖 Deployment Script Usage
+## 📈 Deployment Options
 
-The `deploy.sh` script automates common CardPress tasks:
-
-### Script Options
-
+### Option 1: GitHub Pages Deploy (Recommended)
 ```bash
-./cardpress/deploy.sh [option]
-
-# Interactive menu (no option)
-./cardpress/deploy.sh
-
-# Direct options:
-./cardpress/deploy.sh 1  # Deploy Firebase rules only
-./cardpress/deploy.sh 2  # Run blog generator only  
-./cardpress/deploy.sh 3  # Deploy rules + run generator
-./cardpress/deploy.sh 4  # Start local admin server
-./cardpress/deploy.sh 5  # Full setup (recommended)
+# 1. Move posts to "Deployed" column
+# 2. Click "🚀 Generate & Push to GitHub" button  
+# 3. Posts generated as Pelican markdown and pushed to GitHub
+# 4. Cloudflare Pages automatically deploys from GitHub branch
+# 5. Admin interface switches to show GitHub posts (live view)
 ```
 
-### What Each Option Does
+### Option 2: Webhook-Triggered Deploy
 
-| Option | Description | Commands Run |
-|--------|-------------|--------------|
-| **1** | Deploy Rules | `firebase deploy --only firestore:rules,storage` |
-| **2** | Generate Blog | `python firebase_to_pelican.py` |
-| **3** | Rules + Blog | Option 1 + Option 2 |
-| **4** | Local Server | `python -m http.server 8000` |
-| **5** | Full Setup | Options 1, 2, and 4 combined |
-
-### Prerequisites Check
-
-The script automatically verifies:
-- ✅ Firebase CLI is installed
-- ✅ You're logged into Firebase
-- ✅ Required files exist
-
-### Example Usage
+Set up automatic deployment when UI deploy button is clicked:
 
 ```bash
-# First time setup
-./cardpress/deploy.sh 5
+# Start webhook server
+node deploy-webhook.js 3000
 
-# Daily blog updates
-./cardpress/deploy.sh 3
+# Configure webhook URL in Cloudflare Worker
+wrangler secret put DEPLOY_WEBHOOK_URL
+# Enter: http://your-server.com:3000/webhook/deploy
+```
 
-# Just test the admin interface
-./cardpress/deploy.sh 4
+### Option 3: Command Line Deploy
+```bash
+# Interactive deployment menu
+./deploy.sh
+
+# Deploy to specific platform
+./deploy.sh 4  # Cloudflare Pages (recommended)
 ```
 
 ---
 
-## 🔄 Manual Deployment Workflow
+## 🔧 Development
 
-### Manual Deployment
+### Local Development
 ```bash
-# 1. Create posts in admin interface
-# 2. Move posts to "Deployed" column  
-# 3. Run generator
-python cardpress/firebase_to_pelican.py
+# Start local worker development
+wrangler dev
+
+# Run with remote D1/R2
+wrangler dev --remote
+
+# Start webhook server
+node deploy-webhook.js 3000
+
+# Local database for testing
+wrangler d1 execute cardpress-blog --local --file=schema.sql
 ```
 
-### Automated Deployment
+### Testing
 ```bash
-# Setup webhook endpoint (optional)
-# Trigger via HTTP call to rebuild blog
-curl -X POST "https://your-worker.workers.dev/refresh?key=SECRET"
+# Test GitHub integration locally
+# 1. Set up .env with GitHub credentials
+# 2. Start worker: wrangler dev --remote
+# 3. Test admin interface: python -m http.server 8000
 ```
 
 ---
 
-## 🎨 Customization
+## 🚨 Troubleshooting
 
-### Admin Interface
-- Edit `index.html` to customize colors, layout
-- Modify column names in JavaScript
-- Add custom fields to post form
+### GitHub Integration Issues
 
-### Static Site
-- Configure `blog/pelicanconf.py` for site settings
-- Customize `blog/theme/` for blog appearance
-- Modify `firebase_to_pelican.py` for custom export logic
+**Deploy Button Not Working**
+```bash
+# Check GitHub configuration
+wrangler secret list
+
+# Test GitHub API access
+curl -H "Authorization: token YOUR_TOKEN" \
+  https://api.github.com/repos/YOUR_USERNAME/YOUR_REPO
+
+# Check worker logs
+wrangler tail
+```
+
+**Posts Not Loading from GitHub**
+```bash
+# Verify repository exists and has content
+# Check branch name in configuration
+# Ensure GitHub token has 'repo' permissions
+# Check browser console for API errors
+```
+
+### Authentication Issues
+```bash
+# Check admin user exists
+wrangler d1 execute cardpress-blog --command="SELECT * FROM users WHERE is_admin=1"
+
+# Reset admin password if needed
+# Use setup script option 7
+./setup-cloudflare.sh
+```
+
+### Performance Issues
+```bash
+# Check worker logs for errors
+wrangler tail
+
+# Monitor D1 database performance
+wrangler d1 info cardpress-blog
+
+# Check R2 storage usage
+wrangler r2 bucket list
+```
 
 ---
 
-## 📊 Analytics & Monitoring
+## 📊 API Reference
 
-### Firebase Analytics
-```javascript
-// Add to index.html for usage tracking
-import { getAnalytics } from "firebase/analytics";
-const analytics = getAnalytics(app);
+### Endpoints
+
+```bash
+# Authentication
+POST /auth/login          # Admin login
+POST /auth/verify         # Verify token
+
+# Posts Management (Admin Only)
+GET  /posts              # List posts (from GitHub if configured)
+POST /posts              # Create new post (saved to database)
+PUT  /posts/{id}         # Update post (saved to database)
+DELETE /posts/{id}       # Delete post (from database)
+
+# User Management (Admin Only)
+GET  /users              # List admin users
+POST /users              # Create admin user
+PUT  /users/{id}         # Update user
+DELETE /users/{id}       # Delete user
+
+# Deployment (Admin Only)
+POST /deploy             # Generate pages and push to GitHub
+
+# Image Management (Admin Only)  
+POST /images/upload      # Upload image to R2
+GET  /images/{path}      # Serve image from R2
 ```
 
-### Performance Monitoring
-```javascript
-// Add to index.html for performance insights
-import { getPerformance } from "firebase/performance";
-const perf = getPerformance(app);
-```
+### Post Loading Logic
+1. **First**: Try to load posts from GitHub repository
+2. **Fallback**: If GitHub not configured, load from D1 database
+3. **Admin View**: Shows live deployed posts from GitHub
+4. **Editing**: Draft posts stored in database until deployed
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+We welcome contributions! Here's how to get started:
+
+```bash
+# Fork the repository
+git clone https://github.com/your-username/cardpress.git
+cd cardpress
+
+# Set up development environment
+./setup-cloudflare.sh
+
+# Make changes and test
+wrangler dev --local
+
+# Test deployment
+./deploy.sh 6  # Generate only
+
+# Submit pull request
+```
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+MIT License - see [LICENSE](../LICENSE) for details.
 
 ---
 
+## 🆘 Support
 
-**Happy Blogging! 🎉** 
+- 📖 **Documentation**: This README and inline code comments
+- 🐛 **Bug Reports**: Create GitHub issues with detailed reproduction steps
+- 💬 **Discussions**: Use GitHub Discussions for feature requests
+- 📧 **Email**: Contact repository maintainers for security issues
+
+---
+
+**Built with ❤️ using Cloudflare's edge infrastructure and GitHub Pages**
+

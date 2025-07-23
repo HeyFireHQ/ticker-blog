@@ -1,6 +1,6 @@
 AUTHOR = 'Jon V'
 SITENAME = 'HeyTicker Blog'
-SITEURL = "https://lastmachine-web.web.app"
+SITEURL = "https://blog.heyticker.com"
 THEME = 'theme'
 
 # For the footer
