@@ -90,8 +90,27 @@ def parse_front_matter(text):
             yaml_block = parts[1]
             body = parts[2].lstrip('\n')
             
+            # Remove all markdown formatting from YAML block
+            cleaned_yaml_lines = []
+            lines = yaml_block.strip().split('\n')
+            for line in lines:
+                line = line.strip()
+                # Skip lines that contain markdown formatting
+                if (line.startswith('![') or 
+                    line.startswith('**') or 
+                    line.startswith('*') or
+                    line.startswith('[') or
+                    '**' in line or  # Bold text
+                    '[' in line and '](' in line or  # Links
+                    '#' in line or  # Headers
+                    '`' in line):  # Code blocks
+                    continue
+                cleaned_yaml_lines.append(line)
+            
+            cleaned_yaml_block = '\n'.join(cleaned_yaml_lines)
+            
             try:
-                front_matter = yaml.safe_load(yaml_block) or {}
+                front_matter = yaml.safe_load(cleaned_yaml_block) or {}
                 
                 # Post-process author field if it contains markdown
                 if 'author' in front_matter:
@@ -169,6 +188,7 @@ for card in cards:
             article_date = card_date.strftime('%Y-%m-%d')
 
         slug = front_matter.get('slug') or slugify(original_title)
+        slug = slug.strip()
         author = front_matter.get('author-name', None)
         author_url = front_matter.get('author-url', None)
         description = front_matter.get('description', None)
