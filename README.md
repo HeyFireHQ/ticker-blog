@@ -1,5 +1,5 @@
-# CardPress  
-**Trello-powered Static Blog Generator + Auto-Refresh System**
+# HeyTicker Blog  
+**Trello-powered Pelican Static Blog Generator + Auto-Refresh System**
 
 ---
 
@@ -22,13 +22,14 @@
 
 ```
 /
-├── generate.py                 # Blog generator script
-├── requirements.txt            # Python dependencies
-├── templates/                  # Blog page templates
-│   ├── index_template.html
-│   ├── post_template.html
-│   ├── category_template.html
-├── output/                      # (Generated blog - auto-created)
+├── trello_to_pelican.py        # Trello to Pelican content generator
+├── requirements.txt             # Python dependencies
+├── blog/                        # Pelican blog configuration
+│   ├── pelicanconf.py          # Pelican settings
+│   ├── publishconf.py          # Production settings
+│   ├── content/                # Generated markdown content
+│   └── theme/                  # Blog theme templates
+├── output/                      # Generated static site (auto-created)
 ├── worker/
 │   ├── refresh.js               # Cloudflare Worker to trigger rebuild
 ├── .env.example                 # Example environment variables
@@ -44,8 +45,8 @@
    - Cards in "Ready to Publish" or "Published" lists are treated as blog posts.
 
 2. **Build the static blog**  
-   - `generate.py` fetches Trello cards.
-   - Renders pages using Jinja2 templates.
+   - `trello_to_pelican.py` fetches Trello cards and generates markdown content.
+   - Pelican renders pages using Jinja2 templates.
    - Outputs static files into `/output/`.
 
 3. **Host on Cloudflare Pages**  
@@ -84,7 +85,8 @@ BOARD_ID=your-trello-board-id
 ### 3. Run Blog Generator Locally (optional)
 
 ```bash
-python generate.py
+python trello_to_pelican.py
+cd blog && pelican content -o ../output -s pelicanconf.py
 ```
 
 This generates the static site into the `/output/` folder.
@@ -95,7 +97,7 @@ This generates the static site into the `/output/` folder.
 
 - Connect this GitHub repo to **Cloudflare Pages**.
 - Set Build Settings:
-  - **Build command:** `python generate.py`
+  - **Build command:** `python trello_to_pelican.py; cd blog && pelican content -o ../output -s pelicanconf.py`
   - **Output directory:** `output`
 - Set the following Environment Variables inside Cloudflare Pages:
   - `TRELLO_API_KEY`

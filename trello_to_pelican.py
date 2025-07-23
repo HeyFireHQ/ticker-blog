@@ -81,37 +81,82 @@ def extract_markdown_link(text):
     return text.strip(), None
 
 def parse_front_matter(text):
-    """Parse simple metadata from card description instead of YAML"""
-    metadata = {}
+    front_matter = {}
     body = text
 
-    # Look for simple key: value patterns in the description
-    lines = text.split('\n')
-    body_lines = []
-    in_body = False
-    
-    for line in lines:
-        if ':' in line and not in_body:
-            key, value = line.split(':', 1)
-            key = key.strip().lower()
-            value = value.strip()
+    if text.strip().startswith('---'):
+        parts = text.split('---', 2)
+        if len(parts) >= 3:
+            yaml_block = parts[1]
+            body = parts[2].lstrip('\n')
             
-            if key in ['title', 'date', 'slug', 'author', 'description', 'keywords', 'image']:
-                metadata[key] = value
-            else:
-                # If we hit a line that doesn't look like metadata, start body
-                in_body = True
-                body_lines.append(line)
-        else:
-            in_body = True
-            body_lines.append(line)
-    
-    body = '\n'.join(body_lines).strip()
-    return metadata, body
+            # Clean the YAML block to remove problematic markdown content
+            cleaned_yaml_lines = []
+            lines = yaml_block.strip().split('\n')
+            for line in lines:
+                line = line.strip()
+                # Skip lines that are clearly markdown (images, bold text, etc.)
+                if (line.startswith('![') or 
+                    line.startswith('**') or 
+                    line.startswith('*') or
+                    line.startswith('[') or
+                    '**' in line and '**' in line[line.find('**')+2:] or  # Bold text
+                    '[' in line and '](' in line):  # Links
+                    continue
+                cleaned_yaml_lines.append(line)
+            
+            cleaned_yaml_block = '\n'.join(cleaned_yaml_lines)
+            
+            try:
+                front_matter = yaml.safe_load(cleaned_yaml_block) or {}
+                
+                # Post-process author field if it contains markdown
+                if 'author' in front_matter:
+                    author_text = str(front_matter['author'])
+                    if '[' in author_text and '](' in author_text:
+                        name, url = extract_markdown_link(author_text)
+                        front_matter['author-name'] = name
+                        front_matter['author-url'] = url
+                        del front_matter['author']
+                        
+            except yaml.YAMLError as e:
+                print(f"⚠️ YAML parsing error: {e}")
+                # Try to extract basic fields manually if YAML parsing fails
+                front_matter = {}
+                for line in cleaned_yaml_lines:
+                    if ':' in line:
+                        key, value = line.split(':', 1)
+                        key = key.strip()
+                        value = value.strip()
+                        # Remove quotes if present
+                        if value.startswith('"') and value.endswith('"'):
+                            value = value[1:-1]
+                        elif value.startswith("'") and value.endswith("'"):
+                            value = value[1:-1]
+                        front_matter[key] = value
 
-# Ensure directories exist
-os.makedirs(CONTENT_DIR, exist_ok=True)
-os.makedirs(IMAGES_DIR, exist_ok=True)
+    return front_matter, body
+
+def download_image(url, save_path):
+    headers = {
+        "Accept": "application/json"
+    }
+    if "trello.com" in url:
+        if '?' in url:
+            url += f"&key={TRELLO_API_KEY}&token={TRELLO_TOKEN}"
+        else:
+            url += f"?key={TRELLO_API_KEY}&token={TRELLO_TOKEN}"
+
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+
+    with open(save_path, 'wb') as f:
+        f.write(response.content)
+
+    return save_path
+
+#os.makedirs(CONTENT_DIR)
+#os.makedirs(IMAGES_DIR)
 
 # --- Main build ---
 
@@ -153,22 +198,17 @@ for card in cards:
             article_date = card_date.strftime('%Y-%m-%d')
 
         slug = front_matter.get('slug') or slugify(original_title)
-        author = front_matter.get('author', None)
+        author = front_matter.get('author-name', None)
         author_url = front_matter.get('author-url', None)
         description = front_matter.get('description', None)
         keywords = front_matter.get('keywords', None)
         custom_image_name = front_matter.get('image', None)
 
         image_markdown = ""
-        image_url = ""
 
-        # If attachment exists, use the URL directly (no download)
+        # If attachment exists, use the URL directly without downloading
         if attachments:
             image_url = attachments[0]['url']
-            if not custom_image_name:
-                custom_image_name = os.path.basename(image_url.split('?')[0])
-
-            # Use the original Trello URL in markdown (no download attempt)
             image_markdown = f"![{original_title}]({image_url})\n\n"
 
         # Prepare metadata
@@ -176,9 +216,8 @@ for card in cards:
             f"Title: {original_title}",
             f"Date: {article_date}",  # Use the extracted date
             f"Slug: {slug}",
+            f"Image: {image_url}"
         ]
-        if image_url:
-            metadata.append(f"Image: {image_url}")
         if author:
             metadata.append(f"Author: {author}")
         if author_url:
