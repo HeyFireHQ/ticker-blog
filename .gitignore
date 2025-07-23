@@ -5,5 +5,5 @@ venv/
 .vscode/
 output/
 blog/output/*
-
+blog/content/*
 

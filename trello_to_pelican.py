@@ -81,53 +81,37 @@ def extract_markdown_link(text):
     return text.strip(), None
 
 def parse_front_matter(text):
-    front_matter = {}
+    """Parse simple metadata from card description instead of YAML"""
+    metadata = {}
     body = text
 
-    if text.strip().startswith('---'):
-        parts = text.split('---', 2)
-        if len(parts) >= 3:
-            yaml_block = parts[1]
-            body = parts[2].lstrip('\n')
+    # Look for simple key: value patterns in the description
+    lines = text.split('\n')
+    body_lines = []
+    in_body = False
+    
+    for line in lines:
+        if ':' in line and not in_body:
+            key, value = line.split(':', 1)
+            key = key.strip().lower()
+            value = value.strip()
             
-            try:
-                front_matter = yaml.safe_load(yaml_block) or {}
-                
-                # Post-process author field if it contains markdown
-                if 'author' in front_matter:
-                    author_text = str(front_matter['author'])
-                    if '[' in author_text and '](' in author_text:
-                        name, url = extract_markdown_link(author_text)
-                        front_matter['author-name'] = name
-                        front_matter['author-url'] = url
-                        del front_matter['author']
-                        
-            except yaml.YAMLError as e:
-                print(f"⚠️ YAML parsing error: {e}")
-                front_matter = {}
-
-    return front_matter, body
-
-def download_image(url, save_path):
-    headers = {
-        "Accept": "application/json"
-    }
-    if "trello.com" in url:
-        if '?' in url:
-            url += f"&key={TRELLO_API_KEY}&token={TRELLO_TOKEN}"
+            if key in ['title', 'date', 'slug', 'author', 'description', 'keywords', 'image']:
+                metadata[key] = value
+            else:
+                # If we hit a line that doesn't look like metadata, start body
+                in_body = True
+                body_lines.append(line)
         else:
-            url += f"?key={TRELLO_API_KEY}&token={TRELLO_TOKEN}"
+            in_body = True
+            body_lines.append(line)
+    
+    body = '\n'.join(body_lines).strip()
+    return metadata, body
 
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
-
-    with open(save_path, 'wb') as f:
-        f.write(response.content)
-
-    return save_path
-
-#os.makedirs(CONTENT_DIR)
-#os.makedirs(IMAGES_DIR)
+# Ensure directories exist
+os.makedirs(CONTENT_DIR, exist_ok=True)
+os.makedirs(IMAGES_DIR, exist_ok=True)
 
 # --- Main build ---
 
@@ -169,36 +153,32 @@ for card in cards:
             article_date = card_date.strftime('%Y-%m-%d')
 
         slug = front_matter.get('slug') or slugify(original_title)
-        author = front_matter.get('author-name', None)
+        author = front_matter.get('author', None)
         author_url = front_matter.get('author-url', None)
         description = front_matter.get('description', None)
         keywords = front_matter.get('keywords', None)
         custom_image_name = front_matter.get('image', None)
 
         image_markdown = ""
+        image_url = ""
 
-        # If attachment exists, download properly
+        # If attachment exists, use the URL directly (no download)
         if attachments:
             image_url = attachments[0]['url']
             if not custom_image_name:
                 custom_image_name = os.path.basename(image_url.split('?')[0])
 
-            image_save_path = os.path.join(IMAGES_DIR, custom_image_name)
-            
-            try:
-                result = download_image(image_url, image_save_path)
-                image_markdown = f"![{original_title}](imgs/{custom_image_name})\n\n"
-            except Exception as e:
-                print(f"⚠️ Failed to download {image_url}: {e}")
-                image_markdown = f"![{original_title}]({image_url})\n\n"
+            # Use the original Trello URL in markdown (no download attempt)
+            image_markdown = f"![{original_title}]({image_url})\n\n"
 
         # Prepare metadata
         metadata = [
             f"Title: {original_title}",
             f"Date: {article_date}",  # Use the extracted date
             f"Slug: {slug}",
-            f"Image: {image_url}"
         ]
+        if image_url:
+            metadata.append(f"Image: {image_url}")
         if author:
             metadata.append(f"Author: {author}")
         if author_url:
