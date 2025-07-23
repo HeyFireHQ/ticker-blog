@@ -7,10 +7,9 @@ binding = "DB"
 database_name = "cardpress-blog"
 database_id = "08fd85c0-cada-48ab-b651-9009d90b56cb"
 
-# [[r2_buckets]]
-# binding = "BUCKET"
-# bucket_name = "cardpress-storage"
-# Note: Enable R2 in Cloudflare Dashboard first, then uncomment these lines
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "cardpress-storage"
 
 [vars]
 ADMIN_EMAIL = "me@jon.io"
