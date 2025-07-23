@@ -3,8 +3,6 @@ import shutil
 import re
 import requests
 import yaml
-import json
-import base64
 from dotenv import load_dotenv
 from datetime import datetime
 from discord import SyncWebhook, File
@@ -16,9 +14,6 @@ TRELLO_API_KEY = os.getenv('TRELLO_API_KEY')
 TRELLO_TOKEN = os.getenv('TRELLO_TOKEN')
 BOARD_ID = os.getenv('BOARD_ID')
 DISCORD_PUBLIC = os.getenv('DISCORD_PUBLIC')
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
-GITHUB_REPO = os.getenv('GITHUB_REPO', 'your-username/ticker-blog')  # format: owner/repo
-CLOUDFLARE_DEPLOY_HOOK = os.getenv('CLOUDFLARE_DEPLOY_HOOK')
 
 CONTENT_DIR = 'blog/content'
 IMAGES_DIR = os.path.join(CONTENT_DIR, 'imgs')
@@ -95,25 +90,8 @@ def parse_front_matter(text):
             yaml_block = parts[1]
             body = parts[2].lstrip('\n')
             
-            # Clean the YAML block to remove problematic markdown content
-            cleaned_yaml_lines = []
-            lines = yaml_block.strip().split('\n')
-            for line in lines:
-                line = line.strip()
-                # Skip lines that are clearly markdown (images, bold text, etc.)
-                if (line.startswith('![') or 
-                    line.startswith('**') or 
-                    line.startswith('*') or
-                    line.startswith('[') or
-                    '**' in line and '**' in line[line.find('**')+2:] or  # Bold text
-                    '[' in line and '](' in line):  # Links
-                    continue
-                cleaned_yaml_lines.append(line)
-            
-            cleaned_yaml_block = '\n'.join(cleaned_yaml_lines)
-            
             try:
-                front_matter = yaml.safe_load(cleaned_yaml_block) or {}
+                front_matter = yaml.safe_load(yaml_block) or {}
                 
                 # Post-process author field if it contains markdown
                 if 'author' in front_matter:
@@ -126,19 +104,7 @@ def parse_front_matter(text):
                         
             except yaml.YAMLError as e:
                 print(f"⚠️ YAML parsing error: {e}")
-                # Try to extract basic fields manually if YAML parsing fails
                 front_matter = {}
-                for line in cleaned_yaml_lines:
-                    if ':' in line:
-                        key, value = line.split(':', 1)
-                        key = key.strip()
-                        value = value.strip()
-                        # Remove quotes if present
-                        if value.startswith('"') and value.endswith('"'):
-                            value = value[1:-1]
-                        elif value.startswith("'") and value.endswith("'"):
-                            value = value[1:-1]
-                        front_matter[key] = value
 
     return front_matter, body
 
@@ -162,187 +128,6 @@ def download_image(url, save_path):
 
 #os.makedirs(CONTENT_DIR)
 #os.makedirs(IMAGES_DIR)
-
-def get_github_file_sha(path):
-    """Get the SHA of a file in GitHub"""
-    try:
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}?ref=content"  # Check content branch
-        headers = {
-            'Authorization': f'token {GITHUB_TOKEN}',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            return response.json()['sha']
-        return None
-    except Exception as e:
-        print(f"⚠️ Error getting file SHA: {e}")
-        return None
-
-def commit_to_github(file_path, content, message):
-    """Commit a file to GitHub using the API"""
-    try:
-        # Get current file SHA if it exists
-        sha = get_github_file_sha(file_path)
-        
-        # Prepare the commit data - commit to 'content' branch instead of 'main'
-        commit_data = {
-            'message': message,
-            'content': base64.b64encode(content.encode('utf-8')).decode('utf-8'),
-            'branch': 'content'  # Changed from 'main' to 'content'
-        }
-        
-        if sha:
-            commit_data['sha'] = sha
-        
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}"
-        headers = {
-            'Authorization': f'token {GITHUB_TOKEN}',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-        
-        response = requests.put(url, headers=headers, json=commit_data)
-        
-        if response.status_code in [200, 201]:
-            print(f"✅ Successfully committed {file_path}")
-            return True
-        else:
-            print(f"❌ Failed to commit {file_path}: {response.status_code}")
-            if response.status_code == 403:
-                print("   This usually means the GitHub token doesn't have write permissions")
-            elif response.status_code == 404:
-                print("   This usually means the repository path is incorrect")
-            return False
-            
-    except Exception as e:
-        print(f"❌ Error committing to GitHub: {e}")
-        return False
-
-def delete_from_github(file_path, message):
-    """Delete a file from GitHub using the API"""
-    try:
-        sha = get_github_file_sha(file_path)
-        if not sha:
-            print(f"⚠️ File {file_path} not found in GitHub")
-            return True
-        
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}"
-        headers = {
-            'Authorization': f'token {GITHUB_TOKEN}',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-        
-        data = {
-            'message': message,
-            'sha': sha
-        }
-        
-        response = requests.delete(url, headers=headers, json=data)
-        
-        if response.status_code == 200:
-            print(f"✅ Successfully deleted {file_path}")
-            return True
-        else:
-            print(f"❌ Failed to delete {file_path}: {response.status_code}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ Error deleting from GitHub: {e}")
-        return False
-
-def sync_posts_to_github():
-    """Sync all posts to GitHub and handle deletions"""
-    # Skip GitHub sync if running in Cloudflare
-    if is_cloudflare:
-        print("🚫 Skipping GitHub sync in Cloudflare environment")
-        return
-        
-    if not GITHUB_TOKEN or not GITHUB_REPO:
-        print("⚠️ GitHub token or repo not configured, skipping GitHub sync")
-        return
-    
-    try:
-        # Test GitHub API access first
-        test_url = f"https://api.github.com/repos/{GITHUB_REPO}"
-        headers = {
-            'Authorization': f'token {GITHUB_TOKEN}',
-            'Accept': 'application/vnd.github.v3+json'
-        }
-        
-        test_response = requests.get(test_url, headers=headers)
-        if test_response.status_code != 200:
-            print(f"❌ Cannot access GitHub repository: {test_response.status_code}")
-            print("Please check your GITHUB_TOKEN and GITHUB_REPO settings")
-            return
-        
-        # Get list of current files in GitHub (from content branch)
-        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/blog/content?ref=content"
-        
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            github_files = {item['name'] for item in response.json() if item['type'] == 'file'}
-        else:
-            github_files = set()
-        
-        # Get list of local files
-        local_files = set()
-        if os.path.exists(CONTENT_DIR):
-            for file in os.listdir(CONTENT_DIR):
-                if file.endswith('.md'):
-                    local_files.add(file)
-        
-        # Files to add/update
-        files_to_commit = []
-        for file in local_files:
-            file_path = os.path.join(CONTENT_DIR, file)
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            files_to_commit.append((f"blog/content/{file}", content))
-        
-        # Files to delete
-        files_to_delete = github_files - local_files
-        
-        # Commit changes
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        
-        # Add/update files
-        success_count = 0
-        for file_path, content in files_to_commit:
-            message = f"Update blog posts: {timestamp}"
-            if commit_to_github(file_path, content, message):
-                success_count += 1
-        
-        # Delete removed files
-        for file in files_to_delete:
-            message = f"Remove deleted post: {timestamp}"
-            delete_from_github(f"blog/content/{file}", message)
-        
-        if success_count > 0:
-            print(f"✅ Successfully synced {success_count} posts to GitHub")
-            
-            # Trigger Cloudflare deploy
-            if CLOUDFLARE_DEPLOY_HOOK:
-                try:
-                    deploy_response = requests.post(CLOUDFLARE_DEPLOY_HOOK)
-                    if deploy_response.ok:
-                        print("✅ Cloudflare deploy triggered")
-                        send_message_to_discord("✅ Blog updated and deploy triggered!")
-                    else:
-                        print("⚠️ Failed to trigger Cloudflare deploy")
-                except Exception as e:
-                    print(f"⚠️ Error triggering deploy: {e}")
-        else:
-            print("⚠️ No posts were successfully synced to GitHub")
-        
-        print("✅ GitHub sync completed!")
-        
-    except Exception as e:
-        error_msg = f"❌ Error syncing to GitHub: {str(e)}"
-        print(error_msg)
-        send_message_to_discord(error_msg)
-
-
 
 # --- Main build ---
 
@@ -392,12 +177,14 @@ for card in cards:
 
         image_markdown = ""
 
-        # If attachment exists, use the URL directly without downloading
+        # If attachment exists, download properly
         if attachments:
             image_url = attachments[0]['url']
+            if not custom_image_name:
+                custom_image_name = os.path.basename(image_url.split('?')[0])
+
+            image_save_path = os.path.join(IMAGES_DIR, custom_image_name)                    
             image_markdown = f"![{original_title}]({image_url})\n\n"
-        else:
-            image_markdown = ""
 
         # Prepare metadata
         metadata = [
@@ -420,22 +207,6 @@ for card in cards:
             metadata.append(f"Colors: {', '.join(label_colors)}")
         else:
             metadata.append(f"Colors: #F97316")
-
-        # Insert image after 5 sentences if image exists
-        if image_markdown:
-            # Split content into sentences
-            sentences = re.split(r'(?<=[.!?])\s+', description_md)
-            if len(sentences) >= 5:
-                # Insert image after 5th sentence
-                content_before_image = ' '.join(sentences[:5])
-                content_after_image = ' '.join(sentences[5:])
-                description_md = content_before_image + '\n\n' + image_markdown + content_after_image
-            else:
-                # If less than 5 sentences, add image at the end
-                description_md = description_md + '\n\n' + image_markdown
-        else:
-            # No image, just use the description as is
-            pass
 
         # Full file content
         file_content = '\n'.join(metadata) + '\n\n' + description_md
