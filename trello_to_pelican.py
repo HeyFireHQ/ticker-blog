@@ -521,3 +521,6 @@ sync_posts_to_github()
 
 # Deploy full blog to separate branch (commented out to prevent errors)
 push_generated_blog_to_branch('generated-site') 
+
+
+
