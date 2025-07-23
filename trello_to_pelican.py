@@ -366,6 +366,9 @@ def push_generated_blog_to_branch(branch_name='generated-site'):
         
         if tree_response.status_code != 201:
             print(f"❌ Failed to create tree: {tree_response.status_code}")
+            if tree_response.status_code == 422:
+                print("   This usually means there's an issue with file content encoding")
+                print("   Try running the deployment manually with: python deploy_blog.py")
             return
         
         tree_sha = tree_response.json()['sha']
@@ -520,7 +523,7 @@ print("✅ Markdown files with downloaded images and colors generated successful
 sync_posts_to_github()
 
 # Deploy full blog to separate branch (commented out to prevent errors)
-push_generated_blog_to_branch('generated-site') 
+# push_generated_blog_to_branch('generated-site')  # Uncomment when ready to deploy to separate branch 
 
 
 
