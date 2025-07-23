@@ -6,7 +6,7 @@ THEME = 'theme'
 # For the footer
 CURRENT_YEAR = 2025
 
-PATH = "content"
+PATH = "../content"
 
 TIMEZONE = 'America/Los_Angeles'
 
