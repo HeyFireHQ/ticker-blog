@@ -122,7 +122,9 @@ def parse_front_matter(text):
                         del front_matter['author']
                         
             except yaml.YAMLError as e:
-                print(f"⚠️ YAML parsing error: {e}")
+                error_message = f"⚠️ YAML parsing error: {e}"
+                print(error_message)
+                send_message_to_discord(error_message)
                 front_matter = {}
 
     return front_matter, body
