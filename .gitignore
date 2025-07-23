@@ -5,6 +5,9 @@ venv/
 .vscode/
 output/
 blog/output/*
+blog/content/*
+.firebase/*
+firebase.json
 
 # Firebase Development Configuration (contains sensitive localhost API keys)
 cardpress/firebase-config-dev.js
@@ -13,5 +16,4 @@ firebase-config-dev.js
 # Service Account Key (contains sensitive credentials)
 serviceAccountKey.json
 *serviceAccount*.json
-
 
