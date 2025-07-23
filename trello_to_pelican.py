@@ -20,27 +20,6 @@ GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
 GITHUB_REPO = os.getenv('GITHUB_REPO', 'your-username/ticker-blog')  # format: owner/repo
 CLOUDFLARE_DEPLOY_HOOK = os.getenv('CLOUDFLARE_DEPLOY_HOOK')
 
-# Check if we're running in a Cloudflare Pages build environment
-def is_cloudflare_build():
-    """Check if we're running in a Cloudflare Pages build environment"""
-    # Check multiple possible Cloudflare environment indicators
-    cf_indicators = [
-        os.getenv('CF_PAGES') == '1',
-        os.getenv('CLOUDFLARE_PAGES') == '1',
-        os.getenv('CF_PAGES_BRANCH') is not None,
-        os.getenv('CF_PAGES_COMMIT_SHA') is not None,
-        os.getenv('CF_PAGES_URL') is not None,
-        'CLOUDFLARE' in os.getenv('USER', '').upper(),
-        'CLOUDFLARE' in os.getenv('HOSTNAME', '').upper()
-    ]
-    return any(cf_indicators)
-
-# Check if we're in a Cloudflare build environment
-is_cloudflare = is_cloudflare_build()
-if is_cloudflare:
-    print("🚫 Detected Cloudflare Pages build environment - will skip GitHub sync")
-    print(f"Environment: CF_PAGES={os.getenv('CF_PAGES')}, CF_PAGES_BRANCH={os.getenv('CF_PAGES_BRANCH')}")
-
 CONTENT_DIR = 'blog/content'
 IMAGES_DIR = os.path.join(CONTENT_DIR, 'imgs')
 ALLOWED_LISTS = ["Ready to Publish", "Published"]
