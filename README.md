@@ -1,19 +1,22 @@
-# CardPress  
-**Trello-powered Static Blog Generator + Auto-Refresh System**
+# Ticker Blog  
+**Trello-powered Static Blog Generator with GitHub Sync + Auto-Refresh System**
 
 ---
 
 ## ✨ Overview
 
-**CardPress** is a lightweight system that lets you manage a **static blog** through **Trello**.
+**Ticker Blog** is a lightweight system that lets you manage a **static blog** through **Trello** with automatic GitHub synchronization.
 
 - Write and organize posts in Trello
-- Automatically generate a static blog
+- Automatically generate a static blog using Pelican
+- Sync changes to GitHub automatically
 - Host the blog on **Cloudflare Pages**
 - Trigger blog rebuilds instantly using a **Cloudflare Worker** at `/refresh`
 
 ✅ **No CMS needed**  
 ✅ **Full control over templates and content**  
+✅ **Automatic GitHub synchronization**  
+✅ **Handles post additions, updates, and deletions**  
 ✅ **Secure, fast, and fully serverless**
 
 ---
@@ -22,18 +25,23 @@
 
 ```
 /
-├── generate.py                 # Blog generator script
-├── requirements.txt            # Python dependencies
-├── templates/                  # Blog page templates
-│   ├── index_template.html
-│   ├── post_template.html
-│   ├── category_template.html
-├── output/                      # (Generated blog - auto-created)
+├── trello_to_pelican.py        # Main blog generator script
+├── requirements.txt             # Python dependencies
+├── blog/                        # Pelican blog configuration
+│   ├── content/                 # Generated markdown posts
+│   ├── output/                  # Generated static site
+│   ├── pelicanconf.py          # Pelican configuration
+│   ├── theme/                   # Custom blog theme
+│   │   ├── templates/          # HTML templates
+│   │   └── static/             # CSS, images, etc.
 ├── worker/
-│   ├── refresh.js               # Cloudflare Worker to trigger rebuild
-├── .env.example                 # Example environment variables
-├── .gitignore                   # Ignore output/ and secrets
-├── README.md                    # This file
+│   └── refresh.js              # Cloudflare Worker to trigger rebuild
+├── .github/
+│   └── workflows/              # GitHub Actions (optional)
+├── .env.example                # Example environment variables
+├── .gitignore                  # Ignore output/ and secrets
+├── wrangler.toml               # Cloudflare Worker configuration
+└── README.md                   # This file
 ```
 
 ---
@@ -42,16 +50,23 @@
 
 1. **Manage content in Trello**  
    - Cards in "Ready to Publish" or "Published" lists are treated as blog posts.
+   - Supports front matter for metadata (title, date, author, etc.)
+   - Downloads images from Trello attachments
 
-2. **Build the static blog**  
-   - `generate.py` fetches Trello cards.
-   - Renders pages using Jinja2 templates.
-   - Outputs static files into `/output/`.
+2. **Generate static blog with Pelican**  
+   - `trello_to_pelican.py` fetches Trello cards and converts them to markdown.
+   - Uses Pelican static site generator for robust blog features.
+   - Generates posts with proper metadata and image handling.
 
-3. **Host on Cloudflare Pages**  
-   - Cloudflare automatically builds and serves the blog from `/output/`.
+3. **Automatic GitHub synchronization**  
+   - Syncs all changes to GitHub using the GitHub API.
+   - Handles additions, updates, and deletions automatically.
+   - Works in any environment (including Cloudflare Workers).
 
-4. **Trigger rebuilds using `/refresh` endpoint**  
+4. **Host on Cloudflare Pages**  
+   - Cloudflare automatically builds and serves the blog from `blog/output/`.
+
+5. **Trigger rebuilds using `/refresh` endpoint**  
    - A Cloudflare Worker listens at `/refresh`.
    - When called with a secret key, it triggers a rebuild via Cloudflare Deploy Hook.
 
@@ -67,27 +82,36 @@ pip install -r requirements.txt
 
 ---
 
-### 2. Configure Trello Access
+### 2. Configure Environment Variables
 
-Create a `.env` file (based on `.env.example`) with your Trello API credentials:
+Create a `.env` file (based on `.env.example`) with your credentials:
 
 ```
+# Trello Configuration
 TRELLO_API_KEY=your-trello-api-key
 TRELLO_TOKEN=your-trello-token
 BOARD_ID=your-trello-board-id
+DISCORD_PUBLIC=your-discord-webhook-url
+
+# GitHub Configuration (for automatic commits)
+GITHUB_TOKEN=your-github-personal-access-token
+GITHUB_REPO=your-username/ticker-blog
+
+# Cloudflare Deploy Hook (optional)
+CLOUDFLARE_DEPLOY_HOOK=your-cloudflare-deploy-hook-url
 ```
 
-✅ These are automatically used by `generate.py`.
+✅ These are automatically used by `trello_to_pelican.py`.
 
 ---
 
 ### 3. Run Blog Generator Locally (optional)
 
 ```bash
-python generate.py
+python trello_to_pelican.py
 ```
 
-This generates the static site into the `/output/` folder.
+This generates the static site into the `blog/output/` folder and syncs changes to GitHub.
 
 ---
 
@@ -95,12 +119,14 @@ This generates the static site into the `/output/` folder.
 
 - Connect this GitHub repo to **Cloudflare Pages**.
 - Set Build Settings:
-  - **Build command:** `python generate.py`
-  - **Output directory:** `output`
+  - **Build command:** `cd blog && pelican content -s pelicanconf.py`
+  - **Output directory:** `blog/output`
 - Set the following Environment Variables inside Cloudflare Pages:
   - `TRELLO_API_KEY`
   - `TRELLO_TOKEN`
   - `BOARD_ID`
+  - `GITHUB_TOKEN` (for automatic commits)
+  - `GITHUB_REPO` (your repository name)
 
 ✅ Now every deployment will pull Trello cards and regenerate the blog automatically.
 
@@ -136,6 +162,19 @@ https://blog.heyticker.com/refresh?key=YOUR_SECRET
 ✅ The Worker triggers your Cloudflare Pages deploy hook.  
 ✅ Cloudflare regenerates and deploys the blog.
 
+## 🔄 Automatic GitHub Sync
+
+The system automatically syncs all changes to GitHub:
+
+- **New posts**: Added to GitHub with proper metadata
+- **Updated posts**: Modified in GitHub with new content
+- **Deleted posts**: Removed from GitHub when deleted from Trello
+- **Images**: Downloaded and committed to the repository
+
+✅ Works in any environment (local, Cloudflare Workers, etc.)  
+✅ Uses GitHub API (no SSH keys required)  
+✅ Sends Discord notifications about sync status
+
 ---
 
 ## 🔐 Important Security Notes
@@ -143,6 +182,8 @@ https://blog.heyticker.com/refresh?key=YOUR_SECRET
 - **Protect `/refresh`** with a strong `REFRESH_SECRET_KEY`.
 - **Never push** your real `.env` file to GitHub — use `.env.example` to document required environment variables.
 - **Use Environment Variables** inside Cloudflare Pages and Workers, not hardcoded secrets.
+- **GitHub Token**: Create a Personal Access Token with `repo` permissions for automatic commits.
+- **Trello Lists**: Only cards in "Ready to Publish" or "Published" lists are processed.
 
 ---
 
@@ -154,7 +195,9 @@ This project is designed to be:
 - **Cheap (or free) to run**
 - **Easy to manage**
 - **Expandable into a full SaaS if needed**
+- **Version controlled** with automatic GitHub sync
 
 ✅ You can manage your entire blog through Trello + Cloudflare  
-✅ With minimal code, maximum flexibility!
+✅ With minimal code, maximum flexibility!  
+✅ Full version control and deployment automation
 

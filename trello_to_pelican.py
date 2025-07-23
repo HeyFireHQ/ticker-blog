@@ -3,6 +3,8 @@ import shutil
 import re
 import requests
 import yaml
+import json
+import base64
 from dotenv import load_dotenv
 from datetime import datetime
 from discord import SyncWebhook, File
@@ -14,6 +16,9 @@ TRELLO_API_KEY = os.getenv('TRELLO_API_KEY')
 TRELLO_TOKEN = os.getenv('TRELLO_TOKEN')
 BOARD_ID = os.getenv('BOARD_ID')
 DISCORD_PUBLIC = os.getenv('DISCORD_PUBLIC')
+GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+GITHUB_REPO = os.getenv('GITHUB_REPO', 'your-username/ticker-blog')  # format: owner/repo
+CLOUDFLARE_DEPLOY_HOOK = os.getenv('CLOUDFLARE_DEPLOY_HOOK')
 
 CONTENT_DIR = 'blog/content'
 IMAGES_DIR = os.path.join(CONTENT_DIR, 'imgs')
@@ -129,6 +134,160 @@ def download_image(url, save_path):
 #os.makedirs(CONTENT_DIR)
 #os.makedirs(IMAGES_DIR)
 
+def get_github_file_sha(path):
+    """Get the SHA of a file in GitHub"""
+    try:
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+        headers = {
+            'Authorization': f'token {GITHUB_TOKEN}',
+            'Accept': 'application/vnd.github.v3+json'
+        }
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()['sha']
+        return None
+    except Exception as e:
+        print(f"⚠️ Error getting file SHA: {e}")
+        return None
+
+def commit_to_github(file_path, content, message):
+    """Commit a file to GitHub using the API"""
+    try:
+        # Get current file SHA if it exists
+        sha = get_github_file_sha(file_path)
+        
+        # Prepare the commit data
+        commit_data = {
+            'message': message,
+            'content': base64.b64encode(content.encode('utf-8')).decode('utf-8'),
+            'branch': 'main'
+        }
+        
+        if sha:
+            commit_data['sha'] = sha
+        
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}"
+        headers = {
+            'Authorization': f'token {GITHUB_TOKEN}',
+            'Accept': 'application/vnd.github.v3+json'
+        }
+        
+        response = requests.put(url, headers=headers, json=commit_data)
+        
+        if response.status_code in [200, 201]:
+            print(f"✅ Successfully committed {file_path}")
+            return True
+        else:
+            print(f"❌ Failed to commit {file_path}: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error committing to GitHub: {e}")
+        return False
+
+def delete_from_github(file_path, message):
+    """Delete a file from GitHub using the API"""
+    try:
+        sha = get_github_file_sha(file_path)
+        if not sha:
+            print(f"⚠️ File {file_path} not found in GitHub")
+            return True
+        
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}"
+        headers = {
+            'Authorization': f'token {GITHUB_TOKEN}',
+            'Accept': 'application/vnd.github.v3+json'
+        }
+        
+        data = {
+            'message': message,
+            'sha': sha
+        }
+        
+        response = requests.delete(url, headers=headers, json=data)
+        
+        if response.status_code == 200:
+            print(f"✅ Successfully deleted {file_path}")
+            return True
+        else:
+            print(f"❌ Failed to delete {file_path}: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error deleting from GitHub: {e}")
+        return False
+
+def sync_posts_to_github():
+    """Sync all posts to GitHub and handle deletions"""
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        print("⚠️ GitHub token or repo not configured, skipping GitHub sync")
+        return
+    
+    try:
+        # Get list of current files in GitHub
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/blog/content"
+        headers = {
+            'Authorization': f'token {GITHUB_TOKEN}',
+            'Accept': 'application/vnd.github.vnd.github.v3+json'
+        }
+        
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            github_files = {item['name'] for item in response.json() if item['type'] == 'file'}
+        else:
+            github_files = set()
+        
+        # Get list of local files
+        local_files = set()
+        if os.path.exists(CONTENT_DIR):
+            for file in os.listdir(CONTENT_DIR):
+                if file.endswith('.md'):
+                    local_files.add(file)
+        
+        # Files to add/update
+        files_to_commit = []
+        for file in local_files:
+            file_path = os.path.join(CONTENT_DIR, file)
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            files_to_commit.append((f"blog/content/{file}", content))
+        
+        # Files to delete
+        files_to_delete = github_files - local_files
+        
+        # Commit changes
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Add/update files
+        for file_path, content in files_to_commit:
+            message = f"Update blog posts: {timestamp}"
+            commit_to_github(file_path, content, message)
+        
+        # Delete removed files
+        for file in files_to_delete:
+            message = f"Remove deleted post: {timestamp}"
+            delete_from_github(f"blog/content/{file}", message)
+        
+        # Trigger Cloudflare deploy
+        if CLOUDFLARE_DEPLOY_HOOK:
+            try:
+                deploy_response = requests.post(CLOUDFLARE_DEPLOY_HOOK)
+                if deploy_response.ok:
+                    print("✅ Cloudflare deploy triggered")
+                    send_message_to_discord("✅ Blog updated and deploy triggered!")
+                else:
+                    print("⚠️ Failed to trigger Cloudflare deploy")
+            except Exception as e:
+                print(f"⚠️ Error triggering deploy: {e}")
+        
+        print("✅ GitHub sync completed!")
+        
+    except Exception as e:
+        error_msg = f"❌ Error syncing to GitHub: {str(e)}"
+        print(error_msg)
+        send_message_to_discord(error_msg)
+
 # --- Main build ---
 
 cards = fetch_trello_cards()
@@ -232,3 +391,6 @@ for card in cards:
         send_message_to_discord(error_message)
 
 print("✅ Markdown files with downloaded images and colors generated successfully!")
+
+# Sync to GitHub
+sync_posts_to_github()
