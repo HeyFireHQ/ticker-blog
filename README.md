@@ -1,165 +1,244 @@
-# Ticker Blog - Multi-System Blog Management
+# CardPress - Local Blog Management System
 
-**A collection of blog management tools and systems**
+A modern, local blog content management system built with Python, SQLite, and Flask. Create, manage, and deploy beautiful static blogs with an intuitive drag-and-drop Kanban interface.
 
----
+## ✨ Features
 
-## 📁 Project Structure
-
-This repository contains multiple blog management systems and tools:
-
-### 🎯 **CardPress** (`/cardpress/`)
-**Modern Cloudflare-powered blog admin system with GitHub Pages integration**
-
-- 🔐 **Admin-only interface** with secure authentication
-- 🌐 **Cloudflare edge infrastructure** (D1, R2, Workers)
-- 🚀 **GitHub Pages deployment** with live preview
-- 📱 **Responsive admin interface** with Kanban workflow
-- 👥 **Multi-admin user management**
-
-**→ [📖 CardPress Documentation](./cardpress/README.md)**
-
----
-
-### 📚 **Legacy Blog System** (`/blog/`)
-**Traditional Pelican-based static site generator**
-
-- Static site generation with Pelican
-- Theme customization
-- Traditional file-based workflow
-
----
-
-### 🔧 **Migration Tools**
-**Scripts for migrating between different blog systems**
-
-- `trello_to_pelican.py` - Convert Trello boards to Pelican posts
-- Legacy Firebase migration tools
-
----
+- **🏠 Local Development** - Runs entirely on your computer with SQLite
+- **🔐 Secure Authentication** - Encrypted user credentials with JWT tokens  
+- **📝 Kanban Interface** - Drag and drop posts between Ideas → Drafting → Editing → Deployed
+- **🖼️ Image Management** - Upload and manage images locally
+- **📱 Responsive Design** - Beautiful admin interface that works on all devices
+- **📄 Markdown Export** - Generates Pelican-ready markdown files
+- **🚀 Simple Deployment** - Export directly to your blog's content directory
+- **🏷️ Tags & Labels** - Organize content with flexible tagging system
 
 ## 🚀 Quick Start
 
-### For New Users (Recommended)
-**Use CardPress for a modern blog management experience:**
+### Prerequisites
+- Python 3.8+
+- Git (optional, for version control)
 
-```bash
-cd cardpress/
-./setup-cloudflare.sh
+### Installation
+
+1. **Clone Repository**
+   ```bash
+   git clone <your-repo-url>
+   cd ticker-blog
+   ```
+
+2. **Setup CardPress**
+   ```bash
+   cd cardpress
+   python setup.py
+   ```
+   *This will create a virtual environment and install dependencies*
+
+3. **Start Server**
+   ```bash
+   python app.py
+   ```
+
+4. **Access Admin Interface**
+   - Open: http://localhost:8000
+   - Login: `admin@cardpress.local` / `admin123`
+
+## 📝 Usage
+
+### Content Management Workflow
+
+1. **Create Posts**: Click "➕ Add Post" to create new content
+2. **Kanban Board**: Drag posts between columns:
+   - **Ideas** - Initial concepts
+   - **Drafting** - Active writing
+   - **Editing** - Review and polish  
+   - **Deployed** - Ready for publication
+
+3. **Rich Content**: 
+   - Write in Markdown
+   - Upload images
+   - Add tags and labels
+   - Set custom colors
+
+4. **Deploy**: Click "🚀 Deploy Site" to generate markdown files
+
+### Blog Integration
+
+CardPress integrates seamlessly with your existing Pelican blog:
+
+- **Markdown files** → Generated in `blog/content/`
+- **Images** → Copied to `blog/content/imgs/`
+- **Ready to build** → Run `pelican content` from blog directory
+
+## 📁 Project Structure
+
+```
+ticker-blog/
+├── cardpress/                # CardPress admin system
+│   ├── app.py                # Flask application
+│   ├── admin.html            # Admin interface
+│   ├── requirements.txt      # Python dependencies
+│   ├── cardpress.db          # SQLite database (auto-created)
+│   └── images/              # Uploaded images
+│
+├── blog/                     # Your Pelican blog
+│   ├── content/             # Generated markdown files
+│   ├── pelicanconf.py       # Pelican configuration  
+│   └── theme/               # Blog theme
+│
+└── README.md                # This file
 ```
 
-### For Legacy System
-**Use the traditional Pelican workflow:**
+## 🔧 Configuration
 
-```bash
-cd blog/
-pelican content
+### Admin Credentials
+
+Default login: `admin@cardpress.local` / `admin123`
+
+To change, edit the `.env` file in cardpress directory:
+```env
+ADMIN_EMAIL=your-email@example.com
+ADMIN_PASSWORD=your-secure-password
 ```
 
----
+### Blog Settings
 
-## 🎯 Which System Should I Use?
+Edit `blog/pelicanconf.py` to customize your blog:
+- Site name and URL
+- Author information  
+- Theme settings
+- Static file paths
 
-| Feature | CardPress | Legacy Blog |
-|---------|-----------|-------------|
-| **Admin Interface** | ✅ Beautiful web UI | ❌ Command line only |
-| **Multi-user** | ✅ Admin management | ❌ Single user |
-| **Cloud Integration** | ✅ Cloudflare edge | ❌ Local files |
-| **GitHub Integration** | ✅ Auto-deploy | ⚙️ Manual |
-| **Image Management** | ✅ R2 cloud storage | ❌ Local files |
-| **Security** | ✅ Admin-only access | ❌ No authentication |
-| **Performance** | ✅ Global CDN | ⚡ Static files |
-| **Learning Curve** | 🟢 Easy setup | 🟡 Requires technical knowledge |
+## 🚀 Deployment
 
-**Recommendation**: Use **CardPress** for new projects. It provides a modern, secure, and user-friendly blog management experience.
+### Local Development
+1. Generate content: Click "🚀 Deploy Site" in admin
+2. Build blog: `cd blog && pelican content`
+3. Serve locally: `pelican --listen`
 
----
+### Production Deployment
 
-## 📋 Requirements
+**Option 1: Cloudflare Pages**
+1. Push your repository to GitHub/GitLab
+2. Connect to Cloudflare Pages
+3. Set build command: `cd blog && pelican content`
+4. Set publish directory: `blog/output`
 
-### CardPress Requirements
-```bash
-# Node.js (for Wrangler CLI)
-node --version  # v16+ required
-
-# Python (for Pelican generation)
-python3 --version  # v3.7+ required
-
-# Dependencies
-npm install -g wrangler
-pip install -r requirements.txt
-```
-
-### Legacy Blog Requirements
-```bash
-# Python and Pelican
-pip install pelican markdown
-```
-
----
+**Option 2: Other Static Hosts**
+1. Build: `cd blog && pelican content` 
+2. Upload `blog/output/` to your hosting provider
 
 ## 🛠️ Development
 
-### CardPress Development
-```bash
-cd cardpress/
-wrangler dev --local
+### Adding Features
+
+The CardPress system is built with:
+- **Backend**: Flask + SQLite
+- **Frontend**: Vanilla JavaScript + CSS
+- **Authentication**: JWT tokens
+- **File handling**: Python pathlib
+
+### Database Schema
+
+```sql
+-- Users table
+CREATE TABLE users (
+    id TEXT PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL, 
+    password_hash TEXT NOT NULL,
+    role TEXT DEFAULT 'admin'
+);
+
+-- Posts table  
+CREATE TABLE posts (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    labels TEXT DEFAULT '[]',
+    status TEXT DEFAULT 'ideas',
+    image_url TEXT DEFAULT '',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-### Legacy Blog Development
+## 🔒 Security
+
+- **Password Hashing**: Werkzeug secure password hashing
+- **JWT Authentication**: Secure token-based sessions
+- **File Upload Security**: Secure filename handling
+- **SQL Injection Protection**: Parameterized queries
+- **Local Storage**: No external dependencies or API keys
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Server won't start:**
 ```bash
-cd blog/
-pelican content --autoreload --listen
+# Check Python version
+python --version  # Should be 3.8+
+
+# Reinstall dependencies
+pip install -r cardpress/requirements.txt
 ```
 
----
+**Can't login:**
+- Check credentials: `admin@cardpress.local` / `admin123`
+- Reset database: Delete `cardpress/cardpress.db` and restart
 
-## 📈 Migration Path
+**Images not showing:**
+- Verify images are in `cardpress/images/`
+- Check file permissions
+- Ensure deployment copied images to `blog/content/imgs/`
 
-### From Legacy Blog to CardPress
-1. **Export existing posts** using migration tools
-2. **Set up CardPress** following the setup guide
-3. **Import posts** via the admin interface
-4. **Configure GitHub Pages** for deployment
+### Debug Mode
 
-### From Other Systems
-- **From Trello**: Use `trello_to_pelican.py`
-- **From Firebase**: Use migration tools in CardPress
-- **From WordPress**: Export to markdown, then import to CardPress
+Enable Flask debugging in `cardpress/app.py`:
+```python
+app.run(debug=True, host='0.0.0.0', port=8000)
+```
 
----
+## 📚 API Reference
+
+CardPress provides a REST API for all operations:
+
+### Authentication
+- `POST /auth/login` - Login with email/password
+- `GET /auth/verify` - Verify JWT token
+
+### Posts Management  
+- `GET /posts` - List all posts
+- `POST /posts` - Create new post
+- `PUT /posts/{id}` - Update post
+- `DELETE /posts/{id}` - Delete post
+
+### File Upload
+- `POST /images/upload` - Upload image file
+- `GET /images/{filename}` - Serve image
+
+### Deployment
+- `POST /deploy` - Generate markdown files
 
 ## 🤝 Contributing
 
-### CardPress Contributions
-See [CardPress README](./cardpress/README.md) for specific contribution guidelines.
-
-### General Project Contributions
-```bash
-# Fork repository
-git clone https://github.com/your-username/ticker-blog.git
-
-# Create feature branch
-git checkout -b feature/amazing-feature
-
-# Make changes and test
-# Submit pull request
-```
-
----
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
-
----
+MIT License - see LICENSE file for details.
 
 ## 🆘 Support
 
-- 📖 **CardPress Documentation**: [./cardpress/README.md](./cardpress/README.md)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/your-repo/ticker-blog/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/your-repo/ticker-blog/discussions)
+- **Issues**: Report bugs on GitHub Issues
+- **Documentation**: See this README and code comments
+- **Security**: Email maintainers for security issues
 
 ---
 
-**Choose CardPress for a modern blog management experience! 🚀** 
+**Transform your ideas into beautiful blogs with CardPress! 🎉**
+
+Built with ❤️ for bloggers who want simplicity without sacrificing power. 
