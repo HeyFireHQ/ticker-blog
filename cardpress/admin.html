@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CardPress - Admin Dashboard</title>
+    <title>TinaCMS Clone - Content Management</title>
     <style>
-        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -13,511 +12,31 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            color: #1a202c;
+            line-height: 1.6;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        /* Authentication Screen */
-        .auth-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .auth-subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .auth-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #f0f0f0;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .auth-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .auth-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .auth-error {
-            color: #e74c3c;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        /* Main Dashboard */
-        .main-content {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            background: rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .header-title {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover,
-        .nav-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logout-btn {
-            background: rgba(231, 76, 60, 0.2);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            background: rgba(231, 76, 60, 0.4);
-        }
-
-        /* Content Area */
-        .content {
-            flex: 1;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        /* Posts View */
-        .posts-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .posts-title {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-success {
-            background: #27ae60;
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Kanban Board */
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .column {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 20px;
-            min-height: 400px;
-        }
-
-        .column-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .column-title {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .column-count {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-        }
-
-        .card-list {
-            min-height: 200px;
-        }
-
-        .post-card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 4px solid #667eea;
-        }
-
-        .post-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .post-card[draggable="true"] {
-            cursor: grab;
-        }
-
-        .post-card:active {
-            cursor: grabbing;
-        }
-
-        .card-list.drag-over {
-            background-color: rgba(102, 126, 234, 0.1);
-            border: 2px dashed #667eea;
-            border-radius: 8px;
-            min-height: 100px;
-        }
-
-        .post-card.dragging {
-            opacity: 0.4;
-            transform: rotate(2deg);
-        }
-
-        .card-title {
-            font-weight: bold;
-            color: #333;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-
-        .card-content {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .card-labels {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        .label {
-            background: #667eea;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-        }
-
-        .card-date {
-            color: #999;
-            font-size: 0.8rem;
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .card-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .edit-btn {
-            background: #3498db;
-            color: white;
-        }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .card-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        /* Modal Styles */
-        .modal {
+        /* Loading Screen */
+        .loading-screen {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            right: 0;
+            bottom: 0;
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
+            z-index: 10000;
         }
 
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #999;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-input,
-        .form-select,
-        .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #f0f0f0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-input:focus,
-        .form-select:focus,
-        .form-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .image-upload {
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .image-upload:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .image-preview {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 30px;
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        /* Loading States */
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            margin: -10px 0 0 -10px;
-            border: 2px solid #fff;
-            border-top: 2px solid transparent;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #3182ce;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -527,624 +46,1033 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Responsive Design */
+        /* Header */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3182ce;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c5aa0;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        /* Sidebar */
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 65px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #fff;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background: #f7fafc;
+        }
+
+        .nav-item.active {
+            background: #ebf8ff;
+            color: #3182ce;
+            border-left: 3px solid #3182ce;
+        }
+
+        .repo-selector {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 0.5rem;
+        }
+
+        .repo-selector select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 250px);
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            transition: shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .content-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-meta {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            padding: 0.25rem;
+            background: none;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            color: #718096;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-description {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            border: 2px dashed #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .image-upload:hover {
+            border-color: #3182ce;
+        }
+
+        .image-upload.dragover {
+            border-color: #3182ce;
+            background: #f7fafc;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+        }
+
+        /* Repository Setup */
+        .repo-setup {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .repo-setup-icon {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+        }
+
+        .repo-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .repo-item {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .repo-item:hover {
+            border-color: #3182ce;
+            background: #f7fafc;
+        }
+
+        .repo-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .repo-description {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+
+        /* Template Fields */
+        .template-fields {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            background: #f9fafb;
+        }
+
+        /* Error States */
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-4 { gap: 1rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .text-center { text-align: center; }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .kanban-board {
-                grid-template-columns: 1fr;
-            }
-            
-            .posts-header {
+            .layout {
                 flex-direction: column;
-                gap: 20px;
-                align-items: stretch;
             }
             
-            .action-buttons {
-                justify-content: center;
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
             }
             
-            .modal-content {
-                width: 95%;
-                padding: 20px;
+            .main-content {
+                max-width: 100vw;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Authentication Screen -->
-    <div id="auth-screen" class="auth-screen">
-        <div class="auth-card">
-            <h1 class="logo">CardPress</h1>
-            <p class="auth-subtitle">Local Python Edition</p>
-            
-            <form id="auth-form" class="auth-form">
-                <div class="input-group">
-                    <input type="email" id="auth-email" placeholder="Email Address" required>
-                </div>
-                
-                <div class="input-group">
-                    <input type="password" id="auth-password" placeholder="Password" required>
-                </div>
-                
-                <button type="submit" id="auth-submit-btn" class="auth-btn">
-                    Sign In
-                </button>
-                
-                <div id="auth-error" class="auth-error hidden"></div>
-            </form>
-        </div>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="spinner"></div>
     </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">TinaCMS Clone</div>
+        <div class="user-menu">
+            <div id="user-info" class="user-info hidden">
+                <img id="user-avatar" class="avatar" src="" alt="User">
+                <span id="user-name"></span>
+                </div>
+            <button id="logout-btn" class="btn btn-secondary hidden">Logout</button>
+            <a id="login-btn" href="/auth/login" class="btn btn-primary">Login with GitHub</a>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div id="repo-selector" class="repo-selector">
+                <label class="form-label">Repository</label>
+                <select id="repo-select" class="form-select">
+                    <option value="">Select repository...</option>
+                </select>
+                </div>
+                
+            <div class="nav-item active" data-page="content">
+                <span>📄</span> Content
+        </div>
+            <div class="nav-item" data-page="templates">
+                <span>📝</span> Templates
+    </div>
+            <div class="nav-item" data-page="files">
+                <span>📁</span> Files
+            </div>
+            <div class="nav-item" data-page="branches">
+                <span>🌿</span> Branches
+            </div>
+        </nav>
 
     <!-- Main Content -->
-    <div id="main-content" class="main-content hidden">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <h1 class="header-title">CardPress Admin</h1>
+        <main class="main-content">
+            <!-- Repository Setup -->
+            <div id="repo-setup" class="repo-setup">
+                <div class="repo-setup-icon">📚</div>
+                <h2>Select a Repository</h2>
+                <p>Choose a GitHub repository to manage your content</p>
+                <div id="repo-list" class="repo-list"></div>
             </div>
             
-            <div class="header-right">
-                <div class="user-info">
-                    <span>👤</span>
-                    <span id="user-email">admin@cardpress.local</span>
+            <!-- Content Page -->
+            <div id="content-page" class="hidden">
+                <div class="page-header flex justify-between items-center">
+                    <div>
+                        <h1 class="page-title">Content</h1>
+                        <p class="page-description">Manage your content files</p>
                 </div>
-                <button id="logout-btn" class="logout-btn">Logout</button>
+                    <button id="new-content-btn" class="btn btn-primary">+ New Content</button>
             </div>
-        </header>
+                <div id="content-grid" class="content-grid"></div>
+            </div>
 
-        <!-- Content -->
-        <div class="content">
-            <!-- Posts View -->
-            <div id="posts-view">
-                <div class="posts-header">
-                    <h2 class="posts-title">Content Management</h2>
-                    <div class="action-buttons">
-                        <button id="add-post-btn" class="btn btn-primary">
-                            ➕ Add Post
-                        </button>
-                        <button id="deploy-btn" class="btn btn-success">
-                            🚀 Deploy Site
-                        </button>
+            <!-- Templates Page -->
+            <div id="templates-page" class="hidden">
+                <div class="page-header">
+                    <h1 class="page-title">Templates</h1>
+                    <p class="page-description">Content templates and field definitions</p>
                     </div>
+                <div id="templates-grid" class="content-grid"></div>
                 </div>
 
-                <!-- Kanban Board -->
-                <div id="kanban-board" class="kanban-board">
-                    <!-- Columns will be dynamically generated -->
+            <!-- Files Page -->
+            <div id="files-page" class="hidden">
+                <div class="page-header flex justify-between items-center">
+                    <div>
+                        <h1 class="page-title">Files</h1>
+                        <p class="page-description">Browse repository files</p>
                 </div>
+                    <button id="upload-image-btn" class="btn btn-primary">Upload Image</button>
             </div>
+                <div id="file-browser"></div>
         </div>
+
+            <!-- Branches Page -->
+            <div id="branches-page" class="hidden">
+                <div class="page-header flex justify-between items-center">
+                    <div>
+                        <h1 class="page-title">Branches</h1>
+                        <p class="page-description">Manage repository branches</p>
+                    </div>
+                    <button id="new-branch-btn" class="btn btn-primary">+ New Branch</button>
+                </div>
+                <div id="branches-list"></div>
+            </div>
+        </main>
     </div>
 
-    <!-- Post Modal -->
-    <div id="post-modal" class="modal hidden">
-        <div class="modal-content">
+    <!-- Content Editor Modal -->
+    <div id="content-modal" class="modal-overlay hidden">
+        <div class="modal">
             <div class="modal-header">
-                <h3 id="modal-title" class="modal-title">Add New Post</h3>
-                <button id="close-modal-btn" class="close-btn">&times;</button>
+                <h2 id="modal-title" class="modal-title">Edit Content</h2>
+                <button class="close-btn" onclick="closeModal('content-modal')">&times;</button>
             </div>
-            
-            <form id="post-form">
-                <input type="hidden" id="post-id">
-                
-                <div class="form-group">
-                    <label class="form-label">Column</label>
-                    <select id="post-column" class="form-select">
-                        <option value="ideas">Ideas</option>
-                        <option value="drafting">Drafting</option>
-                        <option value="editing">Editing</option>
-                        <option value="deployed">Deployed</option>
+            <div id="modal-content">
+                <div id="template-selector" class="form-group">
+                    <label class="form-label">Template</label>
+                    <select id="template-select" class="form-select">
+                        <option value="">Select template...</option>
                     </select>
                 </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Title</label>
-                    <input type="text" id="post-title" class="form-input" required>
+                <div id="content-form"></div>
+                </div>
+            <div class="flex gap-2 mt-4">
+                <button id="save-content-btn" class="btn btn-primary">Save</button>
+                <button onclick="closeModal('content-modal')" class="btn btn-secondary">Cancel</button>
+                </div>
+                </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Content (Markdown supported)</label>
-                    <textarea id="post-content" class="form-textarea" rows="8"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Labels (comma-separated)</label>
-                    <input type="text" id="post-labels" class="form-input" placeholder="tech, python, web">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Colors (comma-separated hex codes)</label>
-                    <input type="text" id="post-colors" class="form-input" placeholder="#667eea, #764ba2">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Featured Image</label>
-                    <div class="image-upload" onclick="document.getElementById('image-input').click()">
+    <!-- Image Upload Modal -->
+    <div id="image-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Upload Image</h2>
+                <button class="close-btn" onclick="closeModal('image-modal')">&times;</button>
+            </div>
+            <div class="image-upload" id="image-upload">
                         <input type="file" id="image-input" accept="image/*" style="display: none;">
-                        <p>Click to upload image</p>
-                        <img id="image-preview" class="image-preview hidden" alt="Image preview">
+                <p>Click or drag to upload image</p>
+                <img id="image-preview" class="image-preview hidden" alt="Preview">
                     </div>
-                </div>
-            </form>
-            
-            <div class="modal-actions">
-                <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
-                <button id="save-btn" class="btn btn-primary">Save Post</button>
+            <div class="flex gap-2 mt-4">
+                <button id="upload-image-save-btn" class="btn btn-primary">Upload</button>
+                <button onclick="closeModal('image-modal')" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Configuration - Local Python backend
-        const API_BASE_URL = 'http://localhost:8000/';
+        // Configuration
+        const API_BASE = '/api';
 
-        // App State
-        let authToken = null;
-        let posts = [];
+        // Global state
         let currentUser = null;
+        let selectedRepo = null;
+        let templates = {};
+        let authToken = null;
 
-        const columns = [
-            { id: 'ideas', title: 'Ideas', color: '#3498db' },
-            { id: 'drafting', title: 'Drafting', color: '#f39c12' },
-            { id: 'editing', title: 'Editing', color: '#e74c3c' },
-            { id: 'deployed', title: 'Deployed', color: '#27ae60' }
-        ];
-
-        // DOM Elements
-        const authScreen = document.getElementById('auth-screen');
-        const mainContent = document.getElementById('main-content');
-        const authForm = document.getElementById('auth-form');
-        const authEmailInput = document.getElementById('auth-email');
-        const authPasswordInput = document.getElementById('auth-password');
-        const authError = document.getElementById('auth-error');
-        const authSubmitBtn = document.getElementById('auth-submit-btn');
-        
-        const logoutBtn = document.getElementById('logout-btn');
-        const userEmailDisplay = document.getElementById('user-email');
-        
-        const kanbanBoard = document.getElementById('kanban-board');
-        const addPostBtn = document.getElementById('add-post-btn');
-        const deployBtn = document.getElementById('deploy-btn');
-        
-        const postModal = document.getElementById('post-modal');
-        const postForm = document.getElementById('post-form');
-        const modalTitle = document.getElementById('modal-title');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const cancelBtn = document.getElementById('cancel-btn');
-        const saveBtn = document.getElementById('save-btn');
-        const imagePreview = document.getElementById('image-preview');
-        const imageInput = document.getElementById('image-input');
-
-        // API Helper Functions
-        async function apiCall(endpoint, options = {}) {
-            const url = API_BASE_URL + endpoint.replace(/^\//, '');
-            const headers = {
-                'Content-Type': 'application/json',
-                ...options.headers
-            };
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', async () => {
+            showLoading();
+            
+            // Check for auth token in URL
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            if (token) {
+                authToken = token;
+                localStorage.setItem('authToken', token);
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else {
+                authToken = localStorage.getItem('authToken');
+            }
 
             if (authToken) {
-                headers['Authorization'] = `Bearer ${authToken}`;
-            }
-
-            // Handle FormData (for file uploads)
-            if (options.body instanceof FormData) {
-                delete headers['Content-Type'];
-            }
-
-            const response = await fetch(url, {
-                ...options,
-                headers,
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: 'Network error' }));
-                throw new Error(errorData.error || `HTTP ${response.status}`);
-            }
-
-            return await response.json();
-        }
-
-        // Authentication Functions
-        async function login(email, password) {
-            try {
-                const response = await apiCall('auth/login', {
-                    method: 'POST',
-                    body: JSON.stringify({ email, password })
-                });
-
-                authToken = response.token;
-                currentUser = response.user;
-
-                // Store in localStorage
-                localStorage.setItem('cardpress_token', authToken);
-                localStorage.setItem('cardpress_user', JSON.stringify(currentUser));
-
-                showMainContent();
-                await loadPosts();
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        async function verifyToken() {
-            try {
-                const response = await apiCall('auth/verify');
-                currentUser = response.user;
-                showMainContent();
-                await loadPosts();
-            } catch (error) {
-                showAuthScreen(true);
-            }
-        }
-
-        function logout() {
-            authToken = null;
-            currentUser = null;
-            localStorage.removeItem('cardpress_token');
-            localStorage.removeItem('cardpress_user');
-            showAuthScreen(true);
-        }
-
-        function showAuthScreen(clearError = false) {
-            authScreen.classList.remove('hidden');
-            mainContent.classList.add('hidden');
-            if (clearError) {
-                authError.classList.add('hidden');
-            }
-        }
-
-        function showMainContent() {
-            authScreen.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-            userEmailDisplay.textContent = currentUser.email;
-        }
-
-        function showError(message) {
-            authError.textContent = message;
-            authError.classList.remove('hidden');
-        }
-
-        // Posts Functions
-        async function loadPosts() {
-            try {
-                posts = await apiCall('posts');
-                renderBoard();
-            } catch (error) {
-                alert('Failed to load posts: ' + error.message);
-            }
-        }
-
-        function renderBoard() {
-            kanbanBoard.innerHTML = '';
-            
-            columns.forEach(column => {
-                const columnPosts = posts.filter(post => post.status === column.id);
-                
-                const columnEl = document.createElement('div');
-                columnEl.className = 'column board-column';
-                columnEl.dataset.column = column.id;
-                columnEl.innerHTML = `
-                    <div class="column-header">
-                        <h3 class="column-title">${column.title}</h3>
-                        <span class="column-count">${columnPosts.length}</span>
-                    </div>
-                    <div class="card-list" id="column-${column.id}"></div>
-                `;
-
-                kanbanBoard.appendChild(columnEl);
-
-                const cardList = columnEl.querySelector('.card-list');
-                
-                // Add drop zone event listeners
-                cardList.addEventListener('dragover', handleDragOver);
-                cardList.addEventListener('dragenter', handleDragEnter);
-                cardList.addEventListener('dragleave', handleDragLeave);
-                cardList.addEventListener('drop', handleDrop);
-                
-                columnPosts.forEach(post => renderPostCard(post, cardList));
-            });
-        }
-
-        function renderPostCard(post, container) {
-            const card = document.createElement('div');
-            card.className = 'post-card';
-            card.dataset.id = post.id;
-            card.draggable = true;
-            
-            const labels = JSON.parse(post.labels || '[]');
-            const labelsHtml = labels.map(label => 
-                `<span class="label">${label}</span>`
-            ).join('');
-
-            card.innerHTML = `
-                <div class="card-title">${post.title}</div>
-                <div class="card-content">${post.content.substring(0, 100)}${post.content.length > 100 ? '...' : ''}</div>
-                <div class="card-meta">
-                    <div class="card-labels">${labelsHtml}</div>
-                    <div class="card-date">${new Date(post.updated_at).toLocaleDateString()}</div>
-                </div>
-                <div class="card-actions">
-                    <button class="card-btn edit-btn" onclick="window.editPost('${post.id}')">Edit</button>
-                    <button class="card-btn delete-btn" onclick="window.deletePost('${post.id}', '${post.title}')">Delete</button>
-                </div>
-            `;
-
-            // Add drag and drop event listeners
-            card.addEventListener('dragstart', handleDragStart);
-            card.addEventListener('dragend', handleDragEnd);
-
-            // Add click event for editing (alternative to onclick)
-            card.addEventListener('click', (e) => {
-                if (!e.target.closest('.card-actions')) {
-                    window.editPost(post.id);
-                }
-            });
-
-            container.appendChild(card);
-        }
-
-        // Drag and Drop Functions
-        let draggedCard = null;
-
-        function handleDragStart(e) {
-            draggedCard = this;
-            this.style.opacity = '0.4';
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/html', this.outerHTML);
-        }
-
-        function handleDragEnd(e) {
-            this.style.opacity = '1';
-            draggedCard = null;
-        }
-
-        function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        }
-
-        function handleDragEnter(e) {
-            this.classList.add('drag-over');
-        }
-
-        function handleDragLeave(e) {
-            this.classList.remove('drag-over');
-        }
-
-        function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-
-            this.classList.remove('drag-over');
-
-            if (draggedCard !== this) {
-                const postId = draggedCard.dataset.id;
-                const newColumnId = this.closest('.board-column').dataset.column;
-                const post = posts.find(p => p.id === postId);
-                
-                if (post && post.status !== newColumnId) {
-                    updatePostColumn(postId, newColumnId);
-                }
-            }
-
-            return false;
-        }
-
-        async function updatePostColumn(postId, newColumn) {
-            try {
-                const post = posts.find(p => p.id === postId);
-                if (!post) return;
-
-                const postData = {
-                    title: post.title,
-                    content: post.content,
-                    labels: JSON.parse(post.labels || '[]'),
-                    colors: post.colors || '',
-                    column: newColumn,
-                    imageUrl: post.image_url || '',
-                    imagePath: post.image_path || ''
-                };
-
-                await apiCall(`posts/${postId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(postData)
-                });
-
-                // Update local data
-                post.status = newColumn;
-                renderBoard();
-
-            } catch (error) {
-                alert('Failed to move post: ' + error.message);
-                renderBoard(); // Revert UI changes
-            }
-        }
-
-        // Modal Functions
-        function openModal(postId = null) {
-            if (postId) {
-                const post = posts.find(p => p.id === postId);
-                if (post) {
-                    modalTitle.textContent = 'Edit Post';
-                    document.getElementById('post-id').value = post.id;
-                    document.getElementById('post-column').value = post.status;
-                    document.getElementById('post-title').value = post.title;
-                    document.getElementById('post-content').value = post.content;
-                    document.getElementById('post-labels').value = JSON.parse(post.labels || '[]').join(', ');
-                    document.getElementById('post-colors').value = post.colors || '';
-                    
-                    if (post.image_url) {
-                        imagePreview.src = post.image_url;
-                        imagePreview.classList.remove('hidden');
-                    }
-                }
+                await verifyAuth();
             } else {
-                modalTitle.textContent = 'Add New Post';
-                postForm.reset();
-                imagePreview.classList.add('hidden');
-                document.getElementById('post-column').value = 'ideas';
+                hideLoading();
+                showLoginState();
             }
-            
-            postModal.classList.remove('hidden');
-        }
+        });
 
-        function closeModal() {
-            postModal.classList.add('hidden');
-            postForm.reset();
-            imagePreview.classList.add('hidden');
-        }
-
-        async function savePost() {
+        // Authentication
+        async function verifyAuth() {
             try {
-                showLoading(saveBtn, true);
-                
-                const postId = document.getElementById('post-id').value;
-                const isEdit = !!postId;
-
-                let imageUrl = imagePreview.src || '';
-                let imagePath = '';
-
-                // Upload image if selected
-                const imageFile = imageInput.files[0];
-                if (imageFile) {
-                    const uploadResponse = await uploadImage(imageFile);
-                    imageUrl = uploadResponse.url;
-                    imagePath = uploadResponse.path;
-                }
-
-                const postData = {
-                    title: document.getElementById('post-title').value,
-                    content: document.getElementById('post-content').value,
-                    labels: document.getElementById('post-labels').value.split(',').map(l => l.trim()).filter(Boolean),
-                    colors: document.getElementById('post-colors').value.trim() || '',
-                    column: document.getElementById('post-column').value || 'ideas',
-                    imageUrl: imageUrl,
-                    imagePath: imagePath
-                };
-
-                if (isEdit) {
-                    await apiCall(`posts/${postId}`, {
-                        method: 'PUT',
-                        body: JSON.stringify(postData)
-                    });
-                } else {
-                    await apiCall('posts', {
-                        method: 'POST',
-                        body: JSON.stringify(postData)
-                    });
-                }
-
-                await loadPosts();
-                closeModal();
-                
+                const response = await apiCall('/auth/verify');
+                currentUser = response.user;
+                showAuthenticatedState();
+                await loadRepositories();
+                await loadTemplates();
             } catch (error) {
-                alert('Failed to save post: ' + error.message);
+                console.error('Auth verification failed:', error);
+                showLoginState();
             } finally {
-                showLoading(saveBtn, false);
+                hideLoading();
             }
         }
 
-        async function uploadImage(file) {
-            const formData = new FormData();
-            formData.append('image', file);
+        function showLoginState() {
+            document.getElementById('login-btn').classList.remove('hidden');
+            document.getElementById('user-info').classList.add('hidden');
+            document.getElementById('logout-btn').classList.add('hidden');
+        }
 
-            return await apiCall('images/upload', {
-                method: 'POST',
-                body: formData
+        function showAuthenticatedState() {
+            document.getElementById('login-btn').classList.add('hidden');
+            document.getElementById('user-info').classList.remove('hidden');
+            document.getElementById('logout-btn').classList.remove('hidden');
+            
+            document.getElementById('user-avatar').src = currentUser.avatar_url;
+            document.getElementById('user-name').textContent = currentUser.name || currentUser.login;
+        }
+
+        // API calls
+        async function apiCall(endpoint, options = {}) {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(authToken && { 'Authorization': `Bearer ${authToken}` })
+                },
+                ...options
+            };
+
+            const response = await fetch(API_BASE + endpoint, config);
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ error: 'Request failed' }));
+                throw new Error(error.error || 'Request failed');
+            }
+
+            return response.json();
+        }
+
+        // Repository management
+        async function loadRepositories() {
+            try {
+                const repos = await apiCall('/repositories');
+                populateRepositorySelector(repos);
+                populateRepositoryList(repos);
+            } catch (error) {
+                showError('Failed to load repositories: ' + error.message);
+            }
+        }
+
+        function populateRepositorySelector(repos) {
+            const select = document.getElementById('repo-select');
+            select.innerHTML = '<option value="">Select repository...</option>';
+            
+            repos.forEach(repo => {
+                const option = document.createElement('option');
+                option.value = repo.full_name;
+                option.textContent = repo.full_name;
+                select.appendChild(option);
+            });
+
+            select.addEventListener('change', selectRepository);
+        }
+
+        function populateRepositoryList(repos) {
+            const list = document.getElementById('repo-list');
+            list.innerHTML = '';
+            
+            repos.forEach(repo => {
+                const item = document.createElement('div');
+                item.className = 'repo-item';
+                item.onclick = () => selectRepositoryFromList(repo.full_name);
+                
+                item.innerHTML = `
+                    <div class="repo-name">${repo.full_name}</div>
+                    <div class="repo-description">${repo.description || 'No description'}</div>
+                `;
+                
+                list.appendChild(item);
             });
         }
 
-        async function deployPosts() {
+        async function selectRepository() {
+            const select = document.getElementById('repo-select');
+            const repoName = select.value;
+            
+            if (!repoName) return;
+            
             try {
-                showLoading(deployBtn, true);
-                const response = await apiCall('deploy', {
+                await apiCall(`/repositories/${encodeURIComponent(repoName)}/select`, {
                     method: 'POST'
                 });
                 
-                alert(`✅ Deployment successful!\n\n${response.message}\nOutput directory: ${response.output_dir}\n\nYou can now deploy the static_output folder to Cloudflare Pages.`);
+                selectedRepo = repoName;
+                showRepositoryContent();
+                await loadContent();
             } catch (error) {
-                alert('Failed to deploy: ' + error.message);
-            } finally {
-                showLoading(deployBtn, false);
+                showError('Failed to select repository: ' + error.message);
+        }
+        }
+
+        function selectRepositoryFromList(repoName) {
+            document.getElementById('repo-select').value = repoName;
+            selectRepository();
+        }
+
+        function showRepositoryContent() {
+            document.getElementById('repo-setup').classList.add('hidden');
+            document.getElementById('content-page').classList.remove('hidden');
+        }
+
+        // Templates
+        async function loadTemplates() {
+            try {
+                templates = await apiCall('/templates');
+                populateTemplateSelector();
+                showTemplatesPage();
+            } catch (error) {
+                console.error('Failed to load templates:', error);
             }
         }
 
-        // Global Functions (accessible from onclick handlers)
-        window.editPost = (postId) => openModal(postId);
-        
-        window.deletePost = async (postId, title) => {
-            if (!confirm(`Are you sure you want to delete "${title}"?\n\nThis action cannot be undone.`)) {
+        function populateTemplateSelector() {
+            const select = document.getElementById('template-select');
+            select.innerHTML = '<option value="">Select template...</option>';
+            
+            Object.values(templates).forEach(template => {
+                const option = document.createElement('option');
+                option.value = template.name;
+                option.textContent = template.label;
+                select.appendChild(option);
+            });
+
+            select.addEventListener('change', onTemplateChange);
+        }
+
+        function showTemplatesPage() {
+            const grid = document.getElementById('templates-grid');
+            grid.innerHTML = '';
+            
+            Object.values(templates).forEach(template => {
+                const card = document.createElement('div');
+                card.className = 'content-card';
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">${template.label}</div>
+                            <div class="card-meta">${template.description || 'No description'}</div>
+                        </div>
+                    </div>
+                    <div class="card-meta">${template.fields.length} fields</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Content management
+        async function loadContent() {
+            if (!selectedRepo) return;
+            
+            try {
+                showLoading();
+                const content = await apiCall('/content');
+                displayContent(content);
+            } catch (error) {
+                showError('Failed to load content: ' + error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayContent(content) {
+            const grid = document.getElementById('content-grid');
+            grid.innerHTML = '';
+            
+            // Filter for content files (markdown, etc.)
+            const contentFiles = content.filter(item => 
+                item.type === 'file' && 
+                (item.name.endsWith('.md') || item.name.endsWith('.mdx'))
+            );
+            
+            contentFiles.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'content-card';
+                card.onclick = () => editContent(file);
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">${file.name}</div>
+                            <div class="card-meta">${file.path}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="icon-btn" onclick="event.stopPropagation(); editContent(file)">✏️</button>
+                            <button class="icon-btn" onclick="event.stopPropagation(); deleteContent(file)">🗑️</button>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            if (contentFiles.length === 0) {
+                grid.innerHTML = '<p class="text-center">No content files found. Create your first piece of content!</p>';
+            }
+        }
+
+        // Content editing
+        function showContentModal(title = 'Edit Content') {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('content-modal').classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function onTemplateChange() {
+            const templateName = document.getElementById('template-select').value;
+            if (!templateName) {
+                document.getElementById('content-form').innerHTML = '';
+                return;
+        }
+
+            const template = templates[templateName];
+            if (template) {
+                renderTemplateForm(template);
+            }
+        }
+
+        function renderTemplateForm(template) {
+            const form = document.getElementById('content-form');
+            form.innerHTML = '';
+            
+            template.fields.forEach(field => {
+                const group = document.createElement('div');
+                group.className = 'form-group';
+                
+                let input = '';
+                switch (field.type) {
+                    case 'text':
+                        input = `<input type="text" id="field-${field.name}" class="form-input" ${field.required ? 'required' : ''}>`;
+                        break;
+                    case 'textarea':
+                        input = `<textarea id="field-${field.name}" class="form-textarea" ${field.required ? 'required' : ''}></textarea>`;
+                        break;
+                    case 'rich-text':
+                        input = `<textarea id="field-${field.name}" class="form-textarea" style="min-height: 200px;" ${field.required ? 'required' : ''}></textarea>`;
+                        break;
+                    case 'select':
+                        const options = field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                        input = `<select id="field-${field.name}" class="form-select" ${field.required ? 'required' : ''}><option value="">Select...</option>${options}</select>`;
+                        break;
+                    case 'boolean':
+                        input = `<div class="form-checkbox"><input type="checkbox" id="field-${field.name}"> <span>Yes</span></div>`;
+                        break;
+                    case 'date':
+                        input = `<input type="date" id="field-${field.name}" class="form-input" ${field.required ? 'required' : ''}>`;
+                        break;
+                    case 'number':
+                        input = `<input type="number" id="field-${field.name}" class="form-input" ${field.required ? 'required' : ''}>`;
+                        break;
+                    case 'image':
+                        input = `<input type="text" id="field-${field.name}" class="form-input" placeholder="Image URL" ${field.required ? 'required' : ''}>`;
+                        break;
+                }
+                
+                group.innerHTML = `
+                    <label class="form-label">${field.label}${field.required ? ' *' : ''}</label>
+                    ${input}
+                    ${field.description ? `<div class="form-description">${field.description}</div>` : ''}
+                `;
+                
+                form.appendChild(group);
+                
+                // Set default value
+                if (field.default) {
+                    const element = document.getElementById(`field-${field.name}`);
+                    if (element) {
+                        if (field.type === 'boolean') {
+                            element.checked = field.default;
+                } else {
+                            element.value = field.default;
+                        }
+                    }
+                }
+            });
+        }
+
+        async function editContent(file) {
+            try {
+                const content = await apiCall(`/content/${encodeURIComponent(file.path)}`);
+                // TODO: Populate form with existing content
+                showContentModal('Edit Content');
+            } catch (error) {
+                showError('Failed to load content: ' + error.message);
+            }
+        }
+
+        async function deleteContent(file) {
+            if (!confirm(`Are you sure you want to delete ${file.name}?`)) return;
+            
+            try {
+                await apiCall(`/content/${encodeURIComponent(file.path)}`, {
+                    method: 'DELETE',
+                    body: JSON.stringify({
+                        message: `Delete ${file.name}`
+                    })
+                });
+                
+                showSuccess('Content deleted successfully');
+                await loadContent();
+            } catch (error) {
+                showError('Failed to delete content: ' + error.message);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('new-content-btn').addEventListener('click', () => {
+            showContentModal('Create New Content');
+        });
+
+        document.getElementById('save-content-btn').addEventListener('click', async () => {
+            const templateName = document.getElementById('template-select').value;
+            if (!templateName) {
+                showError('Please select a template');
                 return;
             }
 
-            try {
-                await apiCall(`posts/${postId}`, { method: 'DELETE' });
-                posts = posts.filter(p => p.id !== postId);
-                renderBoard();
-            } catch (error) {
-                alert('Failed to delete post: ' + error.message);
-            }
-        };
-
-        // Utility Functions
-        function showLoading(button, loading) {
-            if (loading) {
-                button.classList.add('loading');
-                button.disabled = true;
+            // Collect form data
+            const template = templates[templateName];
+            const contentData = {};
+            
+            template.fields.forEach(field => {
+                const element = document.getElementById(`field-${field.name}`);
+                if (element) {
+                    if (field.type === 'boolean') {
+                        contentData[field.name] = element.checked;
             } else {
-                button.classList.remove('loading');
-                button.disabled = false;
+                        contentData[field.name] = element.value;
             }
         }
-
-        // Event Listeners
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            showLoading(authSubmitBtn, true);
+            });
             
-            await login(authEmailInput.value, authPasswordInput.value);
-            
-            showLoading(authSubmitBtn, false);
-        });
-
-        logoutBtn.addEventListener('click', logout);
-        addPostBtn.addEventListener('click', () => openModal());
-        deployBtn.addEventListener('click', deployPosts);
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelBtn.addEventListener('click', closeModal);
-        saveBtn.addEventListener('click', savePost);
-
-        // Image preview
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(file);
+            try {
+                await apiCall('/content', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        template: templateName,
+                        content_data: contentData,
+                        message: `Create ${contentData.title || 'new content'}`
+                    })
+                });
+                
+                showSuccess('Content created successfully');
+                closeModal('content-modal');
+                await loadContent();
+            } catch (error) {
+                showError('Failed to save content: ' + error.message);
             }
         });
 
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedToken = localStorage.getItem('cardpress_token');
-            const savedUser = localStorage.getItem('cardpress_user');
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Update active state
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
 
-            if (savedToken && savedUser) {
-                authToken = savedToken;
-                currentUser = JSON.parse(savedUser);
-                verifyToken();
-            } else {
-                showAuthScreen(true);
-            }
+                // Show corresponding page
+                const page = item.dataset.page;
+                document.querySelectorAll('[id$="-page"]').forEach(p => p.classList.add('hidden'));
+                document.getElementById(`${page}-page`).classList.remove('hidden');
+                
+                // Load page data
+                switch (page) {
+                    case 'content':
+                        loadContent();
+                        break;
+                    case 'templates':
+                        showTemplatesPage();
+                        break;
+                }
+            });
+        });
+
+        // Utility functions
+        function showLoading() {
+            document.getElementById('loading-screen').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }
+
+        function showError(message) {
+            // Simple alert for now, could be improved with toast notifications
+            alert('Error: ' + message);
+        }
+
+        function showSuccess(message) {
+            // Simple alert for now, could be improved with toast notifications
+            alert('Success: ' + message);
+        }
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('authToken');
+            window.location.href = '/auth/logout';
         });
     </script>
 </body>

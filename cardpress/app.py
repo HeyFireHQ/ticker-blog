@@ -1,310 +1,478 @@
 #!/usr/bin/env python3
 """
-CardPress - Local Python Backend
-A modern blog content management system with SQLite storage
+TinaCMS Clone - GitHub-based Content Management System
+A modern CMS that works directly with GitHub repositories
 """
 
 import os
-import sqlite3
 import json
 import uuid
-import hashlib
-import secrets
-import re
-from datetime import datetime, timedelta, timezone
+import logging
+from datetime import datetime, timedelta
 from pathlib import Path
-import shutil
-import base64
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from typing import Dict, List, Any, Optional
+import secrets
+
+from flask import Flask, request, jsonify, send_file, redirect, url_for, session
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
+from werkzeug.exceptions import BadRequest
 import jwt
+
+# Local imports
+from github_service import GitHubService
+from template_system import TemplateSystem
+from oauth_service import GitHubOAuthService
 
 # Configuration
 BASE_DIR = Path(__file__).parent
-DATABASE_PATH = BASE_DIR / "cardpress.db"
-IMAGES_DIR = BASE_DIR / "images"
-STATIC_OUTPUT_DIR = BASE_DIR / "static_output"
-BLOG_CONTENT_DIR = BASE_DIR.parent / "blog" / "content"
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 
-# Ensure directories exist
-IMAGES_DIR.mkdir(exist_ok=True)
-STATIC_OUTPUT_DIR.mkdir(exist_ok=True)
+# GitHub OAuth Configuration
+GITHUB_CLIENT_ID = os.getenv('GITHUB_CLIENT_ID')
+GITHUB_CLIENT_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
+GITHUB_REDIRECT_URI = os.getenv('GITHUB_REDIRECT_URI', 'http://localhost:8000/auth/callback')
 
 # Flask App Setup
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
+# Session configuration for OAuth
+app.config['SESSION_COOKIE_SECURE'] = False  # Allow HTTP for localhost
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 # Enable CORS for local development
-CORS(app)
+CORS(app, supports_credentials=True)
 
-# Database Setup
-def init_database():
-    """Initialize SQLite database with required tables"""
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    # Users table with encrypted authentication
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id TEXT PRIMARY KEY,
-            email TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            role TEXT DEFAULT 'admin',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # Posts table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS posts (
-            id TEXT PRIMARY KEY,
-            user_id TEXT NOT NULL,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            labels TEXT DEFAULT '[]',
-            colors TEXT DEFAULT '',
-            status TEXT DEFAULT 'ideas',
-            image_url TEXT DEFAULT '',
-            image_path TEXT DEFAULT '',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    ''')
-    
-    # Create default admin user if none exists
-    cursor.execute('SELECT COUNT(*) as count FROM users')
-    if cursor.fetchone()['count'] == 0:
-        admin_id = str(uuid.uuid4())
-        password_hash = generate_password_hash('admin123')
-        cursor.execute('''
-            INSERT INTO users (id, email, password_hash, role)
-            VALUES (?, ?, ?, ?)
-        ''', (admin_id, 'admin@cardpress.local', password_hash, 'admin'))
-    
-    conn.commit()
-    conn.close()
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-def get_db():
-    """Get database connection"""
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+# Global services
+oauth_service = None
+template_system = TemplateSystem(config_path=BASE_DIR / "templates.yml")
 
-def generate_jwt_token(user_id, email, role):
-    """Generate JWT token for authentication"""
-    payload = {
-        'user_id': user_id,
-        'email': email,
-        'role': role,
-        'exp': datetime.utcnow() + timedelta(hours=24)
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-
-def verify_jwt_token(token):
-    """Verify JWT token and return user data"""
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        return payload
-    except jwt.ExpiredSignatureError:
-        return None
-    except jwt.InvalidTokenError:
-        return None
+# Initialize OAuth service if credentials are provided
+if GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET:
+    oauth_service = GitHubOAuthService(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GITHUB_REDIRECT_URI)
+else:
+    logger.warning("GitHub OAuth not configured. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET environment variables.")
 
 def require_auth(f):
     """Decorator to require authentication"""
     def decorated_function(*args, **kwargs):
+        # Check for session-based auth first
+        if 'github_token' in session and 'user_info' in session:
+            request.github_token = session['github_token']
+            request.user_info = session['user_info']
+            return f(*args, **kwargs)
+        
+        # Check for Bearer token auth
         auth_header = request.headers.get('Authorization')
-        if not auth_header or not auth_header.startswith('Bearer '):
-            return jsonify({'error': 'Authentication required'}), 401
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            try:
+                # Verify JWT token that contains GitHub info
+                payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+                request.github_token = payload['github_token']
+                request.user_info = payload['user_info']
+                return f(*args, **kwargs)
+            except jwt.InvalidTokenError:
+                pass
         
-        token = auth_header.split(' ')[1]
-        user_data = verify_jwt_token(token)
-        if not user_data:
-            return jsonify({'error': 'Invalid or expired token'}), 401
-        
-        request.user = user_data
-        return f(*args, **kwargs)
+        return jsonify({'error': 'Authentication required'}), 401
     
     decorated_function.__name__ = f.__name__
     return decorated_function
 
-# API Routes
+def get_github_service(token: str = None, repo: str = None) -> GitHubService:
+    """Get GitHub service instance"""
+    if not token:
+        token = getattr(request, 'github_token', None)
+    if not token:
+        raise ValueError("GitHub token required")
+    
+    return GitHubService(token, repo)
 
-@app.route('/auth/login', methods=['POST'])
+# Authentication Routes
+
+@app.route('/auth/login')
 def login():
-    """Authenticate user and return JWT token"""
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
+    """Initiate GitHub OAuth login"""
+    if not oauth_service:
+        return jsonify({'error': 'OAuth not configured'}), 500
     
-    if not email or not password:
-        return jsonify({'error': 'Email and password required'}), 400
+    # Store repository info in session if provided
+    repo = request.args.get('repo')
+    if repo:
+        session['target_repo'] = repo
     
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
-    user = cursor.fetchone()
-    conn.close()
+    auth_url, state = oauth_service.get_authorization_url()
+    session['oauth_state'] = state
     
-    if not user or not check_password_hash(user['password_hash'], password):
-        return jsonify({'error': 'Invalid credentials'}), 401
+    return redirect(auth_url)
+
+@app.route('/auth/callback')
+def oauth_callback():
+    """Handle GitHub OAuth callback"""
+    if not oauth_service:
+        return jsonify({'error': 'OAuth not configured'}), 500
     
-    token = generate_jwt_token(user['id'], user['email'], user['role'])
+    code = request.args.get('code')
+    state = request.args.get('state')
+    error = request.args.get('error')
     
-    return jsonify({
-        'token': token,
-        'user': {
-            'id': user['id'],
-            'email': user['email'],
-            'role': user['role']
+    # Debug logging
+    logger.info(f"OAuth callback - code: {'present' if code else 'missing'}, state: {'present' if state else 'missing'}, error: {error}")
+    logger.info(f"Session oauth_state: {'present' if session.get('oauth_state') else 'missing'}")
+    
+    if error:
+        logger.error(f"GitHub OAuth error: {error}")
+        return jsonify({'error': f'OAuth error: {error}'}), 400
+    
+    if not code or not state:
+        logger.error("Missing code or state parameter in OAuth callback")
+        return jsonify({'error': 'Missing code or state parameter'}), 400
+    
+    # Verify state matches
+    session_state = session.get('oauth_state')
+    if state != session_state:
+        logger.error(f"State mismatch - received: {state}, expected: {session_state}")
+        return jsonify({'error': 'Invalid state parameter'}), 400
+    
+    try:
+        # Exchange code for token
+        token_data = oauth_service.exchange_code_for_token(code, state)
+        access_token = token_data['access_token']
+        
+        # Get user info
+        user_info = oauth_service.get_user_info(access_token)
+        
+        # Store in session
+        session['github_token'] = access_token
+        session['user_info'] = user_info
+        
+        # Generate JWT for API access
+        jwt_payload = {
+            'github_token': access_token,
+            'user_info': user_info,
+            'exp': datetime.utcnow() + timedelta(hours=24)
         }
+        jwt_token = jwt.encode(jwt_payload, SECRET_KEY, algorithm='HS256')
+        
+        # Redirect to admin interface
+        return redirect(f'/?token={jwt_token}')
+        
+    except Exception as e:
+        logger.error(f"OAuth callback error: {e}")
+        return jsonify({'error': 'Authentication failed'}), 500
+
+@app.route('/auth/logout')
+def logout():
+    """Logout user"""
+    session.clear()
+    return redirect('/')
+
+@app.route('/api/auth/verify')
+@require_auth
+def verify_auth():
+    """Verify current authentication"""
+    return jsonify({
+        'authenticated': True,
+        'user': request.user_info
     })
 
-@app.route('/auth/verify', methods=['GET'])
+# Repository Management Routes
+
+@app.route('/api/repositories')
 @require_auth
-def verify_token():
-    """Verify current token"""
+def get_repositories():
+    """Get user's accessible repositories"""
+    try:
+        github_service = get_github_service()
+        repos = github_service.get_user_repos()
+        return jsonify(repos)
+    except Exception as e:
+        logger.error(f"Failed to get repositories: {e}")
+        return jsonify({'error': 'Failed to fetch repositories'}), 500
+
+@app.route('/api/repositories/<path:repo>/select', methods=['POST'])
+@require_auth
+def select_repository(repo):
+    """Select a repository to work with"""
+    try:
+        github_service = get_github_service()
+        github_service.set_repository(repo)
+        
+        # Store selected repo in session
+        session['selected_repo'] = repo
+        
+        return jsonify({
+            'success': True,
+            'repository': repo
+        })
+    except Exception as e:
+        logger.error(f"Failed to select repository: {e}")
+        return jsonify({'error': 'Failed to select repository'}), 500
+
+# Template Management Routes
+
+@app.route('/api/templates')
+def get_templates():
+    """Get available content templates"""
+    templates = template_system.get_all_templates()
     return jsonify({
-        'user': {
-            'id': request.user['user_id'],
-            'email': request.user['email'],
-            'role': request.user['role']
+        template_name: {
+            'name': template.name,
+            'label': template.label,
+            'description': template.description,
+            'fields': [field.dict() for field in template.fields],
+            'path': template.path,
+            'format': template.format
         }
+        for template_name, template in templates.items()
     })
 
-@app.route('/posts', methods=['GET'])
-@require_auth
-def get_posts():
-    """Get all posts"""
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT * FROM posts 
-        ORDER BY updated_at DESC
-    ''')
-    posts = [dict(row) for row in cursor.fetchall()]
-    conn.close()
+@app.route('/api/templates/<template_name>')
+def get_template(template_name):
+    """Get specific template definition"""
+    template = template_system.get_template(template_name)
+    if not template:
+        return jsonify({'error': 'Template not found'}), 404
     
-    return jsonify(posts)
+    return jsonify({
+        'name': template.name,
+        'label': template.label,
+        'description': template.description,
+        'fields': [field.dict() for field in template.fields],
+        'path': template.path,
+        'format': template.format
+    })
 
-@app.route('/posts/<post_id>', methods=['GET'])
-@require_auth
-def get_post(post_id):
-    """Get specific post"""
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM posts WHERE id = ?', (post_id,))
-    post = cursor.fetchone()
-    conn.close()
-    
-    if not post:
-        return jsonify({'error': 'Post not found'}), 404
-    
-    return jsonify(dict(post))
+# Content Management Routes
 
-@app.route('/posts', methods=['POST'])
+@app.route('/api/content')
 @require_auth
-def create_post():
-    """Create new post"""
+def list_content():
+    """List content files from repository"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
+    try:
+        logger.info(f"Listing content for repo: {repo}")
+        
+        # Get GitHub token from request
+        github_token = getattr(request, 'github_token', None)
+        logger.info(f"GitHub token present: {'yes' if github_token else 'no'}")
+        
+        github_service = get_github_service(repo=repo)
+        logger.info(f"GitHub service created successfully")
+        
+        # Get directory parameter (default to root)
+        directory = request.args.get('dir', '')
+        branch = request.args.get('branch')
+        logger.info(f"Directory: '{directory}', Branch: {branch}")
+        
+        items = github_service.list_directory(directory, branch)
+        logger.info(f"Found {len(items)} items")
+        return jsonify(items)
+        
+    except Exception as e:
+        logger.error(f"Failed to list content: {e}")
+        logger.error(f"Exception type: {type(e)}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Failed to list content'}), 500
+
+@app.route('/api/content/<path:file_path>')
+@require_auth
+def get_content(file_path):
+    """Get content file"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
+    try:
+        github_service = get_github_service(repo=repo)
+        branch = request.args.get('branch')
+        
+        content, sha = github_service.get_file_content(file_path, branch)
+        
+        if content is None:
+            return jsonify({'error': 'File not found'}), 404
+        
+        # Try to parse with template system
+        template_name = request.args.get('template')
+        if template_name:
+            try:
+                parsed_content = template_system.parse_file_content(template_name, content)
+                return jsonify({
+                    'path': file_path,
+                    'content': content,
+                    'parsed_content': parsed_content,
+                    'sha': sha,
+                    'template': template_name
+                })
+            except Exception as e:
+                logger.warning(f"Failed to parse content with template: {e}")
+        
+        return jsonify({
+            'path': file_path,
+            'content': content,
+            'sha': sha
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to get content: {e}")
+        return jsonify({'error': 'Failed to get content'}), 500
+
+@app.route('/api/content/<path:file_path>', methods=['PUT'])
+@require_auth
+def update_content(file_path):
+    """Update content file"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
     data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
     
-    post_id = str(uuid.uuid4())
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        INSERT INTO posts (id, user_id, title, content, labels, colors, status, image_url, image_path)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (
-        post_id,
-        request.user['user_id'],
-        data.get('title', ''),
-        data.get('content', ''),
-        json.dumps(data.get('labels', [])),
-        data.get('colors', ''),
-        data.get('column', 'ideas'),
-        data.get('imageUrl', ''),
-        data.get('imagePath', '')
-    ))
-    
-    conn.commit()
-    
-    # Get the created post
-    cursor.execute('SELECT * FROM posts WHERE id = ?', (post_id,))
-    post = dict(cursor.fetchone())
-    conn.close()
-    
-    return jsonify(post), 201
+    try:
+        github_service = get_github_service(repo=repo)
+        
+        # Handle both raw content and template-based content
+        if 'template' in data and 'content_data' in data:
+            # Template-based content
+            template_name = data['template']
+            content_data = data['content_data']
+            
+            # Validate content
+            is_valid, errors = template_system.validate_content(template_name, content_data)
+            if not is_valid:
+                return jsonify({'error': 'Validation failed', 'details': errors}), 400
+            
+            # Format content for file
+            content = template_system.format_content_for_file(template_name, content_data)
+        else:
+            # Raw content
+            content = data.get('content', '')
+        
+        message = data.get('message', f'Update {file_path}')
+        sha = data.get('sha')
+        branch = data.get('branch')
+        
+        result = github_service.create_or_update_file(file_path, content, message, sha, branch)
+        
+        return jsonify({
+            'success': True,
+            'commit_sha': result['commit_sha'],
+            'content_sha': result['content_sha']
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to update content: {e}")
+        return jsonify({'error': 'Failed to update content'}), 500
 
-@app.route('/posts/<post_id>', methods=['PUT'])
+@app.route('/api/content', methods=['POST'])
 @require_auth
-def update_post(post_id):
-    """Update existing post"""
+def create_content():
+    """Create new content file"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
     data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-        UPDATE posts 
-        SET title = ?, content = ?, labels = ?, colors = ?, status = ?, 
-            image_url = ?, image_path = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ? AND user_id = ?
-    ''', (
-        data.get('title', ''),
-        data.get('content', ''),
-        json.dumps(data.get('labels', [])),
-        data.get('colors', ''),
-        data.get('column', 'ideas'),
-        data.get('imageUrl', ''),
-        data.get('imagePath', ''),
-        post_id,
-        request.user['user_id']
-    ))
-    
-    if cursor.rowcount == 0:
-        conn.close()
-        return jsonify({'error': 'Post not found or unauthorized'}), 404
-    
-    conn.commit()
-    
-    # Get the updated post
-    cursor.execute('SELECT * FROM posts WHERE id = ?', (post_id,))
-    post = dict(cursor.fetchone())
-    conn.close()
-    
-    return jsonify(post)
+    try:
+        github_service = get_github_service(repo=repo)
+        
+        if 'template' in data:
+            # Template-based content creation
+            template_name = data['template']
+            content_data = data.get('content_data', {})
+            
+            # Validate content
+            is_valid, errors = template_system.validate_content(template_name, content_data)
+            if not is_valid:
+                return jsonify({'error': 'Validation failed', 'details': errors}), 400
+            
+            # Generate file path
+            file_path = template_system.generate_file_path(template_name, content_data)
+            
+            # Format content for file
+            content = template_system.format_content_for_file(template_name, content_data)
+        else:
+            # Manual file creation
+            file_path = data.get('path')
+            content = data.get('content', '')
+            
+            if not file_path:
+                return jsonify({'error': 'File path required'}), 400
+        
+        message = data.get('message', f'Create {file_path}')
+        branch = data.get('branch')
+        
+        result = github_service.create_or_update_file(file_path, content, message, None, branch)
+        
+        return jsonify({
+            'success': True,
+            'path': file_path,
+            'commit_sha': result['commit_sha'],
+            'content_sha': result['content_sha']
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to create content: {e}")
+        return jsonify({'error': 'Failed to create content'}), 500
 
-@app.route('/posts/<post_id>', methods=['DELETE'])
+@app.route('/api/content/<path:file_path>', methods=['DELETE'])
 @require_auth
-def delete_post(post_id):
-    """Delete post"""
-    conn = get_db()
-    cursor = conn.cursor()
+def delete_content(file_path):
+    """Delete content file"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
     
-    cursor.execute('DELETE FROM posts WHERE id = ? AND user_id = ?', 
-                   (post_id, request.user['user_id']))
+    data = request.get_json() or {}
     
-    if cursor.rowcount == 0:
-        conn.close()
-        return jsonify({'error': 'Post not found or unauthorized'}), 404
-    
-    conn.commit()
-    conn.close()
-    
-    return jsonify({'success': True, 'message': 'Post deleted'})
+    try:
+        github_service = get_github_service(repo=repo)
+        
+        # Get current file to get SHA
+        current_content, sha = github_service.get_file_content(file_path)
+        if not sha:
+            return jsonify({'error': 'File not found'}), 404
+        
+        message = data.get('message', f'Delete {file_path}')
+        branch = data.get('branch')
+        
+        result = github_service.delete_file(file_path, message, sha, branch)
+        
+        return jsonify({
+            'success': True,
+            'commit_sha': result['commit_sha']
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to delete content: {e}")
+        return jsonify({'error': 'Failed to delete content'}), 500
 
-@app.route('/images/upload', methods=['POST'])
+# Image Management Routes
+
+@app.route('/api/images/upload', methods=['POST'])
 @require_auth
 def upload_image():
-    """Upload image file"""
+    """Upload image to repository"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
     if 'image' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
     
@@ -312,29 +480,83 @@ def upload_image():
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
     
-    # Secure filename and add timestamp
-    filename = secure_filename(file.filename)
-    timestamp = int(datetime.now().timestamp())
-    filename = f"{timestamp}_{filename}"
-    
-    # Save file
-    file_path = IMAGES_DIR / filename
-    file.save(file_path)
-    
-    # Return URL for local access
-    image_url = f"/images/{filename}"
-    
-    return jsonify({
-        'url': image_url,
-        'path': filename
-    })
+    try:
+        github_service = get_github_service(repo=repo)
+        
+        # Generate secure filename
+        filename = secure_filename(file.filename)
+        timestamp = int(datetime.now().timestamp())
+        filename = f"images/{timestamp}_{filename}"
+        
+        # Read file data
+        image_data = file.read()
+        
+        # Get additional parameters
+        message = request.form.get('message', f'Upload image: {file.filename}')
+        branch = request.form.get('branch')
+        
+        result = github_service.upload_image(image_data, filename, message, branch)
+        
+        return jsonify({
+            'success': True,
+            'path': result['path'],
+            'url': result['raw_url'],
+            'commit_sha': result['commit_sha']
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to upload image: {e}")
+        return jsonify({'error': 'Failed to upload image'}), 500
 
-@app.route('/images/<filename>')
-def serve_image(filename):
-    """Serve uploaded images"""
-    return send_from_directory(IMAGES_DIR, filename)
+# Branch Management Routes
 
-# Static file serving for the admin interface
+@app.route('/api/branches')
+@require_auth
+def get_branches():
+    """Get repository branches"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
+    try:
+        github_service = get_github_service(repo=repo)
+        branches = github_service.get_branches()
+        return jsonify(branches)
+        
+    except Exception as e:
+        logger.error(f"Failed to get branches: {e}")
+        return jsonify({'error': 'Failed to get branches'}), 500
+
+@app.route('/api/branches', methods=['POST'])
+@require_auth
+def create_branch():
+    """Create new branch"""
+    repo = session.get('selected_repo')
+    if not repo:
+        return jsonify({'error': 'No repository selected'}), 400
+    
+    data = request.get_json()
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Branch name required'}), 400
+    
+    try:
+        github_service = get_github_service(repo=repo)
+        
+        branch_name = data['name']
+        source_branch = data.get('source_branch')
+        
+        result = github_service.create_branch(branch_name, source_branch)
+        
+        return jsonify({
+            'success': True,
+            'branch': result
+        })
+        
+    except Exception as e:
+        logger.error(f"Failed to create branch: {e}")
+        return jsonify({'error': 'Failed to create branch'}), 500
+
+# Static file serving
 @app.route('/')
 def serve_admin():
     """Serve the admin interface"""
@@ -343,143 +565,38 @@ def serve_admin():
 @app.route('/<path:filename>')
 def serve_static(filename):
     """Serve static files"""
-    return send_from_directory('.', filename)
-
-# Deployment and static generation routes
-def slugify(value):
-    """Convert title to URL-friendly slug"""
-    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
-
-def write_markdown(post, blog_dir):
-    """Convert post data to Pelican markdown file"""
-    title = post.get("title", f"Untitled-{post.get('id', 'unknown')}")
-    content = post.get("content", "")
-    labels = json.loads(post.get("labels", "[]"))
-    image_url = post.get("image_url", "")
-    image_path = post.get("image_path", "")
-    
-    # Handle date conversion
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    if post.get("updated_at"):
-        try:
-            # Try to parse the date string from SQLite
-            date_obj = datetime.fromisoformat(post["updated_at"])
-            date_str = date_obj.strftime("%Y-%m-%d")
-        except:
-            pass
-    
-    slug = slugify(title)
-    
-    # Handle image markdown
-    image_markdown = ""
-    if image_url and image_url.startswith('/images/'):
-        # Convert local image URL to Pelican path
-        image_name = image_url.replace('/images/', '')
-        image_markdown = f"![{title}](/imgs/{image_name})\n\n"
-    
-    # Get colors from post or use defaults
-    colors = post.get('colors', '#F97316, #0EA5E9, #8B5CF6, #10B981')
-    if not colors or not colors.strip():
-        colors = '#F97316, #0EA5E9, #8B5CF6, #10B981'
-    
-    # Create metadata for Pelican
-    md_metadata = [
-        f"Title: {title}",
-        f"Date: {date_str}",
-        f"Slug: {slug}",
-        f"Tags: {', '.join(labels)}",
-        f"Colors: {colors}",
-        f"Summary: {content[:100]}..." if content else "",
-    ]
-    
-    # Only add Image field if we have a local image
-    if image_markdown:
-        image_name = image_url.replace('/images/', '') if image_url else ''
-        if image_name:
-            md_metadata.append(f"Image: /imgs/{image_name}")
-    
-    # Filter out empty metadata lines
-    md_metadata = [line for line in md_metadata if line.strip() and not line.endswith(": ")]
-    
-    # Write the markdown file
-    body = "\n".join(md_metadata) + "\n\n" + image_markdown + content
-    
-    # Write directly to blog/content directory
-    content_dir = Path(blog_dir) / "content"
-    file_path = content_dir / f"{slug}.md"
-    
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(body)
-    
-    return file_path
-
-@app.route('/deploy', methods=['POST'])
-@require_auth
-def deploy_to_pages():
-    """Generate markdown files from SQLite database"""
     try:
-        # Ensure blog content directory exists
-        BLOG_CONTENT_DIR.mkdir(parents=True, exist_ok=True)
-        
-        # Create images directory in blog/content
-        blog_imgs_dir = BLOG_CONTENT_DIR / "imgs"
-        blog_imgs_dir.mkdir(exist_ok=True)
-        
-        # Get deployed posts from database
-        conn = get_db()
-        cursor = conn.cursor()
-        cursor.execute('''
-            SELECT * FROM posts 
-            WHERE status = 'deployed' 
-            ORDER BY updated_at DESC
-        ''')
-        posts = [dict(row) for row in cursor.fetchall()]
-        conn.close()
-        
-        if not posts:
-            return jsonify({
-                'error': 'No deployed posts found',
-                'message': 'Move some posts to "Deployed" status first'
-            }), 400
-        
-        # Convert posts to markdown
-        generated_files = []
-        for post in posts:
-            file_path = write_markdown(post, BLOG_CONTENT_DIR.parent)
-            generated_files.append(str(file_path))
-            
-            # Copy image if it exists locally
-            if post.get('image_url') and post['image_url'].startswith('/images/'):
-                image_name = post['image_url'].replace('/images/', '')
-                source_image = IMAGES_DIR / image_name
-                if source_image.exists():
-                    dest_image = blog_imgs_dir / image_name
-                    shutil.copy2(source_image, dest_image)
-        
-        return jsonify({
-            'success': True,
-            'message': f'Generated {len(posts)} markdown posts to blog/content',
-            'output_dir': str(BLOG_CONTENT_DIR),
-            'posts_count': len(posts),
-            'files': generated_files
-        })
-    
-    except Exception as e:
-        app.logger.error(f"Deploy error: {e}")
-        return jsonify({
-            'error': 'Deployment failed',
-            'message': str(e)
-        }), 500
+        return send_file(filename)
+    except:
+        return send_file('admin.html')  # SPA fallback
+
+# Error handlers
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({'error': 'Bad request'}), 400
+
+@app.errorhandler(401)
+def unauthorized(error):
+    return jsonify({'error': 'Unauthorized'}), 401
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Not found'}), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
-    # Initialize database
-    init_database()
-    
-    print("🚀 CardPress Local Server Starting...")
-    print(f"📁 Database: {DATABASE_PATH}")
-    print(f"🖼️  Images: {IMAGES_DIR}")
+    print("🚀 TinaCMS Clone Starting...")
     print(f"🌐 Admin Interface: http://localhost:8000")
-    print(f"👤 Default Login: admin@cardpress.local / admin123")
+    print(f"🔐 GitHub OAuth: {'Configured' if oauth_service else 'Not Configured'}")
+    print(f"📝 Templates: {len(template_system.get_all_templates())} available")
+    
+    # Create default templates file if it doesn't exist
+    if not (BASE_DIR / "templates.yml").exists():
+        template_system.save_templates()
+        print(f"📄 Created default templates.yml")
     
     # Run Flask development server
     app.run(debug=True, host='0.0.0.0', port=8000) 
