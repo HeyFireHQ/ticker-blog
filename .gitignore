@@ -6,3 +6,5 @@ venv/
 output/
 blog/output/*
 blog/content/*
+
+cardpress/cardpress.db
