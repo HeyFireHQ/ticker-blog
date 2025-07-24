@@ -1,3 +1,0 @@
-name = "cardpress-refresh"
-main = "worker/refresh.js"
-compatibility_date = "2024-04-27"
