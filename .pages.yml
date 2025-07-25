@@ -1,8 +1,8 @@
 media: content/imgs
 content:
   - name: posts
-  label: Posts
-  type: collection
-  path: content
-  fields: 
-    - {name: Title, label: Title, type: string}
+    label: Posts
+    type: collection
+    path: content
+    fields: 
+      - {name: Title, label: Title, type: string}
