@@ -1,7 +1,7 @@
 Title: How to Start a Family Investing Challenge
 Date: 03-07-2025
 Slug: how-to-start-a-family-investing-challenge
-Image: https://trello.com/1/cards/686421e6fb3d6ce77e9a98b9/attachments/68666702aa9db3b6f97d98ba/download/Family_Investing_Challenge.png
+Image: imgs/Family_Investing_Challenge.png
 Author: Jon V
 Description: Looking for a fun, competitive, and educational way to bring your family together?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
@@ -23,7 +23,7 @@ A **family investing challenge** turns stock market basics into a game — helpi
 
 A **family investing challenge** is a friendly competition where family members create simulated investment portfolios and track performance over time. No real money is needed — just strategy, curiosity, and a little sibling rivalry. 😄
 
-![How to Start a Family Investing Challenge](https://trello.com/1/cards/686421e6fb3d6ce77e9a98b9/attachments/68666702aa9db3b6f97d98ba/download/Family_Investing_Challenge.png)
+![../imgs/Family_Investing_Challenge.png)
 
 Think fantasy sports, but for stocks — fun, safe, and educational.
 
