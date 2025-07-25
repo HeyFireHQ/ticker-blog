@@ -1,7 +1,7 @@
 Title: The Ultimate Stock Market Game for Families
 Date: 03-07-2025
 Slug: the-stock-market-game-for-families
-Image: https://trello.com/1/cards/686422d77261b1627c24ec92/attachments/68666879a53c5c29fdea0fff/download/Stock_Market_Game_for_Families.png
+Image: imgs/Stock_Market_Game_for_Families.png
 Author: Jon V
 Description: Looking for a fun, educational way to teach your kids about money and investing?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
@@ -35,7 +35,7 @@ A **stock market game for families** is a digital or board-based simulation wher
 
 In 2025, parents want more than screen time—they want **smart screen time**. Enter **investing games**:
 
-![The Ultimate Stock Market Game for Families](https://trello.com/1/cards/686422d77261b1627c24ec92/attachments/68666879a53c5c29fdea0fff/download/Stock_Market_Game_for_Families.png)
+![../imgs/Stock_Market_Game_for_Families.png)
 
 - 💸 Builds **money habits early**
 - 👨‍👩‍👧 Encourages **family bonding**
