@@ -12,6 +12,6 @@ You are awesome
 > Yes you.
 
 and this is an image
-![](Screenshot%202025-07-22%20at%206.33.30%20PM.png)
 
+![](maxresdefault.jpg)
 
