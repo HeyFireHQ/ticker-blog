@@ -29,14 +29,20 @@
       </div>
     </a>
       <div class="flex flex-wrap gap-2 mb-8">
-        <!-- Example: Category, Audience, Type tags -->
-        {% if articles[0].colors is defined and articles[0].colors %}
-            {% set colors = articles[0].colors.split(',') %}
-        {% else %}
-            {% set colors = ['#F97316'] %}
-        {% endif %}
+        <!-- Category tags with predefined colors -->
         {% for tag in articles[0].tags %}
-        <span class="px-3 py-1 rounded-full text-sm font-medium bg-black text-white" style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
+        {% if tag == 'Investing' %}
+            {% set tag_color = '#F97316' %}
+        {% elif tag == 'News' %}
+            {% set tag_color = '#EB5A46' %}
+        {% elif tag == 'Education' %}
+            {% set tag_color = '#3B82F6' %}
+        {% elif tag == 'Family' %}
+            {% set tag_color = '#10B981' %}
+        {% else %}
+            {% set tag_color = '#6B7280' %}
+        {% endif %}
+        <span class="px-3 py-1 rounded-full text-sm font-medium" style="background-color: {{ tag_color }}20; color: {{ tag_color }};">
             <a href="/category/{{ tag }}.html">{{ tag }}</a>
         </span>       
         {% endfor %}
@@ -121,14 +127,20 @@
                         </div>
                     </a>
                     <div class="flex items-center gap-2 mb-4">
-                        {% if article.colors is defined and article.colors %}
-                            {% set colors = article.colors.split(',') %}
-                        {% else %}
-                            {% set colors = ['#F97316'] %}
-                        {% endif %}
                         {% for tag in article.tags %}
+                        {% if tag == 'Investing' %}
+                            {% set tag_color = '#F97316' %}
+                        {% elif tag == 'News' %}
+                            {% set tag_color = '#EB5A46' %}
+                        {% elif tag == 'Education' %}
+                            {% set tag_color = '#3B82F6' %}
+                        {% elif tag == 'Family' %}
+                            {% set tag_color = '#10B981' %}
+                        {% else %}
+                            {% set tag_color = '#6B7280' %}
+                        {% endif %}
                         <span class="px-3 py-1 rounded-full text-sm font-medium"
-                              style="background-color: {{ colors[loop.index0]|trim }}20; color: {{ colors[loop.index0]|trim }};">
+                              style="background-color: {{ tag_color }}20; color: {{ tag_color }};">
                               <a href="/category/{{ tag }}.html">{{ tag }}</a>
                         </span>
                         {% endfor %}
