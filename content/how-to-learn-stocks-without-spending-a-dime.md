@@ -1,7 +1,7 @@
 Title: Fantasy Investing Explained: How to Learn Stocks Without Spending a Dime
 Date: 16-06-2025
 Slug: how-to-learn-stocks-without-spending-a-dime
-Image: https://trello.com/1/cards/68506f3bc96aad638f0b36fe/attachments/685070e1bd93f98b4e167a00/download/Screenshot_2025-06-16_at_7.48.57_PM.png
+Image: imgs/Screenshot_2025-06-16_at_7.48.57_PM.png
 Author: Jon V
 Description: Practice investing with $100K in virtual cash—no real money, no downloads. Ticker makes stocks fun and easy to learn.
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game
@@ -12,7 +12,7 @@ Colors: #F97316
 
 Want to learn how to invest without risking your money? Fantasy investing is like fantasy football—but for stocks. With Ticker, you get $100,000 in virtual cash to play the market, test your strategy, and challenge friends. No pressure. No jargon. Just fun, risk-free investing.
 
-![Fantasy Investing Explained: How to Learn Stocks Without Spending a Dime](https://trello.com/1/cards/68506f3bc96aad638f0b36fe/attachments/685070e1bd93f98b4e167a00/download/Screenshot_2025-06-16_at_7.48.57_PM.png)
+![Fantasy Investing Explained: How to Learn Stocks Without Spending a Dime](../imgs/Screenshot_2025-06-16_at_7.48.57_PM.png)
 
 ‌
 
