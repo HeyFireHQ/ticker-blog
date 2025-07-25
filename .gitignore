@@ -6,3 +6,4 @@ venv/
 output/
 blog/output/*
 
+.obsidian/
