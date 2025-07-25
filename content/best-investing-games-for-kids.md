@@ -15,7 +15,7 @@ These investing games for kids go beyond Monopoly—they build real-world financ
 
 Our favorite?[ **Ticker**](https://heyticker.com "‌") — a family-friendly investing game that lets you compete in a safe, risk-free environment.
 
-![The Best Investing Games for Kids That Actually Teach](imgs/The_Best_Investing_Games_for_Kids_.png)
+![The Best Investing Games for Kids That Actually Teach](../imgs/The_Best_Investing_Games_for_Kids_.png)
 
 🎯 _Best for ages 8+ and up_
 _👩‍🏫 Perfect for parents, teachers, and homeschoolers_
