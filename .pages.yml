@@ -4,8 +4,6 @@ content:
   label: Posts
   type: collection
   path: content
-  view: 
-    fields: [Title, Date]
   fields: 
     - {name: Title, label: Title, type: string}
     - {name: Date, label: Date, type: date}
