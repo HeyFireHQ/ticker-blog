@@ -23,7 +23,7 @@ A **family investing challenge** turns stock market basics into a game — helpi
 
 A **family investing challenge** is a friendly competition where family members create simulated investment portfolios and track performance over time. No real money is needed — just strategy, curiosity, and a little sibling rivalry. 😄
 
-![../imgs/Family_Investing_Challenge.png)
+![](../imgs/Family_Investing_Challenge.png)
 
 Think fantasy sports, but for stocks — fun, safe, and educational.
 
@@ -42,8 +42,6 @@ Turning investing into a game boosts engagement and memory.
 
 🧠 **Builds Smart Habits Early**
 Kids who understand compound growth and delayed gratification gain an edge for life.
-
-‌
 
 ---
 
@@ -96,8 +94,6 @@ At the end of the challenge:
 
 Then tweak the game and do it again. Repetition builds mastery.
 
-‌
-
 ---
 
 ## **Featured FAQ: Family Investing Challenge 🧩**
@@ -119,8 +115,6 @@ They learn:
 - Risk vs. reward thinking
 - How to _not_ panic when prices drop
 
-‌
-
 ---
 
 ## **Pro Tips to Make It Even Better 🎯**
@@ -128,8 +122,6 @@ They learn:
 - 🧁 **Pick fun prizes** – dessert of choice, movie night control, small gift cards
 - 🧮 **Add budget challenges** – simulate unexpected expenses or market crashes
 - 🗣️ **Assign roles** – CEO, CFO, news reporter, etc. for bigger families
-
-‌
 
 ---
 
