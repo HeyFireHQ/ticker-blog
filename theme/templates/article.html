@@ -19,14 +19,14 @@
 <meta property="og:type" content="article">
 <meta property="og:url" content="{{ SITEURL }}/{{ article.url }}">
 {% if article.metadata.image %}
-<meta property="og:image" content="{{ SITEURL }}/{{ article.metadata.image }}">
+<meta property="og:image" content="{{ SITEURL }}/imgs/{{ article.metadata.image }}">
 {% endif %}
 
 <!-- Twitter Card Meta Tags -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ article.title }}">
 {% if article.metadata.image %}
-<meta name="twitter:image" content="{{ SITEURL }}/{{ article.metadata.image }}">
+<meta name="twitter:image" content="{{ SITEURL }}/imgs/{{ article.metadata.image }}">
 {% endif %}
 {% endblock %}
 
@@ -238,7 +238,7 @@
             <a href="/{{ post.slug }}/" class="group">
                 <div class="bg-gray-50 rounded-lg overflow-hidden transition-all duration-300 group-hover:shadow-lg">
                     {% if post.image_url %}
-                    <img src="{{ post.image_url }}" alt="{{ post.title }}" class="w-full h-40 object-cover">
+                    <img src="../imgs/{{ post.image_url }}" alt="{{ post.title }}" class="w-full h-40 object-cover">
                     {% endif %}
                     <div class="p-4">
                         <h4 class="font-medium text-gray-900 group-hover:text-orange-600 transition-colors">{{ post.title }}</h4>
