@@ -6,3 +6,11 @@ content:
     path: content
     fields: 
       - {name: Title, label: Title, type: string}
+      - {name: Date, label: Date, type: date}
+      - {name: Slug, label: Slug, type: string}
+      - {name: Image, label: Image, type: image}
+      - {name: Author, label: Author, type: string}
+      - {name: Description, label: Description, type: string}
+      - {name: Keywords, label: Keywords, type: string}
+      - {name: Draft, label: Draft, type: boolean, default: true}
+      - {name: Body, label: Body, type: rich-text}
