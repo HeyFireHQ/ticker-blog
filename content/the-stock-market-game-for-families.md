@@ -5,7 +5,6 @@ Image: imgs/Stock_Market_Game_for_Families.png
 Author: Jon V
 Description: Looking for a fun, educational way to teach your kids about money and investing?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
-Colors: #F97316
 
 # **The Ultimate Stock Market Game for Families**
 

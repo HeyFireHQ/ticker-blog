@@ -6,7 +6,6 @@ Author: Jon V
 Description: Practice investing with $100K in virtual cash—no real money, no downloads. Ticker makes stocks fun and easy to learn.
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game
 Tags: Investing
-Colors: #F97316
 
 ### **🟡 TL;DR (Too Long; Didn’t Read)**
 

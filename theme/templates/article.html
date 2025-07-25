@@ -42,8 +42,19 @@
         
         <div class="flex items-center justify-center gap-2 mb-2">
             {% for tag in article.tags %}
+            {% if tag == 'Investing' %}
+                {% set tag_color = '#F97316' %}
+            {% elif tag == 'News' %}
+                {% set tag_color = '#EB5A46' %}
+            {% elif tag == 'Education' %}
+                {% set tag_color = '#3B82F6' %}
+            {% elif tag == 'Family' %}
+                {% set tag_color = '#10B981' %}
+            {% else %}
+                {% set tag_color = '#6B7280' %}
+            {% endif %}
             <a href="/category/{{ tag }}.html" class="px-3 py-1 rounded-full text-sm hover:bg-opacity-80 transition-colors"
-               style="background-color: {{ article.colors.split(',')[loop.index0]|trim }}20; color: {{ article.colors.split(',')[loop.index0]|trim }};">
+               style="background-color: {{ tag_color }}20; color: {{ tag_color }};">
                 {{ tag }}
             </a>
             {% endfor %}
