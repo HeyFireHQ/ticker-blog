@@ -14,8 +14,6 @@ Want to learn how to invest without risking your money? Fantasy investing is lik
 
 ![Fantasy Investing Explained: How to Learn Stocks Without Spending a Dime](../imgs/Screenshot_2025-06-16_at_7.48.57_PM.png)
 
-‌
-
 ---
 
 ### **💡 Fantasy Investing Explained: How to Learn Stocks Without Spending a Dime**
