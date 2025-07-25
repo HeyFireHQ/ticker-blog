@@ -1,7 +1,7 @@
 Title: 10 Fun Ways to Teach Kids About Investing
 Date: 14-07-2025
 Slug: ten-fun-ways-to-teach-kids-about-investing
-Image: https://trello.com/1/cards/6874d22e73884d2c5f29c087/attachments/6874d42a126b8c49ade606e0/download/Teaching_kids_about_investing.png
+Image: imgs/Teaching_kids_about_investing.png
 Author: Jon V
 Description: _Make money lessons a game the whole family wins. Ticker is a hero tool that lets families run safe, private investing competitions_
 Keywords: stock simulator game, teach kids about investing ,investing game for kidsstock, market game for families, interactive money games for kids, family investing challenge, free investing game
@@ -33,7 +33,7 @@ Kids who learn about investing early:
 
 It’s not about turning them into stock-pickers.
 
-![10 Fun Ways to Teach Kids About Investing](https://trello.com/1/cards/6874d22e73884d2c5f29c087/attachments/6874d42a126b8c49ade606e0/download/Teaching_kids_about_investing.png)
+![../imgs/Teaching_kids_about_investing.png)
 
 It’s about giving them confidence with money.
 
