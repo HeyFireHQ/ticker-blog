@@ -1,7 +1,7 @@
 Title: Why Every Family Should Try an Investing Game
 Date: 03-07-2025
 Slug: investing-game-for-families
-Image: https://trello.com/1/cards/6864235dc693e48a1d5b3bfe/attachments/686668df16d75417bc676961/download/_Investing_Game_for_families.png
+Image: imgs/_Investing_Game_for_families.png
 Author: Jon V
 Description: Family investing games turn complex money lessons into fun challenges everyone can enjoy.
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
@@ -51,7 +51,7 @@ These games:
 
 Let’s be real—your kids are already online. Why not guide them toward something that teaches real-world skills?
 
-![Why Every Family Should Try an Investing Game](https://trello.com/1/cards/6864235dc693e48a1d5b3bfe/attachments/686668df16d75417bc676961/download/_Investing_Game_for_families.png)
+![../imgs/_Investing_Game_for_families.png)
 
 Ticker transforms screen time into:
 
