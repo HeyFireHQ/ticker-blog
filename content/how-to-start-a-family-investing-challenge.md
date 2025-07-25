@@ -1,7 +1,7 @@
 Title: How to Start a Family Investing Challenge
 Date: 03-07-2025
 Slug: how-to-start-a-family-investing-challenge
-Image: imgs/Family_Investing_Challenge.png
+Image: Family_Investing_Challenge.png
 Author: Jon V
 Description: Looking for a fun, competitive, and educational way to bring your family together?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids

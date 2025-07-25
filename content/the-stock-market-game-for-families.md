@@ -1,7 +1,7 @@
 Title: The Ultimate Stock Market Game for Families
 Date: 03-07-2025
 Slug: the-stock-market-game-for-families
-Image: imgs/Stock_Market_Game_for_Families.png
+Image: Stock_Market_Game_for_Families.png
 Author: Jon V
 Description: Looking for a fun, educational way to teach your kids about money and investing?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids

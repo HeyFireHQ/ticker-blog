@@ -13,5 +13,5 @@ You are awesome
 
 and this is an image
 
-![](imgs/maxresdefault.jpg)
+![](../imgs/maxresdefault.jpg)
 

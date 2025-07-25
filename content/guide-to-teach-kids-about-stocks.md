@@ -1,7 +1,7 @@
 Title: A Parent’s Guide to Teaching Kids About the Stock Market
 Date: 03-07-2025
 Slug: guide-to-teach-kids-about-stocks
-Image: imgs/Teaching_Kids_About_the_Stock_Market.png
+Image: Teaching_Kids_About_the_Stock_Market.png
 Author: Jon V
 Description: Want to teach your kids about the stock market without boring them to sleep?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
