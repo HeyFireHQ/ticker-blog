@@ -1,7 +1,7 @@
 Title: The Best Investing Games for Kids That Actually Teach
 Date: 03-07-2025
 Slug: best-investing-games-for-kids
-Image: https://trello.com/1/cards/6864215917a768c475b8df00/attachments/6866650c6d99c7cca139975f/download/The_Best_Investing_Games_for_Kids_.png
+Image: imgs/The_Best_Investing_Games_for_Kids_.png
 Author: Jon V
 Description: Looking for a fun, educational way to teach your kids about money and investing?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
@@ -15,7 +15,7 @@ These investing games for kids go beyond Monopoly—they build real-world financ
 
 Our favorite?[ **Ticker**](https://heyticker.com "‌") — a family-friendly investing game that lets you compete in a safe, risk-free environment.
 
-![The Best Investing Games for Kids That Actually Teach](https://trello.com/1/cards/6864215917a768c475b8df00/attachments/6866650c6d99c7cca139975f/download/The_Best_Investing_Games_for_Kids_.png)
+![The Best Investing Games for Kids That Actually Teach](imgs/The_Best_Investing_Games_for_Kids_.png)
 
 🎯 _Best for ages 8+ and up_
 _👩‍🏫 Perfect for parents, teachers, and homeschoolers_
