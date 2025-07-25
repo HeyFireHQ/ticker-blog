@@ -1,7 +1,7 @@
 Title: Why I Built HeyTicker: The Platform I Wished I Had
 Date: 07-11-2025
 Slug: why-i-built-heyticker-the-platform-i-wished-i-had
-Image: https://trello.com/1/cards/6850598aae4039c1e7623111/attachments/686e91419ede12a3d1abb0b5/download/founder_of_ticker.jpg
+Image: imgs/founder_of_ticker.jpg
 Author: Jon V
 Description: Ticker is the investing game I wish I had when I was younger—a platform where you learn how to build real portfolios, compete in leagues, and develop financial confidence without risking a cent. It's designed to teach smart investing through action, not luck.
 Keywords: financial education, learn investing, investing game, portfolio simulator, stock market for beginners, investment leagues, personal finance, wealth building, gamified investing, beginner investors, financial literacy, compete with friends, AI investing coach, paper trading platform, early financial freedom
@@ -16,7 +16,7 @@ Literally the thing that made my net-worth grow the most was learning how to inv
 
 If I had **Ticker** when I was younger, learning the basics of investing, I believe it would have fast-forwarded my financial journey by decades.
 
-![Why I Built HeyTicker: The Platform I Wished I Had](https://trello.com/1/cards/6850598aae4039c1e7623111/attachments/686e91419ede12a3d1abb0b5/download/founder_of_ticker.jpg)
+![../imgs/founder_of_ticker.jpg)
 
 ### The Problem
 
