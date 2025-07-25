@@ -19,3 +19,4 @@ and this is an image moved to  imgs/
 
 ![[Gemini_Generated_Image_35pm5x35pm5x35pm.png]]
 
+That's all folks!
