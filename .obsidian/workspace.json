@@ -8,20 +8,6 @@
         "type": "tabs",
         "children": [
           {
-            "id": "2055d37b4efb2dd8",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "content/best-investing-games-for-kids.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "best-investing-games-for-kids"
-            }
-          },
-          {
             "id": "812a40e446ceab2c",
             "type": "leaf",
             "state": {
@@ -35,8 +21,7 @@
               "title": "This is a super nice test"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -185,6 +170,10 @@
   },
   "active": "812a40e446ceab2c",
   "lastOpenFiles": [
+    "content/best-investing-games-for-kids.md",
+    "content/This is a super nice test.md",
+    "content/why-i-built-heyticker-the-platform-i-wished-i-had.md",
+    "content/imgs/maxresdefault.jpg",
     "Screenshot 2025-07-22 at 6.33.30 PM.png",
     "Screenshot 2025-07-15 at 11.24.42 AM.png",
     "content/imgs/GjKzPukaEAA8kvq.jpeg",
@@ -194,11 +183,6 @@
     "content/imgs/Screenshot 2025-07-21 at 11.24.04 AM.png",
     "content/imgs/Stock_Market_Game_for_Families.png",
     "content/imgs/Teaching_kids_about_investing.png",
-    "content/imgs/Teaching_Kids_About_the_Stock_Market.png",
-    "content/imgs/The_Best_Investing_Games_for_Kids_.png",
-    "content/This is a super nice test.md",
-    "content/investing-game-for-families.md",
-    "content/best-investing-games-for-kids.md",
-    "content/why-i-built-heyticker-the-platform-i-wished-i-had.md"
+    "content/investing-game-for-families.md"
   ]
 }
