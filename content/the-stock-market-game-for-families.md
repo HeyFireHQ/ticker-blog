@@ -27,15 +27,13 @@ A **stock market game for families** is a digital or board-based simulation wher
 ✅ It’s not boring financial theory.
 ✅ It’s **a hands-on way to learn how investing works**—together.
 
-‌
-
 ---
 
 ## **Why Families Are Getting Into Investing Games 🎯**
 
 In 2025, parents want more than screen time—they want **smart screen time**. Enter **investing games**:
 
-![../imgs/Stock_Market_Game_for_Families.png)
+![](../imgs/Stock_Market_Game_for_Families.png)
 
 - 💸 Builds **money habits early**
 - 👨‍👩‍👧 Encourages **family bonding**
@@ -43,8 +41,6 @@ In 2025, parents want more than screen time—they want **smart screen time**. E
 - 💡 Turns “what’s the stock market?” into “let’s invest together!”
 
 Think of it like Monopoly’s smarter cousin—with real company names and real lessons.
-
-‌
 
 ---
 
@@ -63,8 +59,6 @@ Think of it like Monopoly’s smarter cousin—with real company names and real 
 - Friendly sibling rivalries
 - Grandparent-grandkid learning time
 - Homeschool or classroom financial education
-
-‌
 
 ---
 
@@ -85,8 +79,6 @@ Think of it like Monopoly’s smarter cousin—with real company names and real 
 ⏳ Time-Limited Challenges - Run a 30-day game, a semester, or year
 
 🧩 Kid-Friendly Interface - Clean, simple design with helpful tips
-
-‌
 
 ---
 
@@ -117,8 +109,6 @@ Ticker is ideal if you:
 - Toddlers or very young children (ideal starting age: 10+)
 - Families looking for real-money investing platforms
 
-‌
-
 ---
 
 ## **FAQ: Family Stock Market Games**
@@ -138,8 +128,6 @@ Absolutely. Ticker uses **dummy money**, **real stocks**, and **no in-app purcha
 ### **Does it cost anything?**
 
 Nope. **Ticker is free** to start, and offers optional premium features later if you want to expand the game.
-
-‌
 
 ---
 
