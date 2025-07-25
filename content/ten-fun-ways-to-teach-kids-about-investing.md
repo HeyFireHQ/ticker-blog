@@ -33,7 +33,7 @@ Kids who learn about investing early:
 
 It’s not about turning them into stock-pickers.
 
-![../imgs/Teaching_kids_about_investing.png)
+![](../imgs/Teaching_kids_about_investing.png)
 
 It’s about giving them confidence with money.
 
