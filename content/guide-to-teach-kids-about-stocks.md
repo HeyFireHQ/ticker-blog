@@ -34,8 +34,6 @@ Your kid doesn’t need to master Wall Street. But understanding the fundamental
 - Spark curiosity in business, economics, and entrepreneurship
 - Prevent poor financial decisions down the line
 
-‌
-
 ---
 
 ## **Step 1: Use Kid-Friendly Analogies**
@@ -47,8 +45,6 @@ Start with what they already know. Kids learn by connecting new ideas to things 
 - **Stocks = Lemonade Stands** 🍋: Buying stock is like owning part of a lemonade stand. If the stand makes money, you do too.
 - **The Market = Playground Trading** 🧸: Supply and demand? Think of trading Pokémon cards or toys at recess.
 - **Risk = Rollercoasters** 🎢: Some rides are smooth, others are wild. Investing is the same—higher rewards usually mean more ups and downs.
-
-‌
 
 ---
 
@@ -72,8 +68,6 @@ The chance that you could lose money. But also the chance that you can grow it.
 
 To raise money so they can grow. Just like a kid might borrow money from parents to open a lemonade stand.
 
-‌
-
 ---
 
 ## **Step 3: Make It Interactive With Ticker 🕹️**
@@ -95,8 +89,6 @@ Ticker’s “Family Games” mode is built _specifically_ for parents who want 
 - Learn together as a team
 - Encourage healthy competition
 
-‌
-
 ---
 
 ## **Step 4: Turn Investing into a Family Ritual 👨‍👩‍👧‍👦**
@@ -110,8 +102,6 @@ Is your kid obsessed with LEGO, Disney, or Roblox? Great! Show them how those co
 ✅ Celebrate Wins (and Losses)
 Talk through decisions, what worked, and what didn’t. Turn mistakes into lessons—not shame.
 
-‌
-
 ---
 
 ## **Bonus Tips for Parents & Educators 📚**
@@ -123,8 +113,6 @@ Perfect for group learning, economics lessons, or after-school clubs. You can cr
 
 🎨 _Gamify Finance:_
 Use printable “stock certificates,” reward systems, and trading cards to make the concepts tangible.
-
-‌
 
 ---
 
@@ -141,8 +129,6 @@ Basic math helps, but Ticker shows real-time results visually. No calculators ne
 ### **Is this safe for kids?**
 
 Yes. Ticker uses **fake money**, so there’s zero financial risk—just learning through simulation.
-
-‌
 
 ---
 
