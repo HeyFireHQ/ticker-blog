@@ -13,7 +13,7 @@ Literally the thing that made my net-worth grow the most was learning how to inv
 
 If I had **Ticker** when I was younger, learning the basics of investing, I believe it would have fast-forwarded my financial journey by decades.
 
-![](../imgs/founder_of_ticker.jpg)
+
 
 ### The Problem
 

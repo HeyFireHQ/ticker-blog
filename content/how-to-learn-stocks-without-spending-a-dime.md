@@ -11,7 +11,7 @@ Tags: Investing
 
 Want to learn how to invest without risking your money? Fantasy investing is like fantasy football—but for stocks. With Ticker, you get $100,000 in virtual cash to play the market, test your strategy, and challenge friends. No pressure. No jargon. Just fun, risk-free investing.
 
-![Fantasy Investing Explained: How to Learn Stocks Without Spending a Dime](../imgs/Screenshot_2025-06-16_at_7.48.57_PM.png)
+
 
 ---
 

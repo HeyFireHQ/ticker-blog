@@ -27,8 +27,6 @@ Here’s how:
 Let’s face it: Most adults wish _they_ learned this stuff earlier.
 Your kid doesn’t need to master Wall Street. But understanding the fundamentals can:
 
-![A Parent’s Guide to Teaching Kids About the Stock Market](../imgs/Teaching_Kids_About_the_Stock_Market.png)
-
 - Build confidence with money 💵
 - Spark curiosity in business, economics, and entrepreneurship
 - Prevent poor financial decisions down the line

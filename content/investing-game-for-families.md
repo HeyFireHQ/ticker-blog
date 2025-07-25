@@ -44,7 +44,7 @@ These games:
 
 Let’s be real—your kids are already online. Why not guide them toward something that teaches real-world skills?
 
-![](../imgs/_Investing_Game_for_families.png)
+
 
 Ticker transforms screen time into:
 

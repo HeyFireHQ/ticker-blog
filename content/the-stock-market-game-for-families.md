@@ -32,7 +32,7 @@ A **stock market game for families** is a digital or board-based simulation wher
 
 In 2025, parents want more than screen time—they want **smart screen time**. Enter **investing games**:
 
-![](../imgs/Stock_Market_Game_for_Families.png)
+
 
 - 💸 Builds **money habits early**
 - 👨‍👩‍👧 Encourages **family bonding**
