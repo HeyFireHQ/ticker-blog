@@ -11,8 +11,6 @@ Colors: #F97316
 
 _Make money lessons fun, friendly, and unforgettable._
 
-‌
-
 ---
 
 **Family investing games** turn complex money lessons into fun challenges everyone can enjoy.
@@ -20,8 +18,6 @@ _Make money lessons fun, friendly, and unforgettable._
 They teach kids how markets work, give parents a way to bond over smart decision-making, and build lasting financial confidence.
 
 **Ticker** lets you run private, risk-free investment competitions for your family—no downloads, no real money, just fun.
-
-‌
 
 ---
 
@@ -41,8 +37,6 @@ These games:
 ✅ No downloads
 ✅ Built for beginners and kids alike
 
-‌
-
 ---
 
 ## **Why Families Should Start Investing Games Together 👨‍👩‍👧‍👦**
@@ -51,7 +45,7 @@ These games:
 
 Let’s be real—your kids are already online. Why not guide them toward something that teaches real-world skills?
 
-![../imgs/_Investing_Game_for_families.png)
+![](../imgs/_Investing_Game_for_families.png)
 
 Ticker transforms screen time into:
 
@@ -60,8 +54,6 @@ Ticker transforms screen time into:
 - Educational fun for every age group
 
 💡 **Pro tip**: Start with a week-long challenge and offer small rewards like “skip chores for a day” to boost engagement.
-
-‌
 
 ---
 
@@ -106,8 +98,6 @@ A weekly investing competition becomes a:
 
 Ticker’s **Family Games** plan lets you create private leagues so it’s just you, your household, and the market.
 
-‌
-
 ---
 
 ## **How Ticker Works (And Why It’s Perfect for Families) 🛠️**
@@ -121,8 +111,6 @@ Ticker’s **Family Games** plan lets you create private leagues so it’s just 
 Ticker is built to feel like a game—but with _real investing logic_.
 That’s how it sneaks in the learning while keeping it fun.
 
-‌
-
 ---
 
 ## **Real Stories: What Families Are Saying 💬**
@@ -130,8 +118,6 @@ That’s how it sneaks in the learning while keeping it fun.
 **“My 12-year-old daughter beat me in our last game—now she thinks she’s Warren Buffett. Best parenting win of the year.”** – James, Texas
 
 **“Ticker turned dinner into investment strategy talk. We’ve never had this much fun learning.”** – Priya, California
-
-‌
 
 ---
 
