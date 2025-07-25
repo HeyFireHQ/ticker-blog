@@ -12,11 +12,6 @@ You are awesome
 > Yes you.
 
 and this is an image
+![](Screenshot%202025-07-22%20at%206.33.30%20PM.png)
 
-![[Screenshot 2025-07-15 at 11.24.42 AM.png]]
 
-and this is an image moved to  imgs/
-
-![[Gemini_Generated_Image_35pm5x35pm5x35pm.png]]
-
-That's all folks!
