@@ -8,19 +8,15 @@ Keywords: financial education, learn investing, investing game, portfolio simula
 Tags: Investing, News
 Colors: #EB5A46
 
-‌
-
 If I could go back in time, I would buy Bitcoin, Apple and Amazon and I am sure I would still lose money because I wasn’t taught how to invest until I already had a lot of money.
 
 Literally the thing that made my net-worth grow the most was learning how to invest. And I really mean it. I started my own wealth management company, I became a registered financial advisor with SEC and managed millions of dollars and I saw how the sausage is made.
 
 If I had **Ticker** when I was younger, learning the basics of investing, I believe it would have fast-forwarded my financial journey by decades.
 
-![../imgs/founder_of_ticker.jpg)
+![](../imgs/founder_of_ticker.jpg)
 
 ### The Problem
-
-‌
 
 Most people don’t learn how to invest until it’s too late. Traditional finance education is either boring, gated behind expensive courses, or wrapped in so much jargon that it pushes you away before you even begin.
 
