@@ -21,8 +21,6 @@ Our favorite?[ **Ticker**](https://heyticker.com "‌") — a family-friendly in
 _👩‍🏫 Perfect for parents, teachers, and homeschoolers_
 _🧩 Builds skills in budgeting, risk, patience, and market basics_
 
-‌
-
 ---
 
 ## **Why Kids Should Learn Investing Early 📈**
