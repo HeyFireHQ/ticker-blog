@@ -6,6 +6,6 @@ Author: Jon V
 Description: Looking for a fun, educational way to teach your kids about money and investing?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
 
-epic fun
+YES!
 
 ![](IMG_7073.JPG)
