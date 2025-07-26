@@ -37,8 +37,8 @@ AUTHOR_FEED_RSS = None
 
 DEFAULT_PAGINATION = 10
 
-PLUGIN_PATHS = ['pelican-plugins']
-PLUGINS = ['sitemap']
+PLUGIN_PATHS = ['plugins']
+PLUGINS = ['sitemap', 'fix_img_paths']
 
 # Markdown settings
 MARKDOWN = {
