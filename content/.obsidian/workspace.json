@@ -136,13 +136,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "testa.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of testa"
+              "title": "Outline"
             }
           }
         ]
@@ -162,6 +161,9 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "b4b503fb8fb2ee88",
-  "lastOpenFiles": []
+  "active": "92032d09cbcbeee7",
+  "lastOpenFiles": [
+    "imgs/IMG_7073.JPG",
+    "testa.md"
+  ]
 }
