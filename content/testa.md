@@ -8,6 +8,6 @@ Keywords: fantasy investing, risk-free stock trading, stock simulator for beginn
 
 YES!
 
-hello!
+hello! how are you?
 
-![](IMG_7073.JPG)
+![this is me](IMG_7073.JPG)
