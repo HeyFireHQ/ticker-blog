@@ -18,10 +18,12 @@ def fix_image_paths_in_output_files(generator):
                         content = f.read()
                     
                     # Fix image paths like src="image.jpg" -> src="/imgs/image.jpg"
+                    # Made case-insensitive to match JPG, PNG, etc.
                     new_content = re.sub(
                         r'src="(?!https?:|/|\.{1,2}/|imgs/)([\w\-]+\.(png|jpe?g|gif|webp|svg))"',
                         r'src="/imgs/\1"',
-                        content
+                        content,
+                        flags=re.IGNORECASE
                     )
                     
                     # Write back if changed
