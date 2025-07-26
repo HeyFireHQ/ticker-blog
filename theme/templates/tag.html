@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tag }} - HeyTicker Blog{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-pink-50 rounded-3xl mb-16 py-20 px-8">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-10 left-10 w-32 h-32 bg-orange-300 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-40 h-40 bg-pink-300 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-purple-200 rounded-full blur-3xl"></div>
+        </div>
+        
+        <!-- Content -->
+        <div class="relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+                {{ tag }}
+            </h1>
+            
+            <p class="text-lg text-gray-600 max-w-xl mx-auto leading-relaxed">
+                {% if tag == 'Investing' %}
+                    Master the art of smart investing with expert insights and family-friendly strategies
+                {% elif tag == 'News' %}
+                    Stay updated with the latest financial news and market trends that matter
+                {% elif tag == 'Education' %}
+                    Learn essential financial skills through engaging and practical educational content
+                {% elif tag == 'Family' %}
+                    Build stronger financial foundations with activities the whole family can enjoy
+                {% else %}
+                    Discover insights and tips to help your family grow financially
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Articles Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for article in articles %}
+        <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col overflow-hidden">
+            <a href="/{{ article.slug }}/" class="hover:opacity-90 transition-opacity">
+                {% if article.metadata.image %}
+                <img src="/imgs/{{ article.metadata.image }}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+            </a>
+            <div class="p-6 flex flex-col flex-1">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-400 text-base">{{ article.date.strftime('%B %d, %Y') }}</span>
+                    {% if article.metadata.premium %}
+                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">Premium</span>
+                    {% endif %}
+                </div>
+                <a href="/{{ article.slug }}/" class="hover:text-orange-600">
+                    <h3 class="text-2xl font-extrabold text-gray-900 mb-2 leading-snug">
+                        {{ article.title }}
+                    </h3>
+                    <div class="text-base text-gray-600 mb-4">
+                        {{ article.content|striptags|truncate(100, True, '...') }}
+                    </div>
+                </a>
+                <div class="flex items-center gap-2 mb-4">
+                    {% for tag in article.tags %}
+                    {% if tag == 'Investing' %}
+                        {% set tag_color = '#F97316' %}
+                    {% elif tag == 'News' %}
+                        {% set tag_color = '#EB5A46' %}
+                    {% elif tag == 'Education' %}
+                        {% set tag_color = '#3B82F6' %}
+                    {% elif tag == 'Family' %}
+                        {% set tag_color = '#10B981' %}
+                    {% else %}
+                        {% set tag_color = '#6B7280' %}
+                    {% endif %}
+                    <span class="px-3 py-1 rounded-full text-sm font-medium"
+                          style="background-color: {{ tag_color }}20; color: {{ tag_color }};">
+                        <a href="/tag/{{ tag.slug }}/">{{ tag }}</a>
+                    </span>
+                    {% endfor %}
+                </div>
+                <a href="/{{ article.slug }}/" class="mt-auto text-base font-semibold text-gray-900 hover:text-orange-600 flex items-center">
+                    Read More
+                    <span class="ml-1">→</span>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Back to All Articles -->
+    <div class="text-center mt-12">
+        <a href="/" class="inline-flex items-center text-orange-500 hover:text-orange-700 font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Back to All Articles
+        </a>
+    </div>
+</div>
+{% endblock %} 

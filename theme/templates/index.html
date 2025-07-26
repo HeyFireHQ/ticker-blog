@@ -94,7 +94,7 @@
 <div class="mb-12">
     <div class="flex items-center justify-between mb-8">
         <h2 class="text-2xl font-bold text-gray-900">Latest Posts</h2>
-        <a href="#" class="text-orange-500 hover:text-orange-700 flex items-center">
+        <a href="/archives.html" class="text-orange-500 hover:text-orange-700 flex items-center">
             View All
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -106,7 +106,9 @@
             {% for article in articles[1:] %}
             <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all flex flex-col overflow-hidden">
                 {% if article.metadata.image %}
-                <img src="/imgs/{{ article.metadata.image }}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+                <a href="/{{ article.slug }}/" class="hover:opacity-90 transition-opacity">
+                    <img src="/imgs/{{ article.metadata.image }}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+                </a>
                 {% endif %}
                 <div class="p-6 flex flex-col flex-1">
                     <div class="flex items-center justify-between mb-2">

@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Archives - HeyTicker Blog{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header Section -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-pink-50 rounded-3xl mb-16 py-20 px-8">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-10 left-10 w-32 h-32 bg-orange-300 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-40 h-40 bg-pink-300 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-purple-200 rounded-full blur-3xl"></div>
+        </div>
+        
+        <!-- Content -->
+        <div class="relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+                Archives
+            </h1>
+            
+            <p class="text-lg text-gray-600 max-w-xl mx-auto leading-relaxed">
+                Explore our complete collection of articles about investing, family finance, and financial education
+            </p>
+        </div>
+    </div>
+
+    <!-- Timeline Layout -->
+    <div class="relative">
+        <!-- Timeline Line -->
+        <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-orange-300 to-pink-300"></div>
+        
+        {% set current_year = None %}
+        {% for article in dates %}
+            {% set article_year = article.date.year %}
+            {% if article_year != current_year %}
+                {% set current_year = article_year %}
+                
+                <!-- Year Marker -->
+                <div class="relative flex items-center mb-8">
+                    <div class="absolute left-6 w-4 h-4 bg-orange-500 rounded-full border-4 border-white shadow-md z-10"></div>
+                    <div class="ml-16">
+                        <h2 class="text-2xl font-bold text-gray-900">{{ current_year }}</h2>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Article Timeline Item -->
+            <div class="relative flex mb-8">
+                <!-- Timeline Dot -->
+                <div class="absolute left-7 w-2 h-2 bg-gray-300 rounded-full mt-2 z-10"></div>
+                
+                <!-- Article Content -->
+                <div class="ml-16 flex-1">
+                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all p-6 border-l-4 border-orange-200">
+                        <div class="flex flex-col lg:flex-row gap-6">
+                            <!-- Article Image -->
+                            {% if article.metadata.image %}
+                            <div class="lg:w-1/3 flex-shrink-0">
+                                <a href="/{{ article.slug }}/" class="hover:opacity-90 transition-opacity">
+                                    <img src="/imgs/{{ article.metadata.image }}" alt="{{ article.title }}" class="w-full h-48 lg:h-32 object-cover rounded-xl">
+                                </a>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Article Info -->
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-orange-500 font-medium text-sm">{{ article.date.strftime('%B %d, %Y') }}</span>
+                                    {% if article.metadata.premium %}
+                                    <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">Premium</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <a href="/{{ article.slug }}/" class="hover:text-orange-600 group">
+                                    <h3 class="text-xl font-extrabold text-gray-900 mb-2 leading-tight group-hover:text-orange-600 transition-colors">
+                                        {{ article.title }}
+                                    </h3>
+                                    <p class="text-gray-600 mb-3 leading-relaxed">
+                                        {{ article.content|striptags|truncate(120, True, '...') }}
+                                    </p>
+                                </a>
+                                
+                                <!-- Tags -->
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    {% for tag in article.tags %}
+                                    {% if tag == 'Investing' %}
+                                        {% set tag_color = '#F97316' %}
+                                    {% elif tag == 'News' %}
+                                        {% set tag_color = '#EB5A46' %}
+                                    {% elif tag == 'Education' %}
+                                        {% set tag_color = '#3B82F6' %}
+                                    {% elif tag == 'Family' %}
+                                        {% set tag_color = '#10B981' %}
+                                    {% else %}
+                                        {% set tag_color = '#6B7280' %}
+                                    {% endif %}
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium"
+                                          style="background-color: {{ tag_color }}15; color: {{ tag_color }};">
+                                        <a href="/tag/{{ tag.slug }}/">{{ tag }}</a>
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                                
+                                <a href="/{{ article.slug }}/" class="inline-flex items-center text-orange-500 hover:text-orange-700 font-medium text-sm">
+                                    Read Article
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Back to Home -->
+    <div class="text-center mt-16">
+        <a href="/" class="inline-flex items-center text-orange-500 hover:text-orange-700 font-medium text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %} 
