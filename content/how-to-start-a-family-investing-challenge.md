@@ -5,6 +5,7 @@ Image: Family_Investing_Challenge.png
 Author: Jon V
 Description: Looking for a fun, competitive, and educational way to bring your family together?
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
+Category: Investing
 
 # **How to Start a Family Investing Challenge**
 

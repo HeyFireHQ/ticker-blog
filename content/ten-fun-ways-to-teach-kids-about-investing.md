@@ -5,7 +5,7 @@ Image: Teaching_kids_about_investing.png
 Author: Jon V
 Description: _Make money lessons a game the whole family wins. Ticker is a hero tool that lets families run safe, private investing competitions_
 Keywords: stock simulator game, teach kids about investing ,investing game for kidsstock, market game for families, interactive money games for kids, family investing challenge, free investing game
-Tags: Investing, News
+Tags: Investing, Education, Family
 
 # **10 Fun Ways to Teach Kids About Investing**
 

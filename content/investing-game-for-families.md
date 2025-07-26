@@ -5,6 +5,7 @@ Image: _Investing_Game_for_families.png
 Author: Jon V
 Description: Family investing games turn complex money lessons into fun challenges everyone can enjoy.
 Keywords: fantasy investing, risk-free stock trading, stock simulator for beginners, free investing game , investing games for kids
+Category: Investing
 
 # **Why Every Family Should Try an Investing Game**
 

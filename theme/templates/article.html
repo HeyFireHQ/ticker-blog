@@ -53,7 +53,7 @@
             {% else %}
                 {% set tag_color = '#6B7280' %}
             {% endif %}
-            <a href="/category/{{ tag }}.html" class="px-3 py-1 rounded-full text-sm hover:bg-opacity-80 transition-colors"
+            <a href="/tag/{{ tag.slug }}/" class="px-3 py-1 rounded-full text-sm hover:bg-opacity-80 transition-colors"
                style="background-color: {{ tag_color }}20; color: {{ tag_color }};">
                 {{ tag }}
             </a>
