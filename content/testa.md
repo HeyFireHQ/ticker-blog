@@ -8,4 +8,4 @@ Keywords: fantasy investing, risk-free stock trading, stock simulator for beginn
 
 epic fun
 
-[](IMG_7073~4.jpg)
+[](IMG_7073.jpg)
