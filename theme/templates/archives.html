@@ -30,20 +30,7 @@
         <!-- Timeline Line -->
         <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-orange-300 to-pink-300"></div>
         
-        {% set current_year = None %}
         {% for article in dates %}
-            {% set article_year = article.date.year %}
-            {% if article_year != current_year %}
-                {% set current_year = article_year %}
-                
-                <!-- Year Marker -->
-                <div class="relative flex items-center mb-8">
-                    <div class="absolute left-6 w-4 h-4 bg-orange-500 rounded-full border-4 border-white shadow-md z-10"></div>
-                    <div class="ml-16">
-                        <h2 class="text-2xl font-bold text-gray-900">{{ current_year }}</h2>
-                    </div>
-                </div>
-            {% endif %}
             
             <!-- Article Timeline Item -->
             <div class="relative flex mb-8">
