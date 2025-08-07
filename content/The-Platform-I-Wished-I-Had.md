@@ -52,7 +52,7 @@ HeyTicker was built for people like my younger self. Curious. Hungry. Extremely 
 
 
 
-It’s not a **simulator**. It’s not just a game. It’s a **training ground** where you can learn the rhythms of real investing, compete in leagues, experiment with ideas, and build confidence without risking your savings.
+It’s not a simulator. It’s not just a game. It’s a **training ground** where you can learn the rhythms of real investing, compete in leagues, experiment with ideas, and build confidence without risking your savings.
 
 
 
