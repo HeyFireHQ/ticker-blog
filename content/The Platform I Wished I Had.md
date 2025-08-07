@@ -26,6 +26,8 @@ Literally the thing that made my net-worth grow the most was learning how to inv
 
 If I had **Ticker** when I was younger, learning the basics of investing, I believe it would have fast-forwarded my financial journey by decades.
 
+![Image](imgs/image1.jpg)
+
 # The Problem
 
 Most people don't learn how to invest until it's too late. Traditional finance education is either boring, gated behind expensive courses, or wrapped in so much jargon that it pushes you away before you even begin.
@@ -37,23 +39,16 @@ Even the apps that do try to make investing "fun" end up turning it into a casin
 HeyTicker was built for people like my younger self. Curious. Hungry. Extremely bored with lecturing. I needed a system that:
 
 - Teaches through **action**, not lectures
-
 - Encourages **smart investing**, not hype
-
 - Rewards **understanding**, not blind luck
-
 It's not a **simulator**. It's not just a game. It's a **training ground** where you can learn the rhythms of real investing, compete in leagues, experiment with ideas, and build confidence without risking your savings.
 
 ### What Makes It Different
 
 - **Leagues for learners**: You join thematic leagues ("Long-Term Growth," "Recession Survival," "Dividend Kings," etc.) that teach you how to build portfolios with purpose.
-
 - **No real money, no stress**: You get to **practice like it's real**, but learn without the risk.
-
 - **Compete with friends or AI agents**: Learning is more fun when it's social and when you're getting crashed by smarter algorithms.
-
 - **Every action teaches something**: From your stock choices to your timing to how you react to news--HeyTicker is built to reflect, improve, and reward smarter thinking.
-
 ### Why It Matters
 
 I built HeyTicker because I believe **financial freedom should be teachable**. It shouldn't be luck. It shouldn't be something you stumble into in your 30s, 40s, or 50s. You should be able to learn it **now**.
