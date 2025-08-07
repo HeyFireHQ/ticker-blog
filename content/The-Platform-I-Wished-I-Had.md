@@ -1,8 +1,12 @@
----
 title: The Platform I Wished I Had
-id: 1MMi8n9bEnb5Glh98SI9cOUwQ_O2miQwltB6unTBcf5o
-created: 
----
+date: 
+slug: the-platform-i-wished-i-had
+image: 
+author: 
+description: Title: Why I Built HeyTicker: The Platform I Wished I Had
+keywords: 
+category: 
+tags: 
 
 # The Platform I Wished I Had
 
