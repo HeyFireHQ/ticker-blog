@@ -8,8 +8,6 @@ keywords: financial education, learn investing, investing game, portfolio simula
 category: Investing
 tags: Investing, News
 
-# The Platform I Wished I Had
-
 
 
 If I could go back in time, I would buy Bitcoin, Apple and Amazon and I am sure I would still lose money because I wasn’t taught how to invest until I already had a lot of money.
