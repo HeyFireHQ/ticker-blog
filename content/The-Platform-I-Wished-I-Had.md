@@ -22,7 +22,7 @@ If I had **Ticker** when I was younger, learning the basics of investing, I beli
 
 
 
-![Image](imgs/image_-2509634573056284877.png)
+![Image](imgs/image_3631129936162200949jpg.png)
 
 # The Problem
 
