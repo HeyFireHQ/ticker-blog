@@ -1,3 +1,11 @@
+---
+title: The Platform I Wished I Had
+id: 1MMi8n9bEnb5Glh98SI9cOUwQ_O2miQwltB6unTBcf5o
+created: 
+---
+
+# The Platform I Wished I Had
+
 Title: Why I Built HeyTicker: The Platform I Wished I Had
 
 Date: 07-11-2025
