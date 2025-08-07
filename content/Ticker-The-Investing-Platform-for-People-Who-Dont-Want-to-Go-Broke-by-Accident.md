@@ -1,7 +1,7 @@
 title: Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
 date: 07-11-2025
 slug: ticker-the-investing-platform-for-people-who-dont-want-to-go-broke-by-accident
-image: 
+image: imgs/image_3668887052377754931.png
 author: Jon V
 description: Let’s be honest.
 keywords: financial education, learn investing, investing game, portfolio simulator, stock market for beginners, investment leagues, personal finance, wealth building, gamified investing, beginner investors, financial literacy, compete with friends, AI investing coach, paper trading platform, early financial freedom
@@ -34,7 +34,7 @@ It’s like if Duolingo and Wall Street had a sarcastic baby.
 
 
 
-### How It Works
+![Image](imgs/image_3668887052377754931.png)
 
 You start a course. You learn a bite-sized concept like:
 
