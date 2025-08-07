@@ -2,7 +2,7 @@ Title: Why I Built HeyTicker: The Platform I Wished I Had
 
 Date: 07-11-2025
 
-Slug: why-i-built-heyticker-the-platform-i-wished-i-had
+Slug: the-platform
 
 Image: founder_of_ticker.jpg
 
