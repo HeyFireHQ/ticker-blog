@@ -1,12 +1,13 @@
 title: Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
 date: 07-11-2025
-slug: 
+slug: the-best-investing-platform
 image: 
 author: Jon V
 description: 
 keywords: 
 category: Investing
 tags: Investing, News
+
 
 
 
@@ -35,7 +36,7 @@ You take quick, fun lessons. You build fake portfolios (so your real money stays
 
 It's like if Duolingo and Wall Street had a sarcastic baby.
 
-### **How It Works**![Image](imgs/image1.png)
+### **How It Works**![logo of Awesome Group LLC](imgs/image1.png)
 
 You start a course. You learn a bite-sized concept like:
 
