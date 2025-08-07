@@ -120,7 +120,7 @@ You don’t need to become a finance bro. You don’t need to read 19 books wit
 
 That’s why we built Ticker. To help you go from “I have no idea what I’m doing” to “I kind of know what I’m doing and I didn’t even cry this time.”
 
-Welcome to the future of investing education. It’s weird. It’s smart. It’s Ticker.
+Welcome to the future of investing education.__ It’s weird. It’s smart. It’s Ticker.__
 
 
 
