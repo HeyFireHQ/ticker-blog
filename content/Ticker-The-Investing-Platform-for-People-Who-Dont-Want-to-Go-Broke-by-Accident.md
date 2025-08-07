@@ -8,8 +8,6 @@ keywords: financial education, learn investing, investing game, portfolio simula
 category: Investing
 tags: Investing, News
 
-# Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
-
 Let’s be honest.
 
 Most people “investing” today are just **guessing really loudly**.
@@ -104,7 +102,7 @@ You don’t need to become a finance bro. You don’t need to read 19 books wit
 
 That’s why we built Ticker. To help you go from “I have no idea what I’m doing” to “I kind of know what I’m doing and I didn’t even cry this time.”
 
-Welcome to the future of investing education.__ It’s weird. It’s smart. It’s Ticker.__
+Welcome to the future of investing education.[ It’s weird. It’s smart. It’s Ticker.](https://heyticker.com/)
 
 
 
