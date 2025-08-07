@@ -1,12 +1,12 @@
-title: The Platform I Wished I Had
-date: 
-slug: the-platform-i-wished-i-had
-image: 
-author: 
-description: Title: Why I Built HeyTicker: The Platform I Wished I Had
-keywords: 
-category: 
-tags: 
+title: Why I Built HeyTicker: The Platform I Wished I Had
+date: 07-11-2025
+slug: the-platform
+image: founder_of_ticker.jpg
+author: Jon V
+description: If I could go back in time, I would buy Bitcoin, Apple and Amazon and I am sure I would still lose money because I wasn’t taught how to invest until I already had a lot of money.
+keywords: financial education, learn investing, investing game, portfolio simulator, stock market for beginners, investment leagues, personal finance, wealth building, gamified investing, beginner investors, financial literacy, compete with friends, AI investing coach, paper trading platform, early financial freedom
+category: Investing
+tags: Investing, News
 
 # The Platform I Wished I Had
 
