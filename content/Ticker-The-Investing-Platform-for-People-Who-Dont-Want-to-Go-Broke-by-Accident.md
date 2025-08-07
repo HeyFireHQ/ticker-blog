@@ -10,18 +10,6 @@ tags: Investing, News
 
 # Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
 
-Date: 07-11-2025
-
-Author: Jon V
-
-Description: Ticker is the investing game I wish I had when I was younger—a platform where you learn how to build real portfolios, compete in leagues, and develop financial confidence without risking a cent. It's designed to teach smart investing through action, not luck.
-
-Keywords: financial education, learn investing, investing game, portfolio simulator, stock market for beginners, investment leagues, personal finance, wealth building, gamified investing, beginner investors, financial literacy, compete with friends, AI investing coach, paper trading platform, early financial freedom
-
-Category: Investing
-
-Tags: Investing, News
-
 Let’s be honest.
 
 Most people “investing” today are just **guessing really loudly**.
@@ -79,8 +67,6 @@ What terrible decisions you made (and how to fix them)
 
 Because you need someone to blame when you lose.
 
-But also: to show you different strategies. Some bots are cautious. Some are reckless. One of them only invests in energy drinks and companies with the word “quantum” in them. They’re here to teach you through contrast — and keep you humble.
-
 
 
 ### **Who Is This For?
@@ -104,8 +90,6 @@ You. You, reading this right now.
 We’re working on:
 
 A FIRE mode where you try to retire by age 33 by not eating out ever again
-
-Crisis mode: invest during a simulated market crash while we play dramatic music
 
 A leaderboard, so you can finally prove you’re smarter than your little cousin
 
