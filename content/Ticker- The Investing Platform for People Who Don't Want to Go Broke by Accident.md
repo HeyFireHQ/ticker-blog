@@ -35,7 +35,7 @@ You take quick, fun lessons. You build fake portfolios (so your real money stays
 
 It's like if Duolingo and Wall Street had a sarcastic baby.
 
-### **How It Works**
+### **How It Works**![Image](imgs/image1.png)
 
 You start a course. You learn a bite-sized concept like:
 
@@ -49,9 +49,9 @@ Each week, your portfolio moves with real market data. You'll either feel like W
 
 Then we give you a beautifully crafted, lovingly judgmental **weekly report**, explaining:
 
-- What moved your portfolio
-- What news you should care about
-- What terrible decisions you made (and how to fix them)
+1. What moved your portfolio
+1. What news you should care about
+1. What terrible decisions you made (and how to fix them)
 ### **Why AI Opponents?**
 
 Because you need someone to blame when you lose.
@@ -60,11 +60,11 @@ But also: to show you different strategies. Some bots are cautious. Some are rec
 
 ### **Who Is This For?**
 
-- Teenagers who want to understand money before the world eats them alive
-- Adults who pretend to understand money but secretly Google "what is ETF" every week
-- Parents who want their kids to learn investing *without* starting a Robinhood account at age 12
-- People who love spreadsheets but also memes
-- You. You, reading this right now.
+1. Teenagers who want to understand money before the world eats them alive
+1. Adults who pretend to understand money but secretly Google "what is ETF" every week
+1. Parents who want their kids to learn investing *without* starting a Robinhood account at age 12
+1. People who love spreadsheets but also memes
+1. You. You, reading this right now.
 ### **Coming Soon (AKA we're not done being geniuses)**
 
 We're working on:
@@ -82,5 +82,5 @@ You don't need to become a finance bro. You don't need to read 19 books with bei
 That's why we built Ticker. To help you go from "I have no idea what I'm doing" to "I kind of know what I'm doing and I didn't even cry this time."
 
 Welcome to the future of investing education.
-__ It's weird. It's smart. It's Ticker.__
+[ It's weird. It's smart. It's Ticker.](https://heyticker.com/)
 
