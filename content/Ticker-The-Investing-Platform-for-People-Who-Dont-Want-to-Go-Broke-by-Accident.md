@@ -3,6 +3,7 @@ title: Ticker: The Investing Platform for People Who Don't Want to Go Broke by A
 id: 1CRN6IcRdxRv4F1jdgaqzhq__asec-a4o4TXYp7i7IE4
 created: 
 ---
+
 # Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
 
 Date: 07-11-2025
@@ -40,7 +41,11 @@ It’s like if Duolingo and Wall Street had a sarcastic baby.
 
 
 
-### **How It Works
+
+
+
+
+### **How It Works****
 **
 
 You start a course. You learn a bite-sized concept like:
