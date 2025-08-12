@@ -1,10 +1,10 @@
 title: Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
 date: 07-11-2025
 slug: the-best-investing-platform
-image: 
+image: imgs/image1.png
 author: Jon V
-description: 
-keywords: 
+description: Ticker is the investing game I wish I had when I was younger--a platform where you learn how to build real portfolios, compete in leagues, and develop financial confidence without risking a cent. It's designed to teach smart investing through action, not luck.
+keywords: financial education, learn investing, investing game, portfolio simulator, stock market for beginners, investment leagues, personal finance, wealth building, gamified investing, beginner investors, financial literacy, compete with friends, AI investing coach, paper trading platform, early financial freedom
 category: Investing
 tags: Investing, News
 
@@ -36,7 +36,7 @@ You take quick, fun lessons. You build fake portfolios (so your real money stays
 
 It's like if Duolingo and Wall Street had a sarcastic baby.
 
-### **How It Works**![logo of Awesome Group LLC](imgs/image1.png)
+### **How It Works**![logo of Awesome Group LLC](/imgs/image1.png)
 
 You start a course. You learn a bite-sized concept like:
 
