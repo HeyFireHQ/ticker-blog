@@ -23,9 +23,9 @@ Most people "investing" today are just **guessing really loudly**.
 
 "Bro, I'm all in on this startup that makes AI-powered popsicles for cats."
 
-"Oh cool, I just bought 0.0002 of a Bitcoin at 3AM because a guy on YouTube screamed at me to."
+"Oh cool, I just bought 0.0002 of a Bitcoin at 3AM because a guy on YouTube screamed at me"
 
-It's chaos. It's memes. It's vibes. And it's also why we built
+It's chaos. It's memes. It's vibes.And it's also why we built
 **Ticker** -- to save humanity (and your wallet).
 
 ### **What is Ticker?**
@@ -36,9 +36,9 @@ You take quick, fun lessons. You build fake portfolios (so your real money stays
 
 It's like if Duolingo and Wall Street had a sarcastic baby.
 
-### **How It Works**![logo of Awesome Group LLC](/imgs/image1.png)
+### **How It Works**
 
-You start a course. You learn a bite-sized concept like:
+![Image](/imgs/image1.png)You start a course. You learn a bite-sized concept like:
 
 - "What is diversification?"
 - "Why YOLO-ing into tech stocks is not a plan"
