@@ -1,5 +1,5 @@
 title: Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
-date: 07-11-2025
+date: 08-11-2025
 slug: the-best-investing-platform
 image: image1.png
 author: Jon V
