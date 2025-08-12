@@ -9,7 +9,7 @@ category: Investing
 tags: Investing
 
 
-Let's be honest.
+Let's be honest. ok?
 
 Most people "investing" today are just **guessing really loudly**.
 
