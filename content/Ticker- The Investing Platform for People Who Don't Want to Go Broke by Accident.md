@@ -1,7 +1,7 @@
 title: Ticker: The Investing Platform for People Who Don't Want to Go Broke by Accident
 date: 08-11-2025
 slug: the-investing-platform-for-people-who-dont-want-to-go-broke-by-accident
-image: image1.png
+image: image_rId6.png
 author: Jon V
 description: Ticker is the investing game I wish I had when I was younger--a platform where you learn how to build real portfolios, compete in leagues, and develop financial confidence without risking a cent. It's designed to teach smart investing through action, not luck.
 keywords: financial education, learn investing, investing game, portfolio simulator, stock market for beginners, investment leagues, personal finance, wealth building, gamified investing, beginner investors, financial literacy, compete with friends, AI investing coach, paper trading platform, early financial freedom
