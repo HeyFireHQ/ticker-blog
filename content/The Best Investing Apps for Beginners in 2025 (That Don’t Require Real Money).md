@@ -1,7 +1,7 @@
 title: The Best Investing Apps for Beginners in 2025 (That Don’t Require Real Money)
 date: 08-11-2025
 slug: the-best-investing-platform
-image: 
+image: image1.png
 author: Lily K
 description: Discover the best beginner-friendly investing apps in 2025. Learn with Ticker -- a free, fun stock simulator using virtual money + real data.
 keywords: best investing apps for beginners, investment apps without real money, free paper trading app, best stock trading simulators
@@ -36,6 +36,8 @@ Unlike most simulators, **Ticker** makes investing feel like a game. It's design
 1. 🧑‍🎓 Beginner-friendly guides and tips
 1. 👨‍👩‍👧 Family-safe and fun for all ages
 💡 *Ticker helps you master investing while having fun -- no stress, no jargon.*
+
+![Image](/imgs/image1.png)
 
 ## **Other Great Free Investment Apps Without Real Money**
 
