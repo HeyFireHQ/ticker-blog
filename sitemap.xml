@@ -6,35 +6,42 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.heyticker.com/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/archives.html</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/author/jon-v.html</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/author/lily-k.html</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.heyticker.com/author/lilyk.html</loc>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/authors.html</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -48,21 +55,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.heyticker.com/categories.html</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.heyticker.com/category/education/</loc>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/category/investing/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/category/misc/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -70,6 +84,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://blog.heyticker.com/guide-to-teach-kids-about-stocks/</loc>
 <lastmod>2025-03-07T00:00:00-08:00</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>https://blog.heyticker.com/how-do-I-learn-about-stocks-your-most-googled-investing-questions-answered-clearly/</loc>
+<lastmod>2025-08-29T00:00:00-07:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -89,6 +110,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>https://blog.heyticker.com/index2.html</loc>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
 <loc>https://blog.heyticker.com/investing-game-for-families/</loc>
 <lastmod>2025-03-07T00:00:00-08:00</lastmod>
 <changefreq>weekly</changefreq>
@@ -97,35 +125,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.heyticker.com/tag/education/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/tag/family/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/tag/investing/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/tag/news/</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.heyticker.com/tags.html</loc>
-<lastmod>2025-08-29T20:48:48-00:00</lastmod>
+<lastmod>2025-08-30T01:06:36-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
