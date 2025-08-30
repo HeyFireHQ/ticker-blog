@@ -86,4 +86,4 @@ You don't need to Google "how to learn about stocks" ever again. The answer is s
 - Learn the basics.
 - Practice long-term investing with Ticker.
 - Start small in the real world once you're ready.
-👉 Download Ticker today and build your first long-term portfolio risk-free
+👉 [Sign up for Ticker today and build your first long-term portfolio risk-free](http://heyticker.com)
