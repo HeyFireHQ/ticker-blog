@@ -2,7 +2,7 @@ title: 📚 How Do I Learn About Stocks? Your Most Googled Investing Questions�
 date: 08-29-2025
 slug: how-do-I-learn-about-stocks-your-most-googled-investing-questions-answered-clearly
 image: 📚_How_Do_I_Learn_About_Stocks_Your_Most_Googled_Investing_Questions--Answered_Clearly_1.png
-author: LilyK
+author: Lily K
 description: Learn how to invest in stocks the safe way. Beginner FAQs answered clearly -- practice long-term investing risk-free with Ticker.
 keywords: 
 category: education
