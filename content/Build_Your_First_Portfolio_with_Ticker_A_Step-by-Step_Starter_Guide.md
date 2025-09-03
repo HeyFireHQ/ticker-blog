@@ -9,16 +9,14 @@ category: Investing
 tags: Investing
 
 
-## **Build Your First Portfolio with Ticker: A Step-by-Step Starter Guide**
-
-## ![Image](/imgs/Build_Your_First_Portfolio_with_Ticker_A_Step-by-Step_Starter_Guide_1.png)
-
 Your first stock portfolio doesn't need to be complicated. With **Ticker**, you can:
 
 - 🕹️ Create your portfolio with **virtual money
 **
 - 📈 Practice diversification using real market data
 - 🎯 Test long-term strategies until you're confident
+![Image](/imgs/Build_Your_First_Portfolio_with_Ticker_A_Step-by-Step_Starter_Guide_1.png)
+
 ## **Step 1: Learn the Basics**
 
 A **portfolio** = a collection of your investments (stocks, ETFs, etc.).The secret is
