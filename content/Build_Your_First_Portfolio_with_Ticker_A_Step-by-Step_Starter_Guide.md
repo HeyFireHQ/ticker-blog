@@ -4,14 +4,10 @@ slug: build-your-first-portfolio-with-ticker-starter-guide
 image: Build_Your_First_Portfolio_with_Ticker_A_Step-by-Step_Starter_Guide_1.png
 author: Lily K
 description: Learn how to build your first stock portfolio step by step. Practice risk-free with Ticker's virtual investing app.
-keywords: 
+keywords: stock portfolio simulator for beginners, intro to investing simulator, best stock app for beginners
 category: Investing
 tags: Investing
 
-
-stock portfolio simulator for beginners, intro to inve
-
-sting simulator, best stock app for beginners
 
 ## **Build Your First Portfolio with Ticker: A Step-by-Step Starter Guide**
 
