@@ -9,7 +9,9 @@ category: Investing
 tags: Investing
 
 
-stock portfolio simulator for beginners, intro to investing simulator, best stock app for beginners
+stock portfolio simulator for beginners, intro to inve
+
+sting simulator, best stock app for beginners
 
 ## **Build Your First Portfolio with Ticker: A Step-by-Step Starter Guide**
 
